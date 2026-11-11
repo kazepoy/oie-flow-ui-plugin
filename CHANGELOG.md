@@ -7,7 +7,7 @@ First version, rebuilt from the Flow and Flows screens of the FHIR Profile Mappe
 - **Flows Monitoring** (Monitor): deployed channels by group, one row per channel,
   counters per connector opening Messages; groups closed except the first; filter,
   Lifetime, state kept for the session; channel links (Channel Writer → Channel
-  Reader) with a *Links* option; start, pause, resume and stop channels and
+  Reader) with a *Links* option; connector type and address with a *Details* option; start, pause, resume and stop channels and
   connectors (with confirmation before a stop, RBAC startStopChannels).
 - **Channel Flow** (Design): saved channel diagram in three views (Line, Columns,
   Bands, Auto), computed layout, zoom and move with trackpad, mouse and keyboard,

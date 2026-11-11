@@ -34,6 +34,7 @@ describe("as admin", () => {
     assert.deepEqual(groups.map(name => name.toLowerCase()), ["billing", "external partners", "laboratory", "operations", "patient administration", "pharmacy", "radiology", "simulators"]);
     assert.equal(await page.locator(".ofu-group__head[aria-expanded=true]").count(), 1);
     assert.match(await page.locator(".ofu-toolbar .ofu-totals").innerText(), /[1-9][\d,]*\s+received/);
+    assert.match(await page.locator(".ofu-detail").first().innerText(), /HTTP Listener|TCP Listener|File Reader/, "connector details shown");
     await shot(page, "e2e-flows");
   });
 

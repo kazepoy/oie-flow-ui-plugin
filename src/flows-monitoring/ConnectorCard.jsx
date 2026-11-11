@@ -6,6 +6,7 @@ import { DESTINATION_COUNTERS, SOURCE_COUNTERS } from "../shared/model/stats.js"
 import { ConnectorCounters } from "./Counters.jsx";
 import { ControlButtons } from "./ControlButtons.jsx";
 import { connectorCommands } from "./controls.js";
+import { Icon } from "../shared/ui/Icon.jsx";
 
 /**
  * @param {{ lane: any, connector: any, isSource: boolean, actions: any }} props
@@ -23,10 +24,12 @@ export function ConnectorCard({ lane, connector, isSource, actions }) {
     </>
   );
   const linked = actions.showLinks && connector.linkTo;
+  // The link already says where a Channel Writer sends: no detail line then.
+  const detailed = !linked && actions.showDetails && connector.transport;
   return (
     <div className={cx("ofu-card", isSource ? "ofu-card--source" : "ofu-card--destination",
       connector.stats.ERROR > 0 ? "ofu-card--error" : connector.stats.QUEUED > 0 && "ofu-card--queued",
-      stopped && "ofu-card--stopped", linked && "ofu-card--linked")}>
+      stopped && "ofu-card--stopped", (linked || detailed) && "ofu-card--extended")}>
       <div className="ofu-card__head">
         {open
           ? <button type="button" className="ofu-card__title" title={t("flows.card.openMessages", { where })} onClick={open}>{title}</button>
@@ -38,7 +41,20 @@ export function ConnectorCard({ lane, connector, isSource, actions }) {
         where={where} onOpen={open} />
       {/* Inside the card: outside, the arrows of parallel chains would cross it. */}
       {linked && <ChannelLink channelId={connector.linkTo} direction="to" actions={actions} />}
+      {detailed && <ConnectorDetail connector={connector} />}
     </div>
+  );
+}
+
+/** The connector's type and address, on a grey line in the style of the links. */
+function ConnectorDetail({ connector }) {
+  const text = connector.endpoint ? `${connector.transport} · ${connector.endpoint}` : connector.transport;
+  return (
+    <span className="ofu-detail" title={text}>
+      <span className="ofu-detail__icon" aria-hidden="true"><Icon name="connector" /></span>
+      <span className="ofu-detail__type">{connector.transport}</span>
+      {connector.endpoint && <span className="ofu-detail__address">{connector.endpoint}</span>}
+    </span>
   );
 }
 

@@ -77,6 +77,8 @@ export default {
     filter: "Filter channels",
     lifetime: "Lifetime",
     lifetimeTitle: "Counters since the channels were created, instead of since their statistics were last reset",
+    details: "Details",
+    detailsTitle: "Show each connector's type and address",
     links: "Links",
     linksTitle: "Show which channels send to which (Channel Writer → Channel Reader)",
     control: {
@@ -164,6 +166,7 @@ export default {
       then: "The next destination waits for the previous one (same chain).",
       parallel: "Chains receive the message in parallel.",
       links: "With Links: the channel a Channel Writer sends to (→), or the channels that call this one (←). A click shows that channel.",
+      details: "With Details: the connector's type and address.",
       counters: "Counters",
       status: {
         RECEIVED: "Received by the source, or sent by a destination.",

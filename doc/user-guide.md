@@ -27,6 +27,10 @@ précédente.
   carte du canal appelé ceux qui l'appellent (*Called by*). Un clic ouvre le groupe du
   canal lié, y fait défiler la page et le met en évidence, même s'il est dans un
   autre groupe.
+- **Détails.** Avec l'option *Details* (cochée par défaut), chaque carte indique sur
+  une ligne grise le type du connecteur et son adresse (« HTTP Sender · http://… »).
+  Pour un *Channel Writer*, le lien violet en tient lieu. Il faut pouvoir lire les
+  canaux (`viewChannels`).
 - **Démarrer, mettre en pause, arrêter.** La carte du canal propose les commandes
   permises par son état : pause et arrêt s'il tourne, reprise et arrêt s'il est en
   pause, démarrage s'il est arrêté. Chaque connecteur d'un canal démarré ou en pause
@@ -139,7 +143,7 @@ Flow UI suit les droits de Web Admin :
 |---|---|
 | Flows Monitoring | `viewDashboard` |
 | Groupes dans Flows Monitoring et le sélecteur | `viewChannelGroups` (sinon une seule liste, *Groups hidden*) |
-| Chaînes de destinations et liens dans Flows Monitoring | `viewChannels` (sinon les destinations dans l'ordre, sans liens, *Chains hidden*) |
+| Chaînes, liens et détails des connecteurs dans Flows Monitoring | `viewChannels` (sinon les destinations dans l'ordre, sans liens ni détails, *Chains hidden*) |
 | Channel Flow | `viewChannels` |
 | Compteurs et noms cliquables vers Messages | `viewMessages` |
 | *Edit*, ouverture des éditeurs, `+` | `manageChannels` |

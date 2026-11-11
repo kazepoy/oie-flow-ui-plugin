@@ -4,6 +4,7 @@
 import { asList, destinationsOf, isTrue } from "../shared/model/xstream.js";
 import { splitChains } from "../shared/model/chains.js";
 import { addStats, emptyStats, statsOf } from "../shared/model/stats.js";
+import { endpointOf } from "../shared/model/endpoint.js";
 
 export const DEFAULT_GROUP_ID = "default";
 
@@ -41,9 +42,24 @@ export function channelLinks(channels) {
   return { outgoing, incoming };
 }
 
+/**
+ * Type and address of each connector of a channel (metaDataId → details), read
+ * from its configuration: dashboard statuses do not carry them.
+ * @returns {Map<number, { transport: string, endpoint: string }>}
+ */
+export function connectorDetails(channel) {
+  const source = channel?.sourceConnector;
+  const connectors = [...(source ? [{ ...source, metaDataId: 0 }] : []), ...destinationsOf(channel)];
+  return new Map(connectors.map(connector => [Number(connector.metaDataId),
+    { transport: connector.transportName || "", endpoint: endpointOf(connector) }]));
+}
+
 /** A connector card: what it is, its state and its counters. */
-function connectorOf(status, lifetime, fallbackName) {
+function connectorOf(status, lifetime, fallbackName, details) {
+  const own = details?.get(Number(status?.metaDataId ?? 0));
   return {
+    transport: own?.transport ?? "",
+    endpoint: own?.endpoint ?? "",
     metaDataId: Number(status?.metaDataId ?? 0),
     name: status?.name || fallbackName,
     state: status?.state ?? null,
@@ -58,9 +74,10 @@ function connectorOf(status, lifetime, fallbackName) {
  * channels), the chains are unknown: the destinations stay in one row, in order,
  * and `chainsKnown` is false.
  * @param {any} status dashboard status of the channel
- * @param {{ lifetime?: boolean, waits?: Map<number, boolean>, links?: { outgoing: Map<string, Map<number, string>>, incoming: Map<string, any[]> } }} [options]
+ * @param {{ lifetime?: boolean, waits?: Map<number, boolean>, links?: { outgoing: Map<string, Map<number, string>>, incoming: Map<string, any[]> },
+ *          details?: Map<number, { transport: string, endpoint: string }> }} [options]
  */
-export function channelLane(status, { lifetime = false, waits, links = { outgoing: new Map(), incoming: new Map() } } = {}) {
+export function channelLane(status, { lifetime = false, waits, links = { outgoing: new Map(), incoming: new Map() }, details } = {}) {
   const children = asList(status.childStatuses, "dashboardStatus");
   const sourceStatus = children.find(child => child.statusType === "SOURCE_CONNECTOR" || Number(child.metaDataId) === 0);
   const destinations = children.filter(child => child !== sourceStatus)
@@ -76,9 +93,9 @@ export function channelLane(status, { lifetime = false, waits, links = { outgoin
     state: status.state,
     chainsKnown,
     stats: statsOf(status, lifetime),
-    source: connectorOf(sourceStatus, lifetime, "Source"),
+    source: connectorOf(sourceStatus, lifetime, "Source", details),
     chains: chains.map(chain => chain.map(child => ({
-      ...connectorOf(child, lifetime, `Destination ${child.metaDataId}`),
+      ...connectorOf(child, lifetime, `Destination ${child.metaDataId}`, details),
       linkTo: links.outgoing.get(String(status.channelId))?.get(Number(child.metaDataId)) ?? null
     }))),
     calledBy: links.incoming.get(String(status.channelId)) ?? []
@@ -92,12 +109,12 @@ const byName = (a, b) => String(a.name).localeCompare(String(b.name));
  * under the default group. Empty groups are left out.
  * @param {any[]} statuses
  * @param {any[]} groups channel groups ({ id, name, channels })
- * @param {{ filter?: string, lifetime?: boolean, waits?: Map<string, Map<number, boolean>>, links?: any, defaultGroupName: string }} options
+ * @param {{ filter?: string, lifetime?: boolean, waits?: Map<string, Map<number, boolean>>, links?: any, details?: Map<string, any>, defaultGroupName: string }} options
  */
-export function groupLanes(statuses, groups, { filter = "", lifetime = false, waits = new Map(), links, defaultGroupName }) {
+export function groupLanes(statuses, groups, { filter = "", lifetime = false, waits = new Map(), links, details = new Map(), defaultGroupName }) {
   const needle = filter.trim().toLowerCase();
   const lanes = statuses
-    .map(status => channelLane(status, { lifetime, waits: waits.get(String(status.channelId)), links }))
+    .map(status => channelLane(status, { lifetime, waits: waits.get(String(status.channelId)), links, details: details.get(String(status.channelId)) }))
     .filter(lane => !needle || lane.name.toLowerCase().includes(needle))
     .sort(byName);
   const laneById = new Map(lanes.map(lane => [lane.id, lane]));

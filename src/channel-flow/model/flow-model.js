@@ -5,6 +5,9 @@
 // it opens. Texts are chosen by the components, not here.
 import { destinationsOf, isTrue } from "../../shared/model/xstream.js";
 import { splitChains } from "../../shared/model/chains.js";
+import { endpointOf } from "../../shared/model/endpoint.js";
+
+export { endpointOf };
 
 /** Short names of common step types, to keep step chips narrow. */
 const SHORT_TYPES = {
@@ -25,19 +28,6 @@ const SHORT_TYPES = {
 export function hasScript(value, preprocessor = false) {
   const trivia = "(?:\\s|//[^\\r\\n]*(?:\\r?\\n|$)|/\\*[\\s\\S]*?\\*/)*";
   return !new RegExp(`^${trivia}(?:return${preprocessor ? "(?:\\s+message)?" : ""}\\s*;?)?${trivia}$`).test(String(value || ""));
-}
-
-/** Where a connector listens or sends, without credentials or query string. */
-export function endpointOf(connector) {
-  const props = connector?.properties || {};
-  const listener = props.listenerConnectorProperties;
-  const host = listener?.host || props.remoteAddress || props.remoteHost || props.smtpHost
-    || props.locationURI || props.url || props.host || props.directory || "";
-  const port = listener?.port || props.remotePort || props.port || props.smtpPort;
-  let text = String(host).replace(/(\/\/)[^/@\s]+@/, "$1").split(/[?#]/)[0];
-  if (port && text && !/^\w+:\/\//.test(text)) text += `:${port}`;
-  if (props.contextPath && props.contextPath !== "/") text += `/${String(props.contextPath).replace(/^\//, "")}`;
-  return text === "none" ? "" : text;
 }
 
 const elementsOf = container => {

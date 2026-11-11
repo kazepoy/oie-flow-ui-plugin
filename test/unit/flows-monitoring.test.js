@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { channelLane, channelLinks, groupLanes, openGroups, waitsOf } from "../../src/flows-monitoring/model.js";
+import { channelLane, channelLinks, connectorDetails, groupLanes, openGroups, waitsOf } from "../../src/flows-monitoring/model.js";
 
 const connector = (metaDataId, name, received = 0) => ({
   metaDataId, name, state: "STARTED", statusType: metaDataId === 0 ? "SOURCE_CONNECTOR" : "DESTINATION_CONNECTOR",
@@ -65,3 +65,15 @@ test("Channel Writer destinations link channels, both ways", () => {
   assert.deepEqual(channelLane(status("b", "B", 1), { links }).calledBy, [{ channelId: "a", metaDataId: 1 }]);
 });
 
+
+test("each card knows its connector's type and address, from the configuration", () => {
+  const details = connectorDetails({
+    sourceConnector: { transportName: "TCP Listener", properties: { listenerConnectorProperties: { host: "0.0.0.0", port: "8181" } } },
+    destinationConnectors: { connector: [{ metaDataId: 1, transportName: "HTTP Sender", properties: { host: "http://ehr.example/api?token=x" } }] }
+  });
+  assert.deepEqual([...details], [[0, { transport: "TCP Listener", endpoint: "0.0.0.0:8181" }], [1, { transport: "HTTP Sender", endpoint: "http://ehr.example/api" }]]);
+  const lane = channelLane(status("a", "A", 1), { waits: new Map(), details });
+  assert.equal(lane.source.transport, "TCP Listener");
+  assert.equal(lane.chains[0][0].endpoint, "http://ehr.example/api");
+  assert.equal(channelLane(status("a", "A", 1)).source.transport, "", "unknown without the configuration");
+});

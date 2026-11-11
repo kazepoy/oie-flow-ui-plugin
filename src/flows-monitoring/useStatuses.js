@@ -5,15 +5,15 @@
 import { useCallback, useEffect, useState } from "../host/react.js";
 import { channelConfigurations, channelGroups, channelStatuses } from "../host/api.js";
 import { asList } from "../shared/model/xstream.js";
-import { channelLinks, waitsOf } from "./model.js";
+import { channelLinks, connectorDetails, waitsOf } from "./model.js";
 
 /**
  * @param {number} refreshSeconds 0 = only on demand
- * @returns {{ statuses: any[] | null, groups: any[], groupsReadable: boolean, waits: Map<string, Map<number, boolean>>, links: any,
+ * @returns {{ statuses: any[] | null, groups: any[], groupsReadable: boolean, waits: Map<string, Map<number, boolean>>, links: any, details: Map<string, any>,
  *             error: string, updated: Date | null, refresh: () => void, reloadCounters: () => Promise<void> }}
  */
 export function useStatuses(refreshSeconds) {
-  const [data, setData] = useState({ statuses: null, groups: [], groupsReadable: true, waits: new Map(), links: channelLinks([]) });
+  const [data, setData] = useState({ statuses: null, groups: [], groupsReadable: true, waits: new Map(), links: channelLinks([]), details: new Map() });
   const [error, setError] = useState("");
   const [updated, setUpdated] = useState(null);
 
@@ -23,18 +23,21 @@ export function useStatuses(refreshSeconds) {
       const list = asList(statuses, "dashboardStatus");
       let waits = null;
       let links = null;
+      let details = null;
       if (withStructure && list.length) {
         // Without the right to read channels, chains and links stay unknown.
         const channels = await channelConfigurations(list.map(status => status.channelId)).catch(() => []);
         waits = new Map(channels.map(channel => [String(channel.id), waitsOf(channel)]));
         links = channelLinks(channels);
+        details = new Map(channels.map(channel => [String(channel.id), connectorDetails(channel)]));
       }
       setData(previous => ({
         statuses: list,
         groups: withStructure ? asList(groups ?? [], "channelGroup") : previous.groups,
         groupsReadable: withStructure ? groups !== null : previous.groupsReadable,
         waits: waits ?? previous.waits,
-        links: links ?? previous.links
+        links: links ?? previous.links,
+        details: details ?? previous.details
       }));
       setError("");
       setUpdated(new Date());

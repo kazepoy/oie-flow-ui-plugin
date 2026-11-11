@@ -242,8 +242,9 @@ button.ofu-channel__name:hover .ofu-channel__label {
 }
 
 /* Links between channels (option "Links") */
-/* A Channel Writer card holds its link on a third line; links stay inside their card. */
-.ofu-card.ofu-card--linked {
+/* A card may hold a third line: a link (violet) or the connector's type and
+   address (grey). It stays inside the card. */
+.ofu-card.ofu-card--extended {
   height: auto;
   min-height: var(--card-height);
 }
@@ -300,6 +301,52 @@ button.ofu-link:hover {
   border-style: dashed;
   color: var(--ofu-dim);
   font-weight: 400;
+}
+
+.ofu-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  min-width: 0;
+  padding: 3px 10px 3px 4px;
+  border: 1.5px solid var(--ofu-line-strong);
+  border-radius: 12px;
+  background: var(--ofu-sunken);
+  color: var(--ofu-dim);
+  font-size: 12px;
+}
+
+.ofu-detail__icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--ofu-line-strong);
+  color: var(--ofu-surface);
+}
+
+.ofu-detail__icon .ofu-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.ofu-detail__type {
+  flex: none;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ofu-detail__address {
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--ofu-mono);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .ofu-lane--highlighted .ofu-channel {

@@ -16,6 +16,7 @@ export function FlowsHelp() {
             <dt><Sample className="ofu-sample--then" /></dt><dd>{t("flows.help.then")}</dd>
             <dt><Sample className="ofu-sample--fork" /></dt><dd>{t("flows.help.parallel")}</dd>
             <dt><span className="ofu-link" aria-hidden="true">→</span></dt><dd>{t("flows.help.links")}</dd>
+            <dt><span className="ofu-detail" aria-hidden="true">·</span></dt><dd>{t("flows.help.details")}</dd>
           </dl>
           <h3>{t("flows.help.counters")}</h3>
           <dl className="ofu-legend">

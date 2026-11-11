@@ -235,6 +235,8 @@ Reprise fonctionnelle de la vue Flows du mapper.
 - **Liens entre canaux** (option *Links*) : dans sa carte, une destination Channel
   Writer indique le canal appelé (*Sends to*) ; la carte du canal appelé indique ses
   appelants (*Called by*). Un clic montre la ligne liée, même dans un autre groupe.
+- **Détails des connecteurs** (option *Details*) : type et adresse sur une ligne grise
+  de chaque carte, du même dessin que les liens.
 - **Démarrer, pause, reprise, arrêt** du canal selon son état, et arrêt ou
   démarrage de chaque connecteur d'un canal démarré ; confirmation avant un arrêt ;
   droit `startStopChannels`.

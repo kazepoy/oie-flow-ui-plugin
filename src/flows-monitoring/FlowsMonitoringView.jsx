@@ -26,8 +26,8 @@ const SCROLL_KEY = "flows.scroll";
 
 export function FlowsMonitoringView() {
   const [settings] = useSettings();
-  const { statuses, groups, groupsReadable, waits, links, error, updated, refresh, reloadCounters } = useStatuses(settings.refreshSeconds);
-  const [view, setView] = useState(() => readSession(SESSION_KEY, { filter: "", lifetime: false, toggled: {}, links: true }));
+  const { statuses, groups, groupsReadable, waits, links, details, error, updated, refresh, reloadCounters } = useStatuses(settings.refreshSeconds);
+  const [view, setView] = useState(() => readSession(SESSION_KEY, { filter: "", lifetime: false, toggled: {}, links: true, details: true }));
   const body = useRef(null);
   const restored = useRef(false);
   const scrollTimer = useRef(0);
@@ -39,10 +39,10 @@ export function FlowsMonitoringView() {
 
   const grouped = useMemo(() => statuses
     ? groupLanes(statuses, groups, {
-      filter: view.filter, lifetime: view.lifetime, waits, links,
+      filter: view.filter, lifetime: view.lifetime, waits, links, details,
       defaultGroupName: t(groupsReadable ? "flows.group.default" : "flows.group.all")
     })
-    : [], [statuses, groups, groupsReadable, waits, links, view.filter, view.lifetime]);
+    : [], [statuses, groups, groupsReadable, waits, links, details, view.filter, view.lifetime]);
   const names = useMemo(() => new Map((statuses ?? []).map(status => [String(status.channelId), status.name])), [statuses]);
   const open = openGroups(grouped, view.toggled, settings.expandedGroups, view.filter.trim() !== "");
   const totals = grouped.reduce((sum, group) => addStats(sum, group.stats), emptyStats());
@@ -113,6 +113,7 @@ export function FlowsMonitoringView() {
     openFlow: channelId => navigate(channelFlowPath(channelId)),
     openEditor: channelId => navigate(channelEditorPath(channelId)),
     showLinks: view.links,
+    showDetails: view.details,
     canControl: command => can(COMMAND_PERMISSION[command]),
     isBusy: target => busy.has(busyKey(target)),
     control,
@@ -138,6 +139,10 @@ export function FlowsMonitoringView() {
         <label className="ofu-check" title={t("flows.lifetimeTitle")}>
           <input type="checkbox" checked={view.lifetime} onChange={event => update({ lifetime: event.target.checked })} />
           {t("flows.lifetime")}
+        </label>
+        <label className="ofu-check" title={t("flows.detailsTitle")}>
+          <input type="checkbox" checked={view.details} onChange={event => update({ details: event.target.checked })} />
+          {t("flows.details")}
         </label>
         <label className="ofu-check" title={t("flows.linksTitle")}>
           <input type="checkbox" checked={view.links} onChange={event => update({ links: event.target.checked })} />
