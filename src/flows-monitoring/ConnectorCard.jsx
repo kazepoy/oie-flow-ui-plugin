@@ -31,7 +31,7 @@ export function ConnectorCard({ lane, connector, isSource, actions }) {
         {open
           ? <button type="button" className="ofu-card__title" title={t("flows.card.openMessages", { where })} onClick={open}>{title}</button>
           : <div className="ofu-card__title">{title}</div>}
-        <ControlButtons {...connectorCommands(lane.state, connector, isSource)}
+        <ControlButtons commands={connectorCommands(lane.state, connector, isSource)}
           target={{ channelId: lane.id, metaDataId: connector.metaDataId, name: where }} actions={actions} />
       </div>
       <ConnectorCounters stats={connector.stats} keys={isSource ? SOURCE_COUNTERS : DESTINATION_COUNTERS}

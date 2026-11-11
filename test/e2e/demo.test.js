@@ -163,7 +163,7 @@ describe("with RBAC roles", () => {
     }
   });
 
-  test("ops stops and starts connectors; a destination without queue cannot stop alone", async () => {
+  test("ops stops and starts connectors; a destination without queue has no stop button", async () => {
     const session = await signIn({ user: "ops", password: USER_PASSWORD });
     try {
       const { page } = session;
@@ -181,11 +181,10 @@ describe("with RBAC roles", () => {
       await page.getByRole("button", { name: "Stop", exact: true }).click();
       await claims.getByRole("button", { name: "Start BILL · Claims to insurer · Source", exact: true }).click();
       await claims.getByRole("button", { name: "Stop BILL · Claims to insurer · Source", exact: true }).waitFor();
-      // A destination without queue: the stop button is disabled and says why
+      // A destination without queue: no stop button (OIE-12)
       const orders = page.locator(`#ofu-lane-${LAB_ORDERS}`);
-      const refused = orders.locator(".ofu-card--destination .ofu-control");
-      assert.equal(await refused.isDisabled(), true);
-      assert.match(await refused.getAttribute("title"), /queue/);
+      assert.equal(await orders.locator(".ofu-card--destination .ofu-control").count(), 0);
+      assert.equal(await orders.locator(".ofu-card--source .ofu-control").count(), 1);
     } finally {
       await session.close();
     }

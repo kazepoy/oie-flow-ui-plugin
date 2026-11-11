@@ -7,7 +7,7 @@
 // Connectors of a running channel (started, or paused: pausing stops the source)
 // are stopped and started one by one. The engine only stops a destination alone
 // when its queue is enabled; otherwise it answers "done" and does nothing (OIE-12),
-// so the button is shown disabled, with the reason.
+// so such a destination has no stop button.
 
 /** @typedef {"start" | "pause" | "resume" | "stop" | "startConnector" | "stopConnector"} Command */
 
@@ -38,15 +38,14 @@ const RUNNING = new Set(["STARTED", "PAUSED"]);
  * @param {string} channelState
  * @param {{ state: string, queueEnabled?: boolean }} connector
  * @param {boolean} isSource
- * @returns {{ commands: Command[], blocked: { command: Command, reason: string } | null }}
+ * @returns {Command[]}
  */
 export function connectorCommands(channelState, connector, isSource) {
-  const none = { commands: [], blocked: null };
-  if (!RUNNING.has(channelState)) return none;
-  if (connector.state === "STOPPED") return { commands: ["startConnector"], blocked: null };
-  if (connector.state !== "STARTED") return none;
-  if (!isSource && !connector.queueEnabled) return { commands: [], blocked: { command: "stopConnector", reason: "noQueue" } };
-  return { commands: ["stopConnector"], blocked: null };
+  if (!RUNNING.has(channelState)) return [];
+  if (connector.state === "STOPPED") return ["startConnector"];
+  if (connector.state !== "STARTED") return [];
+  if (!isSource && !connector.queueEnabled) return [];
+  return ["stopConnector"];
 }
 
 /** The state a command leads to, to check that the engine did change it. */

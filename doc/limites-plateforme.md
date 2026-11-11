@@ -526,9 +526,9 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
   individually ».
 - **Preuve.** Démo, destination *Laboratory (LIS)* de *LAB · Orders to LIS (ORM)*.
 - **Contournement.** Flows Monitoring n'offre l'arrêt d'une destination que si sa
-  file est activée (`queueEnabled` du statut) ; sinon le bouton est grisé et son
-  info-bulle explique pourquoi. Après chaque commande, l'état est relu : s'il n'a pas
-  changé, un message le dit.
+  file est activée (`queueEnabled` du statut) ; sinon la carte n'a pas de bouton
+  d'arrêt. Après chaque commande, l'état est relu : s'il n'a pas changé, un message
+  le dit.
 - **Demande amont.** Renvoyer une erreur (HTTP 4xx, ou le message avec
   `returnErrors=true`) quand l'arrêt est refusé.
 - **À savoir aussi.** Arrêter la source met le canal en pause (`PAUSED`) ; la

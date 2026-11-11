@@ -100,10 +100,7 @@ export default {
         stopConnector: "{name} stopped"
       },
       failed: "{name} could not change state: {error}",
-      unchanged: "{name} did not change state. The server log may say why.",
-      refused: {
-        noQueue: "This destination cannot be stopped alone: OIE only stops a destination whose queue is enabled."
-      }
+      unchanged: "{name} did not change state. The server log may say why."
     },
     link: {
       to: "Sends to {name}",
