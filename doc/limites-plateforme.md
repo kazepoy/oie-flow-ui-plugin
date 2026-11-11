@@ -63,7 +63,7 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 | [RB-04](#rb-04) | RBAC | Format d'import des rôles non documenté | Mineur | Contourné |
 | [RB-05](#rb-05) | RBAC | Échec du plugin d'autorisation : tous les plugins bloqués | Mineur | Ouvert |
 | [RB-06](#rb-06) | RBAC | Restriction par liste de canaux, pas par groupe | Gênant | Ouvert |
-| [RB-07](#rb-07) | RBAC / moteur | Préférences d'un autre utilisateur lisibles et modifiables | Sécurité | À signaler |
+| [RB-07](#rb-07) | RBAC | Préférences d'un autre utilisateur lisibles et modifiables | Sécurité | Signalé |
 | [OIE-01](#oie-01) | Moteur | `waitForPrevious` toujours `false` dans les statuts | Gênant | Contourné |
 | [OIE-02](#oie-02) | Moteur | Statuts limités aux connecteurs déployés | Mineur | Contourné |
 | [OIE-03](#oie-03) | Moteur | *Queued* hors de la table des statistiques | Mineur | Contourné |
@@ -391,7 +391,7 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 
 ### RB-07
 
-**Préférences d'un autre utilisateur lisibles et modifiables.** · Sécurité · À signaler
+**Préférences d'un autre utilisateur lisibles et modifiables.** · Sécurité · Signalé
 
 - **Constat.** Avec RBAC 1.3.0, un utilisateur dont le rôle est restreint (sans
   `manageUsers`) lit et modifie les préférences de n'importe quel compte, dont
@@ -403,9 +403,15 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
   connecté. Mais un utilisateur peut altérer les réglages d'un autre (Web Admin y
   range aussi ses préférences, dont `firstlogin`).
 - **Contournement.** Aucun côté plugin.
-- **Demande amont.** Limiter ces routes à son propre compte, sauf avec
-  `manageUsers`. À signaler en privé (problème de sécurité) au projet RBAC et à
-  OIE, avant toute issue publique.
+- **Cause.** Le moteur ne déclare aucune permission sur `getUserPreferences`,
+  `getUserPreference`, `setUserPreferences`, `setUserPreference` et
+  `userNotificationAcknowledged` ; pour l'id d'un autre utilisateur, il laisse
+  décider le contrôleur d'autorisation (`checkUserAuthorized(userId, false)`).
+  `RbacAuthorizationController` ne connaît pas ces opérations et les autorise
+  (« unknown operation -> allow »).
+- **Demande amont.** Associer ces opérations à `manageUsers` dans RBAC ; côté moteur,
+  leur donner une permission. Signalé :
+  [diridium-com/role-based-access-control#55](https://github.com/diridium-com/role-based-access-control/issues/55).
 
 ## Open Integration Engine 4.7.0
 
