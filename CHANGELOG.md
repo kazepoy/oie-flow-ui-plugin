@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 (not released)
+## 0.8.0 (2026-11-11)
 
 First version, rebuilt from the Flow and Flows screens of the FHIR Profile Mapper.
 
