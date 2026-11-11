@@ -45,23 +45,25 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 | [WA-03](#wa-03) | Web Admin | Onglets de plugin après les natifs, jamais par défaut | Gênant | Contourné |
 | [WA-04](#wa-04) | Web Admin | Onglets de canal non filtrés par tâche RBAC | Mineur | Contourné |
 | [WA-05](#wa-05) | Web Admin | Pas d'abonnement public aux changements de route | Mineur | Contourné |
-| [WA-06](#wa-06) | Web Admin | Préférences utilisateur non exposées aux plugins | Mineur | À vérifier |
+| [WA-06](#wa-06) | Web Admin | Préférences utilisateur non exposées aux plugins | Mineur | Contourné |
 | [WA-07](#wa-07) | Web Admin | Aucun mécanisme i18n | Gênant | Contourné |
 | [WA-08](#wa-08) | Web Admin | WAR : entrée importée depuis `blob:`, imports relatifs impossibles | Gênant | Contourné |
-| [WA-09](#wa-09) | Web Admin | Clés de `platform.store` non documentées | Mineur | À vérifier |
+| [WA-09](#wa-09) | Web Admin | Clés de `platform.store` non documentées | Mineur | Contourné |
 | [WA-10](#wa-10) | Web Admin | Dashboard : pas de mode d'affichage ajouté par un plugin | Mineur | Contourné |
 | [WA-11](#wa-11) | Web Admin | Jetons CSS non documentés | Mineur | Contourné |
 | [WA-12](#wa-12) | Web Admin | `apiMin` : version d'API distincte de celle du moteur | Mineur | Ouvert |
 | [WA-13](#wa-13) | Web Admin | Types des paquets `@oie/web-*` : publication incertaine | Mineur | À vérifier |
 | [WA-14](#wa-14) | Web Admin | Marqueurs SVG non rendus dans certains cas | Mineur | À vérifier |
-| [WS-01](#ws-01) | Web Support | Extension sans code Java : servie ou non | Bloquant si non | À vérifier |
+| [WA-15](#wa-15) | Web Admin | Messages : le connecteur de l'URL n'apparaît pas dans le champ *Connector* | Gênant | Ouvert |
+| [WS-01](#ws-01) | Web Support | Extension sans code Java : servie ou non | Bloquant si non | Résolu |
 | [WS-02](#ws-02) | Web Support | Interfaces des plugins absentes sans Web Support | Mineur | Ouvert |
 | [RB-01](#rb-01) | RBAC | Tâche inconnue autorisée ; pas de permission propre sans Java | Gênant | Contourné |
 | [RB-02](#rb-02) | RBAC | Refus transitoire tant que les permissions ne sont pas chargées | Mineur | À vérifier |
 | [RB-03](#rb-03) | RBAC | Liens internes aux vues de plugin non couverts | Mineur | Contourné |
-| [RB-04](#rb-04) | RBAC | Format d'import des rôles non documenté | Mineur | À vérifier |
+| [RB-04](#rb-04) | RBAC | Format d'import des rôles non documenté | Mineur | Contourné |
 | [RB-05](#rb-05) | RBAC | Échec du plugin d'autorisation : tous les plugins bloqués | Mineur | Ouvert |
 | [RB-06](#rb-06) | RBAC | Restriction par liste de canaux, pas par groupe | Gênant | Ouvert |
+| [RB-07](#rb-07) | RBAC / moteur | Préférences d'un autre utilisateur lisibles et modifiables | Sécurité | À signaler |
 | [OIE-01](#oie-01) | Moteur | `waitForPrevious` toujours `false` dans les statuts | Gênant | Contourné |
 | [OIE-02](#oie-02) | Moteur | Statuts limités aux connecteurs déployés | Mineur | Contourné |
 | [OIE-03](#oie-03) | Moteur | *Queued* hors de la table des statistiques | Mineur | Contourné |
@@ -72,6 +74,7 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 | [OIE-08](#oie-08) | Moteur | Image Docker construite depuis les sources | Mineur | À vérifier |
 | [OIE-09](#oie-09) | Moteur | Redémarrage nécessaire après installation d'une extension | Mineur | Ouvert |
 | [OIE-10](#oie-10) | Moteur | JAR d'API absents de Maven Central | Mineur | Ouvert |
+| [OIE-11](#oie-11) | Moteur | Message envoyé par l'API : aucune destination par défaut | Gênant | Contourné |
 
 ---
 
@@ -96,15 +99,17 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 **Éditeur de canal : pas d'URL pour un onglet, une destination, un script.** · Gênant · Contourné
 
 - **Constat.** Les filtres, transformers et responses ont leur route
-  (`/channels/:id/filter/:metaDataId`…). L'onglet actif de l'éditeur, la destination
-  sélectionnée et le script affiché sont un état interne, sans route ni API.
+  (`/channels/:id/filter/:metaDataId`…), sans paramètre pour sélectionner une étape.
+  L'onglet actif de l'éditeur, la destination sélectionnée et le script affiché
+  sont un état interne, sans route ni API.
 - **Preuve.** `assets/channel-editor-*.js` : l'onglet courant est un état React local.
 - **Impact.** Un clic sur un connecteur ou un script dans Channel Flow ne peut pas
   ouvrir le bon endroit. Le mapper passait par le DOM (focus d'onglet Radix, setter
   natif de `select`, lignes `.dest-grid`).
 - **Contournement.** Ouverture de l'éditeur du canal, sans ciblage.
 - **Demande amont.** `/channels/:id/edit?tab=destinations&metaDataId=3`,
-  `?tab=scripts&script=deploy`, `?tab=source`.
+  `?tab=scripts&script=deploy`, `?tab=source`, et `?step=4` sur les routes de filtre
+  et de transformer.
 
 ### WA-03
 
@@ -158,10 +163,10 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 - **Impact.** Sans contournement, les réglages du plugin resteraient propres au
   navigateur, pas à l'utilisateur.
 - **Contournement.** Préférences de l'utilisateur dans OIE par l'API REST
-  (`PUT /api/users/{id}/preferences/flowui.*`). La table `person_preference` accepte
-  des noms libres (la démo y écrit déjà `firstlogin`) ; reste à vérifier qu'un
-  utilisateur sans droits d'administration peut écrire les siennes. Repli sur
-  `localStorage` en cas d'échec. Code dans `src/host/preferences.js`.
+  (`PUT /api/users/{id}/preferences/flowui.settings`). La table `person_preference`
+  accepte des noms libres. Vérifié le 2026-11-11 : un utilisateur au rôle RBAC
+  restreint écrit et relit les siennes. Repli sur `localStorage` en cas d'échec.
+  Code dans `src/host/preferences.js`.
 - **Demande amont.** `platform.prefs` avec un espace de noms par plugin.
 
 ### WA-07
@@ -195,14 +200,17 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 
 ### WA-09
 
-**Clés de `platform.store` non documentées.** · Mineur · À vérifier
+**Clés de `platform.store` non documentées.** · Mineur · Contourné
 
 - **Constat.** Des clés comme `editingChannel`, `serverVersion` ou `user` sont lues ou
   écrites par les plugins sans être décrites comme contrat. Le mapper écrit
   `editingChannel` avant d'ouvrir la route d'un filtre.
 - **Impact.** Une montée de version peut les renommer sans prévenir.
-- **Contournement.** Accès regroupés dans `src/host/` ; à vérifier en phase 0 si l'écriture
-  de `editingChannel` est nécessaire pour ouvrir un filtre depuis la vue Design.
+- **Contournement.** Accès regroupés dans `src/host/editor.js` et `routes.js`. Vérifié :
+  depuis la vue Design, la route d'un transformer s'ouvre sans écrire
+  `editingChannel`. Flow UI ne l'écrit que depuis l'onglet Flow, pour garder le
+  brouillon, et lit `editingChannelDirty` pour signaler des modifications non
+  enregistrées.
 - **Demande amont.** Liste des clés stables, ou fonctions dédiées
   (`platform.channelEditor.open(channel, target)`).
 
@@ -229,7 +237,9 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 - **Preuve.** `assets/index-*.css`.
 - **Impact.** Un renommage casserait les couleurs du plugin.
 - **Contournement.** `tokens.css` dérive tout de ces variables avec des valeurs de
-  repli.
+  repli. L'onglet *Settings › Flow UI* reprend les classes `panel`, `panel-header`
+  et `panel-body` des autres onglets, pour leur ressembler : elles non plus ne sont
+  pas un contrat.
 - **Demande amont.** Documenter les jetons stables.
 
 ### WA-12
@@ -262,11 +272,27 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
   `marker` SVG « ne s'affichent pas dans tous les hôtes ». Cause non établie.
 - **Contournement.** Pointes dessinées en `path`, comme dans le mapper.
 
+### WA-15
+
+**Messages : le connecteur de l'URL n'apparaît pas dans le champ *Connector*.** · Gênant · Ouvert
+
+- **Constat.** `/messages/<canal>?metaDataId=2` filtre bien sur le connecteur, mais
+  par le filtre *avancé* : la ligne *Current Search* indique « Connectors: … » et le
+  bouton *Advanced* porte un point, tandis que la liste *Connector* de la barre
+  affiche *Any*. L'utilisateur croit le filtre absent.
+- **Preuve.** Démo, clic sur un compteur de Flows Monitoring (capture le 2026-11-11).
+- **Impact.** Le clic sur un compteur paraît ne pas filtrer ; le statut, lui, n'est
+  vraiment pas filtré (WA-01).
+- **Contournement.** Aucun sans manipuler la page de Messages. Le guide et l'aide de
+  Flows Monitoring expliquent où lire le filtre.
+- **Demande amont.** Refléter `metaDataId` dans le champ *Connector* ; accepter
+  `?status=` (WA-01).
+
 ## Web Support 1.3.0 (serveur)
 
 ### WS-01
 
-**Extension sans code Java : servie ou non.** · Bloquant si non · À vérifier
+**Extension sans code Java : servie ou non.** · Bloquant si non · Résolu (vérifié le 2026-11-11)
 
 - **Constat.** Web Support découvre `extensions/<path>/webadmin/plugin.json` à partir
   des métadonnées des plugins installés. Un `plugin.xml` sans `serverClasses` ni
@@ -274,7 +300,9 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 - **Preuve.** `WebSupportServlet.class` (`getPluginMetaData`, `WEBADMIN_DIR`,
   `plugin.json`).
 - **Impact.** Si ce n'est pas le cas, Flow UI doit embarquer une classe Java vide.
-- **Contournement.** À trancher en phase 0.
+- **Résultat.** Vérifié avec OIE 4.7.0 et Web Support 1.3.0 : un `plugin.xml` sans
+  classe ni bibliothèque est accepté, et `/api/extensions/websupport/webplugins`
+  liste `flow-ui`. Flow UI reste sans Java.
 
 ### WS-02
 
@@ -326,13 +354,15 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 
 ### RB-04
 
-**Format d'import des rôles non documenté.** · Mineur · À vérifier
+**Format d'import des rôles non documenté.** · Mineur · Contourné
 
 - **Constat.** `POST /api/extensions/rbac/roles/_import` existe (options `dryRun`,
   `applyChannels`, `matchChannelsByName`) ; le format du fichier est à établir à
   partir d'un export.
 - **Impact.** Initialisation de la démo (rôles et comptes).
-- **Contournement.** Créer les rôles dans l'interface, exporter, versionner l'export.
+- **Contournement.** La démo crée ses rôles un par un par `POST
+  /api/extensions/rbac/roles` (XML `com.diridium.rbac.Role`, format lu dans le code
+  du plugin), sans passer par l'import.
 
 ### RB-05
 
@@ -358,6 +388,24 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 - **Contournement.** Aucun dans Flow UI ; documenté dans le guide de la démo.
 - **Demande amont.** Restriction par groupe de canaux, évaluée à chaque requête.
 
+### RB-07
+
+**Préférences d'un autre utilisateur lisibles et modifiables.** · Sécurité · À signaler
+
+- **Constat.** Avec RBAC 1.3.0, un utilisateur dont le rôle est restreint (sans
+  `manageUsers`) lit et modifie les préférences de n'importe quel compte, dont
+  l'administrateur : `GET` et `PUT /api/users/{id}/preferences/...` répondent 200 et
+  204 pour un autre `id`.
+- **Preuve.** Démo, compte `lab-viewer` (rôle *Laboratory viewer*) : écriture de
+  `flowui.settings` sur l'utilisateur 1, relue en base dans `person_preference`.
+- **Impact.** Aucun pour Flow UI, qui n'écrit que les préférences de l'utilisateur
+  connecté. Mais un utilisateur peut altérer les réglages d'un autre (Web Admin y
+  range aussi ses préférences, dont `firstlogin`).
+- **Contournement.** Aucun côté plugin.
+- **Demande amont.** Limiter ces routes à son propre compte, sauf avec
+  `manageUsers`. À signaler en privé (problème de sécurité) au projet RBAC et à
+  OIE, avant toute issue publique.
+
 ## Open Integration Engine 4.7.0
 
 ### OIE-01
@@ -368,8 +416,12 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
   `waitForPrevious = false` pour les destinations.
 - **Preuve.** Constaté pendant la v2 du mapper.
 - **Impact.** Les chaînes de destinations doivent venir de la configuration complète
-  des canaux, coûteuse avec beaucoup de canaux.
+  des canaux, coûteuse avec beaucoup de canaux. Un utilisateur sans le droit
+  `viewChannels` ne peut pas la lire : pour lui, les chaînes sont inconnues.
 - **Contournement.** Configuration lue à l'ouverture et sur *Refresh* seulement.
+  Sans `viewChannels`, Flows Monitoring affiche les destinations dans l'ordre, sur
+  une ligne, sans flèches *then*, et l'indique (*Chains hidden*). Même chose pour
+  les groupes sans `viewChannelGroups` (*Groups hidden*, une seule liste).
 - **Demande amont.** Renseigner `waitForPrevious` dans `DashboardStatus`.
 
 ### OIE-02
@@ -446,3 +498,18 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 - **Constat.** Les JAR du moteur s'extraient d'une installation ou de l'image.
 - **Impact.** Aucun tant que Flow UI reste sans Java ; à reprendre si [WS-01](#ws-01)
   impose une classe Java.
+
+### OIE-11
+
+**Message envoyé par l'API : aucune destination par défaut.** · Gênant · Contourné
+
+- **Constat.** `POST /api/channels/{id}/messages` sans paramètre
+  `destinationMetaDataId` traite le message dans la source seulement : il est compté
+  *Received* mais n'atteint aucune destination. Rien ne le signale dans la réponse.
+- **Preuve.** Démo : 23 messages envoyés au canal `BILL · Claims to insurer` sont restés
+  au statut *Transformed* dans la source ; avec `?destinationMetaDataId=1`, le message
+  arrive dans la file de la destination.
+- **Contournement.** Le script de la démo passe la liste des destinations actives de
+  chaque canal (`seed/generated/messages.txt`).
+- **Demande amont.** Documenter ce comportement, ou envoyer à toutes les destinations
+  par défaut comme la boîte *Send Message* de l'administrateur.

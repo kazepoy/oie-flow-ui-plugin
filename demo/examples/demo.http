@@ -1,0 +1,40 @@
+# Requests to the demo, for the REST client of your editor (VS Code REST Client,
+# JetBrains HTTP Client). The certificate is self-signed.
+
+@oie = https://localhost:8444/api
+@auth = Basic admin:demo-flow-ui-admin
+
+### Deployed channels with their counters (what Flows Monitoring reads)
+GET {{oie}}/channels/statuses
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### Channel groups
+GET {{oie}}/channelgroups
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### A patient summary request to HIE · Regional exchange API: the summary comes back
+POST http://localhost:8190/hie/
+Content-Type: application/json
+
+{ "requestId": "HIE-demo", "patientId": "P00042", "requester": "Regional HIE", "purpose": "TREATMENT" }
+
+### An insurance claim: the insurer cannot be reached, the claim waits in the queue
+POST http://localhost:8189/claims/
+Content-Type: application/json
+
+{ "claimId": "CLM-demo", "patientId": "P00042", "insurer": "MUTUELLE-NORD", "amount": 152.40, "currency": "EUR" }
+
+### A message through the API: name the destinations, or it reaches none (OIE-11)
+POST {{oie}}/channels/5a4aa0ff-b675-4e44-930a-2e23cffd6eb1/messages?destinationMetaDataId=1
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Content-Type: text/plain
+
+MSH|^~\&|WARDS|NORTH-HOSPITAL|LIS|NORTH-HOSPITAL|20261111120000||ORM^O01^ORM_O01|ORD-demo|P|2.5.1
+PID|1||P00042^^^NORTH-HOSPITAL^PI||Moreau^Louis^^^^^L||19900617|M
+ORC|NW|LAB-demo
+OBR|1|LAB-demo||K^Potassium^LOCAL

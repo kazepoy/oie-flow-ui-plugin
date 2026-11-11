@@ -1,0 +1,53 @@
+# Checks every push and pull request; on a vX.Y.Z tag, publishes the extension
+# ZIP and its SHA256SUMS in a GitHub release (a tag with "-" is a pre-release).
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci --no-audit --no-fund
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Type check
+        run: npm run check
+
+      - name: Build
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then export FLOW_UI_VERSION="${GITHUB_REF_NAME#v}"; fi
+          npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: flow-ui
+          path: dist/flow-ui-*.zip
+
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd dist
+          sha256sum flow-ui-*.zip > SHA256SUMS
+          gh release create "$GITHUB_REF_NAME" flow-ui-*.zip SHA256SUMS \
+            --title "$GITHUB_REF_NAME" --generate-notes \
+            $([[ "$GITHUB_REF_NAME" == *-* ]] && echo --prerelease)

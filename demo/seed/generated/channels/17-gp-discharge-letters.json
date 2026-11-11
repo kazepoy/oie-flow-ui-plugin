@@ -1,0 +1,258 @@
+{
+  "channel": {
+    "@version": "4.7.0",
+    "id": "498c811a-a445-4c17-b17c-d6804db4808e",
+    "nextMetaDataId": 2,
+    "name": "GP · Discharge letters",
+    "description": "Discharge letters mailed to general practitioners. Paused while the mail server is replaced.",
+    "revision": 0,
+    "sourceConnector": {
+      "@version": "4.7.0",
+      "metaDataId": 0,
+      "name": "sourceConnector",
+      "properties": {
+        "@class": "com.mirth.connect.connectors.vm.VmReceiverProperties",
+        "@version": "4.7.0",
+        "pluginProperties": null,
+        "sourceConnectorProperties": {
+          "@version": "4.7.0",
+          "responseVariable": "None",
+          "respondAfterProcessing": true,
+          "processBatch": false,
+          "firstResponse": false,
+          "processingThreads": 1,
+          "resourceIds": {
+            "@class": "linked-hash-map",
+            "entry": [
+              {
+                "string": [
+                  "Default Resource",
+                  "[Default Resource]"
+                ]
+              }
+            ]
+          },
+          "queueBufferSize": 1000
+        }
+      },
+      "transformer": {
+        "@version": "4.7.0",
+        "elements": null,
+        "inboundDataType": "RAW",
+        "outboundDataType": "RAW",
+        "inboundProperties": {
+          "@class": "com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties",
+          "@version": "4.7.0",
+          "batchProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.raw.RawBatchProperties",
+            "@version": "4.7.0",
+            "splitType": "JavaScript",
+            "batchScript": null
+          }
+        },
+        "outboundProperties": {
+          "@class": "com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties",
+          "@version": "4.7.0",
+          "batchProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.raw.RawBatchProperties",
+            "@version": "4.7.0",
+            "splitType": "JavaScript",
+            "batchScript": null
+          }
+        }
+      },
+      "filter": {
+        "@version": "4.7.0",
+        "elements": null
+      },
+      "transportName": "Channel Reader",
+      "mode": "SOURCE",
+      "enabled": true,
+      "waitForPrevious": true
+    },
+    "destinationConnectors": {
+      "connector": [
+        {
+          "@version": "4.7.0",
+          "metaDataId": 1,
+          "name": "Mail to GP",
+          "properties": {
+            "@class": "com.mirth.connect.connectors.smtp.SmtpDispatcherProperties",
+            "@version": "4.7.0",
+            "pluginProperties": null,
+            "destinationConnectorProperties": {
+              "@version": "4.7.0",
+              "queueEnabled": false,
+              "sendFirst": false,
+              "retryIntervalMillis": 10000,
+              "regenerateTemplate": false,
+              "retryCount": 0,
+              "rotate": false,
+              "includeFilterTransformer": false,
+              "threadCount": 1,
+              "threadAssignmentVariable": null,
+              "validateResponse": false,
+              "resourceIds": {
+                "@class": "linked-hash-map",
+                "entry": [
+                  {
+                    "string": [
+                      "Default Resource",
+                      "[Default Resource]"
+                    ]
+                  }
+                ]
+              },
+              "queueBufferSize": 1000,
+              "reattachAttachments": true
+            },
+            "smtpHost": "smtp.hospital.invalid",
+            "smtpPort": "25",
+            "overrideLocalBinding": false,
+            "localAddress": "0.0.0.0",
+            "localPort": "0",
+            "timeout": "5000",
+            "encryption": "none",
+            "authentication": false,
+            "username": "",
+            "password": "",
+            "to": "${gpEmail}",
+            "from": "flow-ui-demo@hospital.example",
+            "cc": "",
+            "bcc": "",
+            "replyTo": "",
+            "headers": {
+              "@class": "linked-hash-map"
+            },
+            "headersVariable": "",
+            "isUseHeadersVariable": false,
+            "subject": "Discharge letter",
+            "charsetEncoding": "DEFAULT_ENCODING",
+            "html": false,
+            "body": "${message.encodedData}",
+            "attachments": {
+              "@class": "java.util.ArrayList"
+            },
+            "attachmentsVariable": "",
+            "isUseAttachmentsVariable": false
+          },
+          "transformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "RAW",
+            "outboundDataType": "RAW",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.raw.RawBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.raw.RawBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            }
+          },
+          "responseTransformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "RAW",
+            "outboundDataType": "RAW",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.raw.RawBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.raw.RawBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            }
+          },
+          "filter": {
+            "@version": "4.7.0",
+            "elements": null
+          },
+          "transportName": "SMTP Sender",
+          "mode": "DESTINATION",
+          "enabled": true,
+          "waitForPrevious": true
+        }
+      ]
+    },
+    "preprocessingScript": "// Modify the message variable below to pre process data\nreturn message;",
+    "postprocessingScript": "// This script executes once after a message has been processed\n// Responses returned from here will be stored as \"Postprocessor\" in the response map\nreturn;",
+    "deployScript": "// This script executes once when the channel is deployed\n// You only have access to the globalMap and globalChannelMap here to persist data\nreturn;",
+    "undeployScript": "// This script executes once when the channel is undeployed\n// You only have access to the globalMap and globalChannelMap here to persist data\nreturn;",
+    "properties": {
+      "@version": "4.7.0",
+      "clearGlobalChannelMap": true,
+      "messageStorageMode": "DEVELOPMENT",
+      "encryptData": false,
+      "encryptAttachments": false,
+      "encryptCustomMetaData": false,
+      "removeContentOnCompletion": false,
+      "removeOnlyFilteredOnCompletion": false,
+      "removeAttachmentsOnCompletion": false,
+      "initialState": "STARTED",
+      "storeAttachments": true,
+      "metaDataColumns": {
+        "metaDataColumn": [
+          {
+            "name": "SOURCE",
+            "type": "STRING",
+            "mappingName": "mirth_source"
+          },
+          {
+            "name": "TYPE",
+            "type": "STRING",
+            "mappingName": "mirth_type"
+          }
+        ]
+      },
+      "attachmentProperties": {
+        "@version": "4.7.0",
+        "type": "None",
+        "properties": null
+      },
+      "resourceIds": {
+        "@class": "linked-hash-map",
+        "entry": [
+          {
+            "string": [
+              "Default Resource",
+              "[Default Resource]"
+            ]
+          }
+        ]
+      }
+    },
+    "exportData": {
+      "metadata": {
+        "enabled": true,
+        "pruningSettings": {
+          "archiveEnabled": true
+        }
+      }
+    }
+  }
+}

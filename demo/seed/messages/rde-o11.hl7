@@ -1,0 +1,4 @@
+MSH|^~\&|WARDS|NORTH-HOSPITAL|PHARMACY|NORTH-HOSPITAL|{{ts}}||RDE^O11^RDE_O11|RX{{n}}|P|2.5.1
+PID|1||P{{n}}^^^NORTH-HOSPITAL^PI||Lambert^Chloe^^^^^L||19920630|F
+ORC|NW|RX{{n}}||||||||||1234^Durand^Paul
+RXE|^^^{{ts}}|AMOX^Amoxicillin^LOCAL|1|G|CAP

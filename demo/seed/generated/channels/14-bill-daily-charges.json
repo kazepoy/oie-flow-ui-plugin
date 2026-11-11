@@ -1,0 +1,642 @@
+{
+  "channel": {
+    "@version": "4.7.0",
+    "id": "11f05b73-1769-4018-9419-02cbfe64bd58",
+    "nextMetaDataId": 3,
+    "name": "BILL · Daily charges",
+    "description": "Charge files dropped by the wards (CSV, polled every minute), sent to billing then exported to accounting.",
+    "revision": 0,
+    "sourceConnector": {
+      "@version": "4.7.0",
+      "metaDataId": 0,
+      "name": "sourceConnector",
+      "properties": {
+        "@class": "com.mirth.connect.connectors.file.FileReceiverProperties",
+        "@version": "4.7.0",
+        "pluginProperties": null,
+        "pollConnectorProperties": {
+          "@version": "4.7.0",
+          "pollingType": "INTERVAL",
+          "pollOnStart": false,
+          "pollingFrequency": 60000,
+          "pollingHour": 0,
+          "pollingMinute": 0,
+          "cronJobs": null,
+          "pollConnectorPropertiesAdvanced": {
+            "weekly": true,
+            "inactiveDays": {
+              "boolean": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+              ]
+            },
+            "dayOfMonth": 1,
+            "allDay": true,
+            "startingHour": 8,
+            "startingMinute": 0,
+            "endingHour": 17,
+            "endingMinute": 0
+          }
+        },
+        "sourceConnectorProperties": {
+          "@version": "4.7.0",
+          "responseVariable": "None",
+          "respondAfterProcessing": true,
+          "processBatch": false,
+          "firstResponse": false,
+          "processingThreads": 1,
+          "resourceIds": {
+            "@class": "linked-hash-map",
+            "entry": [
+              {
+                "string": [
+                  "Default Resource",
+                  "[Default Resource]"
+                ]
+              }
+            ]
+          },
+          "queueBufferSize": 1000
+        },
+        "scheme": "FILE",
+        "host": "/opt/engine/appdata/demo/inbox/charges",
+        "fileFilter": "*.csv",
+        "regex": false,
+        "directoryRecursion": false,
+        "ignoreDot": true,
+        "anonymous": true,
+        "username": "anonymous",
+        "password": "anonymous",
+        "timeout": "10000",
+        "secure": true,
+        "passive": true,
+        "validateConnection": true,
+        "afterProcessingAction": "DELETE",
+        "moveToDirectory": "",
+        "moveToFileName": "",
+        "errorReadingAction": "NONE",
+        "errorResponseAction": "AFTER_PROCESSING",
+        "errorMoveToDirectory": "",
+        "errorMoveToFileName": "",
+        "checkFileAge": true,
+        "fileAge": "1000",
+        "fileSizeMinimum": "0",
+        "fileSizeMaximum": "",
+        "ignoreFileSizeMaximum": true,
+        "sortBy": "date",
+        "binary": false,
+        "charsetEncoding": "DEFAULT_ENCODING"
+      },
+      "transformer": {
+        "@version": "4.7.0",
+        "elements": null,
+        "inboundDataType": "DELIMITED",
+        "outboundDataType": "DELIMITED",
+        "inboundProperties": {
+          "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDataTypeProperties",
+          "@version": "4.7.0",
+          "serializationProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedSerializationProperties",
+            "@version": "4.7.0",
+            "columnDelimiter": ",",
+            "recordDelimiter": "\\n",
+            "quoteToken": "\"",
+            "escapeWithDoubleQuote": true,
+            "quoteEscapeToken": "\\",
+            "numberedRows": false,
+            "ignoreCR": true
+          },
+          "deserializationProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDeserializationProperties",
+            "@version": "4.7.0",
+            "columnDelimiter": ",",
+            "recordDelimiter": "\\n",
+            "quoteToken": "\"",
+            "escapeWithDoubleQuote": true,
+            "quoteEscapeToken": "\\"
+          },
+          "batchProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedBatchProperties",
+            "@version": "4.7.0",
+            "splitType": "Record",
+            "batchSkipRecords": 0,
+            "batchMessageDelimiter": null,
+            "batchMessageDelimiterIncluded": false,
+            "batchGroupingColumn": null,
+            "batchScript": null
+          }
+        },
+        "outboundProperties": {
+          "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDataTypeProperties",
+          "@version": "4.7.0",
+          "serializationProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedSerializationProperties",
+            "@version": "4.7.0",
+            "columnDelimiter": ",",
+            "recordDelimiter": "\\n",
+            "quoteToken": "\"",
+            "escapeWithDoubleQuote": true,
+            "quoteEscapeToken": "\\",
+            "numberedRows": false,
+            "ignoreCR": true
+          },
+          "deserializationProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDeserializationProperties",
+            "@version": "4.7.0",
+            "columnDelimiter": ",",
+            "recordDelimiter": "\\n",
+            "quoteToken": "\"",
+            "escapeWithDoubleQuote": true,
+            "quoteEscapeToken": "\\"
+          },
+          "batchProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedBatchProperties",
+            "@version": "4.7.0",
+            "splitType": "Record",
+            "batchSkipRecords": 0,
+            "batchMessageDelimiter": null,
+            "batchMessageDelimiterIncluded": false,
+            "batchGroupingColumn": null,
+            "batchScript": null
+          }
+        }
+      },
+      "filter": {
+        "@version": "4.7.0",
+        "elements": null
+      },
+      "transportName": "File Reader",
+      "mode": "SOURCE",
+      "enabled": true,
+      "waitForPrevious": true
+    },
+    "destinationConnectors": {
+      "connector": [
+        {
+          "@version": "4.7.0",
+          "metaDataId": 1,
+          "name": "Billing system",
+          "properties": {
+            "@class": "com.mirth.connect.connectors.js.JavaScriptDispatcherProperties",
+            "@version": "4.7.0",
+            "pluginProperties": null,
+            "destinationConnectorProperties": {
+              "@version": "4.7.0",
+              "queueEnabled": false,
+              "sendFirst": false,
+              "retryIntervalMillis": 10000,
+              "regenerateTemplate": false,
+              "retryCount": 0,
+              "rotate": false,
+              "includeFilterTransformer": false,
+              "threadCount": 1,
+              "threadAssignmentVariable": null,
+              "validateResponse": false,
+              "resourceIds": {
+                "@class": "linked-hash-map",
+                "entry": [
+                  {
+                    "string": [
+                      "Default Resource",
+                      "[Default Resource]"
+                    ]
+                  }
+                ]
+              },
+              "queueBufferSize": 1000,
+              "reattachAttachments": true
+            },
+            "script": "// Posts the charges to the billing system.\nreturn;"
+          },
+          "transformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "DELIMITED",
+            "outboundDataType": "DELIMITED",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDataTypeProperties",
+              "@version": "4.7.0",
+              "serializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedSerializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\",
+                "numberedRows": false,
+                "ignoreCR": true
+              },
+              "deserializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDeserializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\"
+              },
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "Record",
+                "batchSkipRecords": 0,
+                "batchMessageDelimiter": null,
+                "batchMessageDelimiterIncluded": false,
+                "batchGroupingColumn": null,
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDataTypeProperties",
+              "@version": "4.7.0",
+              "serializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedSerializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\",
+                "numberedRows": false,
+                "ignoreCR": true
+              },
+              "deserializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDeserializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\"
+              },
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "Record",
+                "batchSkipRecords": 0,
+                "batchMessageDelimiter": null,
+                "batchMessageDelimiterIncluded": false,
+                "batchGroupingColumn": null,
+                "batchScript": null
+              }
+            }
+          },
+          "responseTransformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "DELIMITED",
+            "outboundDataType": "DELIMITED",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDataTypeProperties",
+              "@version": "4.7.0",
+              "serializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedSerializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\",
+                "numberedRows": false,
+                "ignoreCR": true
+              },
+              "deserializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDeserializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\"
+              },
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "Record",
+                "batchSkipRecords": 0,
+                "batchMessageDelimiter": null,
+                "batchMessageDelimiterIncluded": false,
+                "batchGroupingColumn": null,
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDataTypeProperties",
+              "@version": "4.7.0",
+              "serializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedSerializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\",
+                "numberedRows": false,
+                "ignoreCR": true
+              },
+              "deserializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDeserializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\"
+              },
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "Record",
+                "batchSkipRecords": 0,
+                "batchMessageDelimiter": null,
+                "batchMessageDelimiterIncluded": false,
+                "batchGroupingColumn": null,
+                "batchScript": null
+              }
+            }
+          },
+          "filter": {
+            "@version": "4.7.0",
+            "elements": null
+          },
+          "transportName": "JavaScript Writer",
+          "mode": "DESTINATION",
+          "enabled": true,
+          "waitForPrevious": true
+        },
+        {
+          "@version": "4.7.0",
+          "metaDataId": 2,
+          "name": "Accounting export",
+          "properties": {
+            "@class": "com.mirth.connect.connectors.file.FileDispatcherProperties",
+            "@version": "4.7.0",
+            "pluginProperties": null,
+            "destinationConnectorProperties": {
+              "@version": "4.7.0",
+              "queueEnabled": false,
+              "sendFirst": false,
+              "retryIntervalMillis": 10000,
+              "regenerateTemplate": false,
+              "retryCount": 0,
+              "rotate": false,
+              "includeFilterTransformer": false,
+              "threadCount": 1,
+              "threadAssignmentVariable": null,
+              "validateResponse": false,
+              "resourceIds": {
+                "@class": "linked-hash-map",
+                "entry": [
+                  {
+                    "string": [
+                      "Default Resource",
+                      "[Default Resource]"
+                    ]
+                  }
+                ]
+              },
+              "queueBufferSize": 1000,
+              "reattachAttachments": true
+            },
+            "scheme": "FILE",
+            "host": "/opt/engine/appdata/demo/export/accounting",
+            "outputPattern": "charges-${date.get('yyyyMMdd')}.csv",
+            "anonymous": true,
+            "username": "anonymous",
+            "password": "anonymous",
+            "timeout": "10000",
+            "keepConnectionOpen": true,
+            "maxIdleTime": "0",
+            "secure": true,
+            "passive": true,
+            "validateConnection": true,
+            "outputAppend": true,
+            "errorOnExists": false,
+            "temporary": false,
+            "binary": false,
+            "charsetEncoding": "DEFAULT_ENCODING",
+            "template": "${message.encodedData}"
+          },
+          "transformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "DELIMITED",
+            "outboundDataType": "DELIMITED",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDataTypeProperties",
+              "@version": "4.7.0",
+              "serializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedSerializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\",
+                "numberedRows": false,
+                "ignoreCR": true
+              },
+              "deserializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDeserializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\"
+              },
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "Record",
+                "batchSkipRecords": 0,
+                "batchMessageDelimiter": null,
+                "batchMessageDelimiterIncluded": false,
+                "batchGroupingColumn": null,
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDataTypeProperties",
+              "@version": "4.7.0",
+              "serializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedSerializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\",
+                "numberedRows": false,
+                "ignoreCR": true
+              },
+              "deserializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDeserializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\"
+              },
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "Record",
+                "batchSkipRecords": 0,
+                "batchMessageDelimiter": null,
+                "batchMessageDelimiterIncluded": false,
+                "batchGroupingColumn": null,
+                "batchScript": null
+              }
+            }
+          },
+          "responseTransformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "DELIMITED",
+            "outboundDataType": "DELIMITED",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDataTypeProperties",
+              "@version": "4.7.0",
+              "serializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedSerializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\",
+                "numberedRows": false,
+                "ignoreCR": true
+              },
+              "deserializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDeserializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\"
+              },
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "Record",
+                "batchSkipRecords": 0,
+                "batchMessageDelimiter": null,
+                "batchMessageDelimiterIncluded": false,
+                "batchGroupingColumn": null,
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDataTypeProperties",
+              "@version": "4.7.0",
+              "serializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedSerializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\",
+                "numberedRows": false,
+                "ignoreCR": true
+              },
+              "deserializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedDeserializationProperties",
+                "@version": "4.7.0",
+                "columnDelimiter": ",",
+                "recordDelimiter": "\\n",
+                "quoteToken": "\"",
+                "escapeWithDoubleQuote": true,
+                "quoteEscapeToken": "\\"
+              },
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.delimited.DelimitedBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "Record",
+                "batchSkipRecords": 0,
+                "batchMessageDelimiter": null,
+                "batchMessageDelimiterIncluded": false,
+                "batchGroupingColumn": null,
+                "batchScript": null
+              }
+            }
+          },
+          "filter": {
+            "@version": "4.7.0",
+            "elements": null
+          },
+          "transportName": "File Writer",
+          "mode": "DESTINATION",
+          "enabled": true,
+          "waitForPrevious": true
+        }
+      ]
+    },
+    "preprocessingScript": "// Modify the message variable below to pre process data\nreturn message;",
+    "postprocessingScript": "// This script executes once after a message has been processed\n// Responses returned from here will be stored as \"Postprocessor\" in the response map\nreturn;",
+    "deployScript": "// Create the working folders of this channel.\nnew java.io.File('/opt/engine/appdata/demo/inbox/charges').mkdirs();\nnew java.io.File('/opt/engine/appdata/demo/export/accounting').mkdirs();\nreturn;",
+    "undeployScript": "// This script executes once when the channel is undeployed\n// You only have access to the globalMap and globalChannelMap here to persist data\nreturn;",
+    "properties": {
+      "@version": "4.7.0",
+      "clearGlobalChannelMap": true,
+      "messageStorageMode": "DEVELOPMENT",
+      "encryptData": false,
+      "encryptAttachments": false,
+      "encryptCustomMetaData": false,
+      "removeContentOnCompletion": false,
+      "removeOnlyFilteredOnCompletion": false,
+      "removeAttachmentsOnCompletion": false,
+      "initialState": "STARTED",
+      "storeAttachments": true,
+      "metaDataColumns": {
+        "metaDataColumn": [
+          {
+            "name": "SOURCE",
+            "type": "STRING",
+            "mappingName": "mirth_source"
+          },
+          {
+            "name": "TYPE",
+            "type": "STRING",
+            "mappingName": "mirth_type"
+          }
+        ]
+      },
+      "attachmentProperties": {
+        "@version": "4.7.0",
+        "type": "None",
+        "properties": null
+      },
+      "resourceIds": {
+        "@class": "linked-hash-map",
+        "entry": [
+          {
+            "string": [
+              "Default Resource",
+              "[Default Resource]"
+            ]
+          }
+        ]
+      }
+    },
+    "exportData": {
+      "metadata": {
+        "enabled": true,
+        "pruningSettings": {
+          "archiveEnabled": true
+        }
+      }
+    }
+  }
+}

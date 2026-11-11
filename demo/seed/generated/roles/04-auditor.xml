@@ -1,0 +1,1 @@
+<com.diridium.rbac.Role><name>Auditor</name><description>Sees the activity of the channels, not the messages.</description><permissions><string>viewDashboard</string><string>viewChannelGroups</string></permissions><channelIds></channelIds><restricted>false</restricted><isAdmin>false</isAdmin></com.diridium.rbac.Role>

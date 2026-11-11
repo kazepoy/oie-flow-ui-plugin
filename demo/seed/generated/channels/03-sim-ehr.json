@@ -1,0 +1,255 @@
+{
+  "channel": {
+    "@version": "4.7.0",
+    "id": "470a3eec-9e3b-4385-bf16-b8d354f5d060",
+    "nextMetaDataId": 2,
+    "name": "SIM · EHR",
+    "description": "Simulated electronic health record (HTTP, port 7103).",
+    "revision": 0,
+    "sourceConnector": {
+      "@version": "4.7.0",
+      "metaDataId": 0,
+      "name": "sourceConnector",
+      "properties": {
+        "@class": "com.mirth.connect.connectors.http.HttpReceiverProperties",
+        "@version": "4.7.0",
+        "pluginProperties": null,
+        "listenerConnectorProperties": {
+          "@version": "4.7.0",
+          "host": "0.0.0.0",
+          "port": "7103"
+        },
+        "sourceConnectorProperties": {
+          "@version": "4.7.0",
+          "responseVariable": "None",
+          "respondAfterProcessing": true,
+          "processBatch": false,
+          "firstResponse": false,
+          "processingThreads": 1,
+          "resourceIds": {
+            "@class": "linked-hash-map",
+            "entry": [
+              {
+                "string": [
+                  "Default Resource",
+                  "[Default Resource]"
+                ]
+              }
+            ]
+          },
+          "queueBufferSize": 1000
+        },
+        "xmlBody": false,
+        "parseMultipart": true,
+        "includeMetadata": false,
+        "binaryMimeTypes": "application/.*(?<!json|xml)$|image/.*|video/.*|audio/.*",
+        "binaryMimeTypesRegex": true,
+        "responseContentType": "text/plain",
+        "responseDataTypeBinary": false,
+        "responseStatusCode": "",
+        "responseHeaders": {
+          "@class": "linked-hash-map"
+        },
+        "responseHeadersVariable": "",
+        "useResponseHeadersVariable": false,
+        "charset": "UTF-8",
+        "contextPath": "/",
+        "timeout": "30000",
+        "requestHeaderSize": "8192",
+        "staticResources": {
+          "@class": "java.util.ArrayList"
+        }
+      },
+      "transformer": {
+        "@version": "4.7.0",
+        "elements": null,
+        "inboundDataType": "RAW",
+        "outboundDataType": "RAW",
+        "inboundProperties": {
+          "@class": "com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties",
+          "@version": "4.7.0",
+          "batchProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.raw.RawBatchProperties",
+            "@version": "4.7.0",
+            "splitType": "JavaScript",
+            "batchScript": null
+          }
+        },
+        "outboundProperties": {
+          "@class": "com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties",
+          "@version": "4.7.0",
+          "batchProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.raw.RawBatchProperties",
+            "@version": "4.7.0",
+            "splitType": "JavaScript",
+            "batchScript": null
+          }
+        }
+      },
+      "filter": {
+        "@version": "4.7.0",
+        "elements": null
+      },
+      "transportName": "HTTP Listener",
+      "mode": "SOURCE",
+      "enabled": true,
+      "waitForPrevious": true
+    },
+    "destinationConnectors": {
+      "connector": [
+        {
+          "@version": "4.7.0",
+          "metaDataId": 1,
+          "name": "Accept",
+          "properties": {
+            "@class": "com.mirth.connect.connectors.js.JavaScriptDispatcherProperties",
+            "@version": "4.7.0",
+            "pluginProperties": null,
+            "destinationConnectorProperties": {
+              "@version": "4.7.0",
+              "queueEnabled": false,
+              "sendFirst": false,
+              "retryIntervalMillis": 10000,
+              "regenerateTemplate": false,
+              "retryCount": 0,
+              "rotate": false,
+              "includeFilterTransformer": false,
+              "threadCount": 1,
+              "threadAssignmentVariable": null,
+              "validateResponse": false,
+              "resourceIds": {
+                "@class": "linked-hash-map",
+                "entry": [
+                  {
+                    "string": [
+                      "Default Resource",
+                      "[Default Resource]"
+                    ]
+                  }
+                ]
+              },
+              "queueBufferSize": 1000,
+              "reattachAttachments": true
+            },
+            "script": "// The simulated system accepts the message.\nreturn;"
+          },
+          "transformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "RAW",
+            "outboundDataType": "RAW",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.raw.RawBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.raw.RawBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            }
+          },
+          "responseTransformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "RAW",
+            "outboundDataType": "RAW",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.raw.RawBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.raw.RawDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.raw.RawBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            }
+          },
+          "filter": {
+            "@version": "4.7.0",
+            "elements": null
+          },
+          "transportName": "JavaScript Writer",
+          "mode": "DESTINATION",
+          "enabled": true,
+          "waitForPrevious": true
+        }
+      ]
+    },
+    "preprocessingScript": "// Modify the message variable below to pre process data\nreturn message;",
+    "postprocessingScript": "// This script executes once after a message has been processed\n// Responses returned from here will be stored as \"Postprocessor\" in the response map\nreturn;",
+    "deployScript": "// This script executes once when the channel is deployed\n// You only have access to the globalMap and globalChannelMap here to persist data\nreturn;",
+    "undeployScript": "// This script executes once when the channel is undeployed\n// You only have access to the globalMap and globalChannelMap here to persist data\nreturn;",
+    "properties": {
+      "@version": "4.7.0",
+      "clearGlobalChannelMap": true,
+      "messageStorageMode": "DEVELOPMENT",
+      "encryptData": false,
+      "encryptAttachments": false,
+      "encryptCustomMetaData": false,
+      "removeContentOnCompletion": false,
+      "removeOnlyFilteredOnCompletion": false,
+      "removeAttachmentsOnCompletion": false,
+      "initialState": "STARTED",
+      "storeAttachments": true,
+      "metaDataColumns": {
+        "metaDataColumn": [
+          {
+            "name": "SOURCE",
+            "type": "STRING",
+            "mappingName": "mirth_source"
+          },
+          {
+            "name": "TYPE",
+            "type": "STRING",
+            "mappingName": "mirth_type"
+          }
+        ]
+      },
+      "attachmentProperties": {
+        "@version": "4.7.0",
+        "type": "None",
+        "properties": null
+      },
+      "resourceIds": {
+        "@class": "linked-hash-map",
+        "entry": [
+          {
+            "string": [
+              "Default Resource",
+              "[Default Resource]"
+            ]
+          }
+        ]
+      }
+    },
+    "exportData": {
+      "metadata": {
+        "enabled": true,
+        "pruningSettings": {
+          "archiveEnabled": true
+        }
+      }
+    }
+  }
+}

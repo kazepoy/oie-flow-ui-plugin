@@ -1,0 +1,366 @@
+{
+  "channel": {
+    "@version": "4.7.0",
+    "id": "703cfc96-a148-4fde-908d-1353330b5dde",
+    "nextMetaDataId": 3,
+    "name": "HIE · Regional exchange API",
+    "description": "Patient summary requests from the regional health information exchange (HTTP JSON, port 8190, /hie). The summary built by destination 2 is returned to the caller.",
+    "revision": 0,
+    "sourceConnector": {
+      "@version": "4.7.0",
+      "metaDataId": 0,
+      "name": "sourceConnector",
+      "properties": {
+        "@class": "com.mirth.connect.connectors.http.HttpReceiverProperties",
+        "@version": "4.7.0",
+        "pluginProperties": null,
+        "listenerConnectorProperties": {
+          "@version": "4.7.0",
+          "host": "0.0.0.0",
+          "port": "8190"
+        },
+        "sourceConnectorProperties": {
+          "@version": "4.7.0",
+          "responseVariable": "d2",
+          "respondAfterProcessing": true,
+          "processBatch": false,
+          "firstResponse": false,
+          "processingThreads": 1,
+          "resourceIds": {
+            "@class": "linked-hash-map",
+            "entry": [
+              {
+                "string": [
+                  "Default Resource",
+                  "[Default Resource]"
+                ]
+              }
+            ]
+          },
+          "queueBufferSize": 1000
+        },
+        "xmlBody": false,
+        "parseMultipart": true,
+        "includeMetadata": false,
+        "binaryMimeTypes": "application/.*(?<!json|xml)$|image/.*|video/.*|audio/.*",
+        "binaryMimeTypesRegex": true,
+        "responseContentType": "application/json",
+        "responseDataTypeBinary": false,
+        "responseStatusCode": "",
+        "responseHeaders": {
+          "@class": "linked-hash-map"
+        },
+        "responseHeadersVariable": "",
+        "useResponseHeadersVariable": false,
+        "charset": "UTF-8",
+        "contextPath": "/hie",
+        "timeout": "30000",
+        "requestHeaderSize": "8192",
+        "staticResources": {
+          "@class": "java.util.ArrayList"
+        }
+      },
+      "transformer": {
+        "@version": "4.7.0",
+        "elements": {
+          "com.mirth.connect.plugins.mapper.MapperStep": [
+            {
+              "@version": "4.7.0",
+              "name": "Requested patient",
+              "enabled": true,
+              "variable": "patientId",
+              "mapping": "msg['patientId'].toString()",
+              "defaultValue": "",
+              "replacements": "",
+              "scope": "CHANNEL",
+              "sequenceNumber": "0"
+            }
+          ]
+        },
+        "inboundDataType": "JSON",
+        "outboundDataType": "JSON",
+        "inboundProperties": {
+          "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+          "@version": "4.7.0",
+          "batchProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+            "@version": "4.7.0",
+            "splitType": "JavaScript",
+            "batchScript": null
+          }
+        },
+        "outboundProperties": {
+          "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+          "@version": "4.7.0",
+          "batchProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+            "@version": "4.7.0",
+            "splitType": "JavaScript",
+            "batchScript": null
+          }
+        }
+      },
+      "filter": {
+        "@version": "4.7.0",
+        "elements": null
+      },
+      "transportName": "HTTP Listener",
+      "mode": "SOURCE",
+      "enabled": true,
+      "waitForPrevious": true
+    },
+    "destinationConnectors": {
+      "connector": [
+        {
+          "@version": "4.7.0",
+          "metaDataId": 1,
+          "name": "Check consent",
+          "properties": {
+            "@class": "com.mirth.connect.connectors.js.JavaScriptDispatcherProperties",
+            "@version": "4.7.0",
+            "pluginProperties": null,
+            "destinationConnectorProperties": {
+              "@version": "4.7.0",
+              "queueEnabled": false,
+              "sendFirst": false,
+              "retryIntervalMillis": 10000,
+              "regenerateTemplate": false,
+              "retryCount": 0,
+              "rotate": false,
+              "includeFilterTransformer": false,
+              "threadCount": 1,
+              "threadAssignmentVariable": null,
+              "validateResponse": false,
+              "resourceIds": {
+                "@class": "linked-hash-map",
+                "entry": [
+                  {
+                    "string": [
+                      "Default Resource",
+                      "[Default Resource]"
+                    ]
+                  }
+                ]
+              },
+              "queueBufferSize": 1000,
+              "reattachAttachments": true
+            },
+            "script": "// Checks that the requester may read this patient.\nif (!$('patientId')) throw 'No patient identifier';\nreturn;"
+          },
+          "transformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "JSON",
+            "outboundDataType": "JSON",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            }
+          },
+          "responseTransformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "JSON",
+            "outboundDataType": "JSON",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            }
+          },
+          "filter": {
+            "@version": "4.7.0",
+            "elements": null
+          },
+          "transportName": "JavaScript Writer",
+          "mode": "DESTINATION",
+          "enabled": true,
+          "waitForPrevious": true
+        },
+        {
+          "@version": "4.7.0",
+          "metaDataId": 2,
+          "name": "Build patient summary",
+          "properties": {
+            "@class": "com.mirth.connect.connectors.js.JavaScriptDispatcherProperties",
+            "@version": "4.7.0",
+            "pluginProperties": null,
+            "destinationConnectorProperties": {
+              "@version": "4.7.0",
+              "queueEnabled": false,
+              "sendFirst": false,
+              "retryIntervalMillis": 10000,
+              "regenerateTemplate": false,
+              "retryCount": 0,
+              "rotate": false,
+              "includeFilterTransformer": false,
+              "threadCount": 1,
+              "threadAssignmentVariable": null,
+              "validateResponse": false,
+              "resourceIds": {
+                "@class": "linked-hash-map",
+                "entry": [
+                  {
+                    "string": [
+                      "Default Resource",
+                      "[Default Resource]"
+                    ]
+                  }
+                ]
+              },
+              "queueBufferSize": 1000,
+              "reattachAttachments": true
+            },
+            "script": "// Builds the patient summary returned to the caller.\nreturn JSON.stringify({ patientId: $('patientId'), allergies: [], encounters: 3 });"
+          },
+          "transformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "JSON",
+            "outboundDataType": "JSON",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            }
+          },
+          "responseTransformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "JSON",
+            "outboundDataType": "JSON",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            }
+          },
+          "filter": {
+            "@version": "4.7.0",
+            "elements": null
+          },
+          "transportName": "JavaScript Writer",
+          "mode": "DESTINATION",
+          "enabled": true,
+          "waitForPrevious": true
+        }
+      ]
+    },
+    "preprocessingScript": "// Modify the message variable below to pre process data\nreturn message;",
+    "postprocessingScript": "// Counts the requests of the day.\nvar count = (globalChannelMap.get('requests') || 0) + 1;\nglobalChannelMap.put('requests', count);\nreturn;",
+    "deployScript": "// This script executes once when the channel is deployed\n// You only have access to the globalMap and globalChannelMap here to persist data\nreturn;",
+    "undeployScript": "// This script executes once when the channel is undeployed\n// You only have access to the globalMap and globalChannelMap here to persist data\nreturn;",
+    "properties": {
+      "@version": "4.7.0",
+      "clearGlobalChannelMap": true,
+      "messageStorageMode": "DEVELOPMENT",
+      "encryptData": false,
+      "encryptAttachments": false,
+      "encryptCustomMetaData": false,
+      "removeContentOnCompletion": false,
+      "removeOnlyFilteredOnCompletion": false,
+      "removeAttachmentsOnCompletion": false,
+      "initialState": "STARTED",
+      "storeAttachments": true,
+      "metaDataColumns": {
+        "metaDataColumn": [
+          {
+            "name": "SOURCE",
+            "type": "STRING",
+            "mappingName": "mirth_source"
+          },
+          {
+            "name": "TYPE",
+            "type": "STRING",
+            "mappingName": "mirth_type"
+          }
+        ]
+      },
+      "attachmentProperties": {
+        "@version": "4.7.0",
+        "type": "None",
+        "properties": null
+      },
+      "resourceIds": {
+        "@class": "linked-hash-map",
+        "entry": [
+          {
+            "string": [
+              "Default Resource",
+              "[Default Resource]"
+            ]
+          }
+        ]
+      }
+    },
+    "exportData": {
+      "metadata": {
+        "enabled": true,
+        "pruningSettings": {
+          "archiveEnabled": true
+        }
+      }
+    }
+  }
+}

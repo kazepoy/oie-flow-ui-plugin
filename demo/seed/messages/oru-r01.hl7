@@ -1,0 +1,6 @@
+MSH|^~\&|LIS|NORTH-HOSPITAL|INTEGRATION|NORTH-HOSPITAL|{{ts}}||ORU^R01^ORU_R01|RES{{n}}|P|2.5.1
+PID|1||P{{n}}^^^NORTH-HOSPITAL^PI||Moreau^Louis^^^^^L||19900617|M
+OBR|1|LAB{{n}}|LAB{{n}}|PANEL^Basic metabolic panel^LOCAL|||{{ts}}|||||||||1234^Durand^Paul||||||{{ts}}|||F
+OBX|1|NM|K^Potassium^LOCAL||4.1|mmol/L|3.5-5.0|N|||F
+OBX|2|NM|NA^Sodium^LOCAL||139|mmol/L|135-145|N|||F
+OBX|3|NM|GLU^Glucose^LOCAL||5.4|mmol/L|3.9-6.1|N|||F

@@ -1,0 +1,285 @@
+{
+  "channel": {
+    "@version": "4.7.0",
+    "id": "8a212f36-06f2-483c-b48d-678a0fa682f4",
+    "nextMetaDataId": 2,
+    "name": "BILL · Claims to insurer",
+    "description": "Insurance claims (HTTP, port 8189, /claims). The insurer cannot be reached: claims wait in the queue.",
+    "revision": 0,
+    "sourceConnector": {
+      "@version": "4.7.0",
+      "metaDataId": 0,
+      "name": "sourceConnector",
+      "properties": {
+        "@class": "com.mirth.connect.connectors.http.HttpReceiverProperties",
+        "@version": "4.7.0",
+        "pluginProperties": null,
+        "listenerConnectorProperties": {
+          "@version": "4.7.0",
+          "host": "0.0.0.0",
+          "port": "8189"
+        },
+        "sourceConnectorProperties": {
+          "@version": "4.7.0",
+          "responseVariable": "None",
+          "respondAfterProcessing": true,
+          "processBatch": false,
+          "firstResponse": false,
+          "processingThreads": 1,
+          "resourceIds": {
+            "@class": "linked-hash-map",
+            "entry": [
+              {
+                "string": [
+                  "Default Resource",
+                  "[Default Resource]"
+                ]
+              }
+            ]
+          },
+          "queueBufferSize": 1000
+        },
+        "xmlBody": false,
+        "parseMultipart": true,
+        "includeMetadata": false,
+        "binaryMimeTypes": "application/.*(?<!json|xml)$|image/.*|video/.*|audio/.*",
+        "binaryMimeTypesRegex": true,
+        "responseContentType": "text/plain",
+        "responseDataTypeBinary": false,
+        "responseStatusCode": "",
+        "responseHeaders": {
+          "@class": "linked-hash-map"
+        },
+        "responseHeadersVariable": "",
+        "useResponseHeadersVariable": false,
+        "charset": "UTF-8",
+        "contextPath": "/claims",
+        "timeout": "30000",
+        "requestHeaderSize": "8192",
+        "staticResources": {
+          "@class": "java.util.ArrayList"
+        }
+      },
+      "transformer": {
+        "@version": "4.7.0",
+        "elements": null,
+        "inboundDataType": "JSON",
+        "outboundDataType": "JSON",
+        "inboundProperties": {
+          "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+          "@version": "4.7.0",
+          "batchProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+            "@version": "4.7.0",
+            "splitType": "JavaScript",
+            "batchScript": null
+          }
+        },
+        "outboundProperties": {
+          "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+          "@version": "4.7.0",
+          "batchProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+            "@version": "4.7.0",
+            "splitType": "JavaScript",
+            "batchScript": null
+          }
+        }
+      },
+      "filter": {
+        "@version": "4.7.0",
+        "elements": null
+      },
+      "transportName": "HTTP Listener",
+      "mode": "SOURCE",
+      "enabled": true,
+      "waitForPrevious": true
+    },
+    "destinationConnectors": {
+      "connector": [
+        {
+          "@version": "4.7.0",
+          "metaDataId": 1,
+          "name": "Insurer gateway",
+          "properties": {
+            "@class": "com.mirth.connect.connectors.http.HttpDispatcherProperties",
+            "@version": "4.7.0",
+            "pluginProperties": null,
+            "destinationConnectorProperties": {
+              "@version": "4.7.0",
+              "queueEnabled": true,
+              "sendFirst": false,
+              "retryIntervalMillis": 30000,
+              "regenerateTemplate": false,
+              "retryCount": 0,
+              "rotate": false,
+              "includeFilterTransformer": false,
+              "threadCount": 1,
+              "threadAssignmentVariable": null,
+              "validateResponse": false,
+              "resourceIds": {
+                "@class": "linked-hash-map",
+                "entry": [
+                  {
+                    "string": [
+                      "Default Resource",
+                      "[Default Resource]"
+                    ]
+                  }
+                ]
+              },
+              "queueBufferSize": 1000,
+              "reattachAttachments": true
+            },
+            "host": "https://claims.insurer.invalid/api/claims",
+            "useProxyServer": false,
+            "proxyAddress": "",
+            "proxyPort": "",
+            "method": "post",
+            "headers": {
+              "@class": "linked-hash-map"
+            },
+            "parameters": {
+              "@class": "linked-hash-map"
+            },
+            "useHeadersVariable": false,
+            "headersVariable": "",
+            "useParametersVariable": false,
+            "parametersVariable": "",
+            "responseXmlBody": false,
+            "responseParseMultipart": true,
+            "responseIncludeMetadata": false,
+            "responseBinaryMimeTypes": "application/.*(?<!json|xml)$|image/.*|video/.*|audio/.*",
+            "responseBinaryMimeTypesRegex": true,
+            "multipart": false,
+            "useAuthentication": false,
+            "authenticationType": "Basic",
+            "usePreemptiveAuthentication": false,
+            "username": "",
+            "password": "",
+            "content": "${message.encodedData}",
+            "contentType": "application/json",
+            "dataTypeBinary": false,
+            "charset": "UTF-8",
+            "socketTimeout": "30000"
+          },
+          "transformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "JSON",
+            "outboundDataType": "JSON",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            }
+          },
+          "responseTransformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "JSON",
+            "outboundDataType": "JSON",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.json.JSONDataTypeProperties",
+              "@version": "4.7.0",
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.json.JSONBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "JavaScript",
+                "batchScript": null
+              }
+            }
+          },
+          "filter": {
+            "@version": "4.7.0",
+            "elements": null
+          },
+          "transportName": "HTTP Sender",
+          "mode": "DESTINATION",
+          "enabled": true,
+          "waitForPrevious": true
+        }
+      ]
+    },
+    "preprocessingScript": "// Modify the message variable below to pre process data\nreturn message;",
+    "postprocessingScript": "// This script executes once after a message has been processed\n// Responses returned from here will be stored as \"Postprocessor\" in the response map\nreturn;",
+    "deployScript": "// This script executes once when the channel is deployed\n// You only have access to the globalMap and globalChannelMap here to persist data\nreturn;",
+    "undeployScript": "// This script executes once when the channel is undeployed\n// You only have access to the globalMap and globalChannelMap here to persist data\nreturn;",
+    "properties": {
+      "@version": "4.7.0",
+      "clearGlobalChannelMap": true,
+      "messageStorageMode": "DEVELOPMENT",
+      "encryptData": false,
+      "encryptAttachments": false,
+      "encryptCustomMetaData": false,
+      "removeContentOnCompletion": false,
+      "removeOnlyFilteredOnCompletion": false,
+      "removeAttachmentsOnCompletion": false,
+      "initialState": "STARTED",
+      "storeAttachments": true,
+      "metaDataColumns": {
+        "metaDataColumn": [
+          {
+            "name": "SOURCE",
+            "type": "STRING",
+            "mappingName": "mirth_source"
+          },
+          {
+            "name": "TYPE",
+            "type": "STRING",
+            "mappingName": "mirth_type"
+          }
+        ]
+      },
+      "attachmentProperties": {
+        "@version": "4.7.0",
+        "type": "None",
+        "properties": null
+      },
+      "resourceIds": {
+        "@class": "linked-hash-map",
+        "entry": [
+          {
+            "string": [
+              "Default Resource",
+              "[Default Resource]"
+            ]
+          }
+        ]
+      }
+    },
+    "exportData": {
+      "metadata": {
+        "enabled": true,
+        "pruningSettings": {
+          "archiveEnabled": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+MSH|^~\&|WARDS|NORTH-HOSPITAL|RIS|NORTH-HOSPITAL|{{ts}}||ORM^O01^ORM_O01|IMG{{n}}|P|2.5.1
+PID|1||P{{n}}^^^NORTH-HOSPITAL^PI||Fournier^Jade^^^^^L||19731125|F
+PV1|1|O|RAD^^^NORTH-HOSPITAL
+ORC|NW|IMG{{n}}||||||||||5678^Petit^Anne
+OBR|1|IMG{{n}}||CT-THX^CT chest^LOCAL|||{{ts}}

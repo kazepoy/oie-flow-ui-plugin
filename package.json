@@ -1,0 +1,22 @@
+{
+  "name": "oie-flow-ui",
+  "version": "0.1.0",
+  "description": "Flows Monitoring and Channel Flow for the Open Integration Engine web administrator.",
+  "license": "MPL-2.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test \"test/unit/**/*.test.js\"",
+    "test:e2e": "node --test --test-concurrency=1 test/e2e/",
+    "check": "tsc -p jsconfig.json"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2",
+    "playwright": "1.64.1",
+    "typescript": "7.0.2"
+  }
+}

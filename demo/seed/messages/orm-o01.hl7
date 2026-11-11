@@ -1,0 +1,5 @@
+MSH|^~\&|WARDS|NORTH-HOSPITAL|LIS|NORTH-HOSPITAL|{{ts}}||ORM^O01^ORM_O01|ORD{{n}}|P|2.5.1
+PID|1||P{{n}}^^^NORTH-HOSPITAL^PI||Moreau^Louis^^^^^L||19900617|M
+PV1|1|I|MED^310^1^NORTH-HOSPITAL
+ORC|NW|LAB{{n}}||||||||||1234^Durand^Paul
+OBR|1|LAB{{n}}||K^Potassium^LOCAL|||{{ts}}

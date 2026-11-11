@@ -1,0 +1,189 @@
+{
+  "set": {
+    "channelGroup": [
+      {
+        "@version": "4.7.0",
+        "id": "87882922-57db-472c-a53f-894e4ef81cfa",
+        "name": "Patient Administration",
+        "revision": 0,
+        "description": "Admissions, transfers, discharges and patient identity.",
+        "channels": {
+          "channel": [
+            {
+              "@version": "4.7.0",
+              "id": "6d1d3f7e-d707-4a17-9a35-f3af99961456",
+              "revision": 0
+            },
+            {
+              "@version": "4.7.0",
+              "id": "8ec16e83-2f62-4278-9362-78518e5f1527",
+              "revision": 0
+            },
+            {
+              "@version": "4.7.0",
+              "id": "8c6a8a72-f71f-4ade-a446-43af7a07a157",
+              "revision": 0
+            }
+          ]
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "5857304c-f181-4d51-a6b3-32a892a1bdd1",
+        "name": "Laboratory",
+        "revision": 0,
+        "description": "Laboratory orders and results.",
+        "channels": {
+          "channel": [
+            {
+              "@version": "4.7.0",
+              "id": "5a4aa0ff-b675-4e44-930a-2e23cffd6eb1",
+              "revision": 0
+            },
+            {
+              "@version": "4.7.0",
+              "id": "07516747-4e3e-4cee-80cf-6a9aaf05412e",
+              "revision": 0
+            },
+            {
+              "@version": "4.7.0",
+              "id": "e46636e7-66aa-4d0c-9699-772cce29088e",
+              "revision": 0
+            }
+          ]
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "205c5cdd-c52d-4b20-a1c2-027073056be5",
+        "name": "Radiology",
+        "revision": 0,
+        "description": "Imaging orders and reports.",
+        "channels": {
+          "channel": [
+            {
+              "@version": "4.7.0",
+              "id": "00a5626d-4dc6-4d37-ad45-193566bc8691",
+              "revision": 0
+            },
+            {
+              "@version": "4.7.0",
+              "id": "6bdd88af-b67e-4ddb-8635-5769d053caf3",
+              "revision": 0
+            }
+          ]
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "4449e57f-c236-490e-a695-2fa0e766a192",
+        "name": "Pharmacy",
+        "revision": 0,
+        "description": "Prescriptions and dispensing.",
+        "channels": {
+          "channel": [
+            {
+              "@version": "4.7.0",
+              "id": "abbe5ca0-c796-4e1d-976f-b53e6ad91eeb",
+              "revision": 0
+            }
+          ]
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "885d33ca-2f07-49d2-a32b-ceb3595d4d2e",
+        "name": "Billing",
+        "revision": 0,
+        "description": "Charges and insurance claims.",
+        "channels": {
+          "channel": [
+            {
+              "@version": "4.7.0",
+              "id": "11f05b73-1769-4018-9419-02cbfe64bd58",
+              "revision": 0
+            },
+            {
+              "@version": "4.7.0",
+              "id": "8a212f36-06f2-483c-b48d-678a0fa682f4",
+              "revision": 0
+            }
+          ]
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "71ac7b1a-db5c-47aa-a5bc-88ce7ca4dbd4",
+        "name": "External Partners",
+        "revision": 0,
+        "description": "Exchanges with organisations outside the hospital.",
+        "channels": {
+          "channel": [
+            {
+              "@version": "4.7.0",
+              "id": "703cfc96-a148-4fde-908d-1353330b5dde",
+              "revision": 0
+            },
+            {
+              "@version": "4.7.0",
+              "id": "498c811a-a445-4c17-b17c-d6804db4808e",
+              "revision": 0
+            }
+          ]
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "af1a3839-e2a7-4af9-a61b-6eb726714c63",
+        "name": "Operations",
+        "revision": 0,
+        "description": "Supervision and legacy interfaces.",
+        "channels": {
+          "channel": [
+            {
+              "@version": "4.7.0",
+              "id": "375b787f-7de8-460c-ae99-40303f2cd2d8",
+              "revision": 0
+            },
+            {
+              "@version": "4.7.0",
+              "id": "4e27f52a-5698-4f2f-b5cb-f525bf622b19",
+              "revision": 0
+            }
+          ]
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "b2a65319-3f5c-40ff-a72d-7508dafac95c",
+        "name": "Simulators",
+        "revision": 0,
+        "description": "Simulated external systems used by the demo.",
+        "channels": {
+          "channel": [
+            {
+              "@version": "4.7.0",
+              "id": "5e1fd032-c661-49f2-badb-56767c21ea3b",
+              "revision": 0
+            },
+            {
+              "@version": "4.7.0",
+              "id": "47e24fec-779e-4d14-ad4e-61a40bf771f5",
+              "revision": 0
+            },
+            {
+              "@version": "4.7.0",
+              "id": "470a3eec-9e3b-4385-bf16-b8d354f5d060",
+              "revision": 0
+            },
+            {
+              "@version": "4.7.0",
+              "id": "a81535d0-838d-4352-8557-9d9b0fd2ece4",
+              "revision": 0
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

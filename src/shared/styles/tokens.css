@@ -1,0 +1,76 @@
+/* SPDX-License-Identifier: MPL-2.0
+ * Design tokens of Flow UI. Every colour of the plugin is defined here, derived
+ * from the Web Admin variables so both themes (dark by default, light with
+ * [data-theme=light]) follow the host. Other style sheets use --ofu-* only.
+ * Fallback values are the light theme's.
+ */
+.ofu {
+  /* Surfaces */
+  --ofu-canvas: var(--bg1, #f3f6f9);
+  --ofu-surface: var(--bg2, #ffffff);
+  --ofu-sunken: var(--bg0, #e9edf2);
+  --ofu-raised: var(--bg3, #e1e9f1);
+  --ofu-line: var(--line, #cdd7e0);
+  --ofu-line-strong: var(--line-strong, #aebbc8);
+
+  /* Text */
+  --ofu-ink: var(--text, #1f2c38);
+  --ofu-dim: var(--text-dim, #4d6173);
+  --ofu-faint: var(--text-faint, #7d8fa0);
+  --ofu-accent: var(--accent, #2e6da4);
+  --ofu-accent-ink: var(--accent-ink, #ffffff);
+
+  /* What a block is */
+  --ofu-source: var(--accent, #2e6da4);
+  --ofu-destination: color-mix(in srgb, var(--ok, #2e9e4f) 55%, var(--accent, #2e6da4));
+  --ofu-channel: color-mix(in srgb, var(--violet, #b18cff) 70%, var(--text, #1f2c38));
+
+  /* Arrows */
+  --ofu-message: var(--warn, #b97f0a);
+  --ofu-reply: var(--violet, #b18cff);
+  --ofu-wait: var(--text-dim, #4d6173);
+
+  /* Message statuses: green = received or sent, grey-blue = filtered,
+     orange = queued, red = errored. Never the only signal: always with a label. */
+  --ofu-ok: var(--ok, #2e9e4f);
+  --ofu-filtered: color-mix(in srgb, var(--accent, #2e6da4) 45%, var(--text-dim, #4d6173));
+  --ofu-queued: color-mix(in srgb, var(--err, #cc3b3b) 30%, var(--amber, #f0b541));
+  --ofu-error: var(--err, #cc3b3b);
+
+  /* Shape and type */
+  --ofu-radius: 10px;
+  --ofu-radius-small: 6px;
+  --ofu-font: var(--font-ui, system-ui, sans-serif);
+  --ofu-mono: var(--font-mono, ui-monospace, monospace);
+  --ofu-shadow: 0 1px 2px color-mix(in srgb, var(--ofu-ink) 10%, transparent);
+  --ofu-shadow-raised: 0 12px 30px -10px color-mix(in srgb, var(--ofu-ink) 45%, transparent);
+  --ofu-control-height: 28px;
+
+  color: var(--ofu-ink);
+  font-family: var(--ofu-font);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* The colour of a message status, for any element tagged with its status. */
+.ofu-status-RECEIVED,
+.ofu-status-SENT { --ofu-status: var(--ofu-ok); }
+.ofu-status-FILTERED { --ofu-status: var(--ofu-filtered); }
+.ofu-status-QUEUED { --ofu-status: var(--ofu-queued); }
+.ofu-status-ERROR { --ofu-status: var(--ofu-error); }
+
+.ofu *,
+.ofu *::before,
+.ofu *::after {
+  box-sizing: border-box;
+}
+
+.ofu button {
+  font: inherit;
+  color: inherit;
+}
+
+.ofu :focus-visible {
+  outline: 2px solid var(--ofu-accent);
+  outline-offset: 1px;
+}

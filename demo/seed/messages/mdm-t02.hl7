@@ -1,0 +1,6 @@
+MSH|^~\&|RIS|NORTH-HOSPITAL|EHR|NORTH-HOSPITAL|{{ts}}||MDM^T02^MDM_T02|DOC{{n}}|P|2.5.1
+EVN|T02|{{ts}}
+PID|1||P{{n}}^^^NORTH-HOSPITAL^PI||Fournier^Jade^^^^^L||19731125|F
+PV1|1|O|RAD^^^NORTH-HOSPITAL
+TXA|1|RAD^Radiology report|TX|{{ts}}|5678^Petit^Anne||||||DOC{{n}}||||||AU
+OBX|1|TX|REPORT^Report^LOCAL||CT chest: no abnormality detected. Signed by Dr Petit.||||||F

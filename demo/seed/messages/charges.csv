@@ -1,0 +1,4 @@
+ward,patient,act,quantity,amount
+CARDIO,P{{n}},ECG,1,14.26
+CARDIO,P{{n}},CONSULT,1,30.00
+SURG,P{{n}},DRESSING,2,8.40

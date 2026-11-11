@@ -1,0 +1,311 @@
+/* SPDX-License-Identifier: MPL-2.0
+ * Controls shared by both screens: page layout, toolbar, buttons, segmented
+ * control, search field, popovers, menus, hints and empty states.
+ */
+
+/* A screen fills the Web Admin outlet: toolbar on top, content below. */
+.ofu-screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+}
+
+.ofu-toolbar {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--ofu-line);
+  background: var(--ofu-surface);
+}
+
+.ofu-toolbar__title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ofu-toolbar__end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ofu-muted {
+  color: var(--ofu-dim);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Buttons */
+.ofu-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--ofu-control-height);
+  min-width: var(--ofu-control-height);
+  padding: 0 10px;
+  border: 1px solid var(--ofu-line);
+  border-radius: var(--ofu-radius-small);
+  background: var(--ofu-surface);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ofu-button:hover {
+  border-color: var(--ofu-accent);
+}
+
+.ofu-button--icon {
+  padding: 0;
+}
+
+.ofu-button--link {
+  height: auto;
+  min-width: 0;
+  padding: 0 6px;
+  border-radius: 5px;
+  color: var(--ofu-dim);
+  font-size: 11px;
+}
+
+.ofu-button--link:hover {
+  color: var(--ofu-accent);
+}
+
+.ofu-button[aria-expanded="true"] {
+  border-color: var(--ofu-accent);
+  color: var(--ofu-accent);
+}
+
+.ofu-icon {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Segmented control: one choice among a few */
+.ofu-segmented {
+  display: inline-flex;
+  border: 1px solid var(--ofu-line);
+  border-radius: var(--ofu-radius-small);
+  overflow: hidden;
+}
+
+.ofu-segmented button {
+  height: calc(var(--ofu-control-height) - 2px);
+  padding: 0 10px;
+  border: 0;
+  border-left: 1px solid var(--ofu-line);
+  background: var(--ofu-surface);
+  cursor: pointer;
+}
+
+.ofu-segmented button:first-child {
+  border-left: 0;
+}
+
+.ofu-segmented button[aria-pressed="true"] {
+  background: var(--ofu-accent);
+  color: var(--ofu-accent-ink);
+}
+
+/* Fields */
+.ofu-search {
+  width: 220px;
+  max-width: 100%;
+  height: var(--ofu-control-height);
+  padding: 0 10px;
+  border: 1px solid var(--ofu-line);
+  border-radius: var(--ofu-radius-small);
+  background: var(--ofu-surface);
+  color: var(--ofu-ink);
+  font: inherit;
+}
+
+.ofu-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ofu-dim);
+  cursor: pointer;
+}
+
+/* Popovers: help, settings, menus. Fixed to the viewport, under their button. */
+.ofu-popover {
+  position: fixed;
+  z-index: 50;
+  min-width: 220px;
+  max-width: min(420px, calc(100vw - 16px));
+  max-height: calc(100vh - 16px);
+  overflow: auto;
+  padding: 12px 14px;
+  border: 1px solid var(--ofu-line-strong);
+  border-radius: var(--ofu-radius);
+  background: var(--ofu-surface);
+  box-shadow: var(--ofu-shadow-raised);
+}
+
+.ofu-popover h3 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ofu-dim);
+}
+
+.ofu-popover h3:not(:first-child) {
+  margin-top: 14px;
+}
+
+.ofu-popover p {
+  margin: 0 0 8px;
+}
+
+.ofu-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ofu-menu button {
+  width: 100%;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 5px;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ofu-menu button:hover,
+.ofu-menu button:focus-visible {
+  background: var(--ofu-raised);
+}
+
+/* Help content: a legend line is a sample followed by its meaning. */
+.ofu-legend {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 6px 10px;
+  align-items: center;
+  margin: 0;
+}
+
+.ofu-legend dt {
+  display: flex;
+  justify-content: center;
+}
+
+.ofu-legend dd {
+  margin: 0;
+}
+
+.ofu-kbd {
+  display: inline-block;
+  min-width: 18px;
+  padding: 0 4px;
+  border: 1px solid var(--ofu-line-strong);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  font: 11px var(--ofu-mono);
+  text-align: center;
+}
+
+/* First-use hint, dismissible */
+.ofu-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 4px 3px 10px;
+  border: 1px solid color-mix(in srgb, var(--ofu-accent) 40%, var(--ofu-line));
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--ofu-accent) 8%, var(--ofu-surface));
+  color: var(--ofu-dim);
+  font-size: 12px;
+}
+
+.ofu-hint button {
+  border: 0;
+  background: none;
+  color: var(--ofu-dim);
+  cursor: pointer;
+}
+
+.ofu-empty {
+  margin: 48px auto;
+  max-width: 420px;
+  color: var(--ofu-dim);
+  text-align: center;
+}
+
+.ofu-empty strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ofu-ink);
+}
+
+/* Settings: one line per setting, label on the left, choices on the right, as
+   in Web Admin's Settings tabs. Selects keep Web Admin's own style. */
+.ofu-settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+}
+
+.ofu-settings-panel > p {
+  margin: 0;
+}
+
+.ofu-setting {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--ofu-line);
+}
+
+.ofu-setting:last-child {
+  border-bottom: 0;
+}
+
+.ofu-setting label {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-size: 11.5px;
+}
+
+/* Web Admin stretches selects in panels: keep the natural width here. */
+.ofu-settings .ofu-setting select {
+  flex: none;
+  width: auto;
+  min-width: 180px;
+}
+
+.ofu-popover .ofu-setting {
+  min-width: 340px;
+  padding: 8px 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ofu-button,
+  .ofu-segmented button {
+    transition: border-color 0.12s, background-color 0.12s;
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "id": "flow-ui",
+  "name": "OIE Flow UI",
+  "version": "${version}",
+  "author": "kazepoy",
+  "description": "Flows Monitoring (Monitor) and Channel Flow (Design): how messages move through channels.",
+  "oie": { "apiMin": "4.7" },
+  "client": { "entry": "web/plugin.js" }
+}

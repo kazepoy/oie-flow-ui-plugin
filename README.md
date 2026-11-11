@@ -3,19 +3,58 @@
 A plugin for the [Open Integration Engine](https://github.com/OpenIntegrationEngine/engine)
 web administrator that shows how messages move through channels.
 
-> **Status: planning.** No code yet. See the [project plan](doc/plan.md).
+## Try the demo
+
+You need Docker with Compose.
+
+```sh
+git clone https://github.com/kazepoy/oie-flow-ui-plugin.git
+cd oie-flow-ui-plugin/demo
+docker compose up -d --build
+```
+
+The first start compiles OIE 4.7.0 from source and takes several minutes. Then
+open <https://localhost:8444/oie-webadmin/> (self-signed certificate) and sign in:
+
+| Account | Password | What it shows |
+|---|---|---|
+| `admin` | `demo-flow-ui-admin` | Everything |
+| `integrator` | `demo-flow-ui-user` | Design and Monitor: Channel Flow, channel editor, `+` to add a step |
+| `ops` | `demo-flow-ui-user` | Monitoring of every channel, messages, start and stop |
+| `lab-viewer` | `demo-flow-ui-user` | The *Laboratory* group only, without channel configurations |
+| `auditor` | `demo-flow-ui-user` | Counters only, without messages |
+
+The demo is the integration platform of a hospital: 19 channels in 8 groups,
+messages already processed, a queue, errors, a paused and a stopped channel.
+
+```sh
+docker compose --profile traffic up -d   # keep messages coming
+./reset.sh                               # back to the initial state
+```
+
+More in the [demo guide](demo/README.md) (in French).
 
 ## Screens
 
-| Screen | Menu | What it shows |
-|---|---|---|
-| **Flows Monitoring** | Monitor | Deployed channels by group, one row per channel, with message counters for each connector. A counter opens Messages on that connector. |
-| **Channel Flow** | Design | A zoomable diagram of one channel: source, destination chains, postprocessing and response. Each component opens its editor. |
+**Flows Monitoring** (Monitor menu): deployed channels by group, one row per
+channel, with message counters for each connector. A counter opens Messages on
+that connector. *Links* shows which channels send to which.
 
-Both screens work with the Role Based Access Control plugin: they only show
-what the user's role allows.
+![Flows Monitoring](doc/images/flows-monitoring.png)
 
-The interface is in English and ready for translation.
+**Channel Flow** (Design menu, *Show flow* in the channel list, *Flow* tab of the
+channel editor): a zoomable diagram of a channel, from the sender to the response,
+in three views. Every component opens its editor; in the editor's tab, `+` adds a
+step.
+
+![Channel Flow](doc/images/channel-flow.png)
+
+- Smooth with a trackpad (two fingers to move, pinch to zoom), a mouse wheel and
+  the keyboard; each view keeps its zoom and position for the session.
+- Works with the Role Based Access Control plugin: only what the user's role allows.
+- Settings follow the user from one browser to another (gear button, or
+  Manage › Settings › Flow UI).
+- English interface, ready for translation.
 
 ## Goal
 
@@ -33,34 +72,41 @@ I first wrote Flow and Flows quickly, by vibe coding, inside my
 [FHIR Profile Mapper](https://github.com/kazepoy/oie-fhir-profile-mapper-plugin)
 plugin, although they have nothing to do with FHIR. The reason was the
 ergonomics inherited from Mirth Connect, which I find neither intuitive nor
-suited to daily use: channels are hard to read at a glance, and the design looks
-like Windows XP.
+suited to daily use: channels are hard to read at a glance, and the design is
+still in the spirit of Windows XP and Java Swing.
 
 That first version worked but was not built to last. This project extracts the
 two screens and rebuilds them properly as a standalone plugin.
 
-## Requirements
+## Install
 
-- Open Integration Engine 4.7.0
-- [Web Support](https://github.com/gibson9583/oie-web-support-plugin) 1.3.0
-  (Web Admin 1.3.0)
-- Optional: [Role Based Access Control](https://github.com/diridium-com/role-based-access-control) 1.3.0
+Requirements: Open Integration Engine 4.7.0,
+[Web Support](https://github.com/gibson9583/oie-web-support-plugin) 1.3.0
+(Web Admin 1.3.0); optional
+[Role Based Access Control](https://github.com/diridium-com/role-based-access-control) 1.3.0.
 
-## Try it (planned)
-
-A Docker demo will start OIE with the required plugins, sample channels and
-preloaded message counters:
+Build the extension (Node 22 or later), install `dist/flow-ui-<version>.zip` in
+*Settings > Extensions* of OIE and restart it. The plugin has no Java code.
 
 ```sh
-cd demo
-docker compose up -d --build
+npm ci
+npm run build       # dist/flow-ui-<version>.zip
+npm test            # unit tests
+npm run check       # type check of the JavaScript
+npm run test:e2e    # end-to-end tests against the running demo
 ```
+
+> **Status: first version (0.1.0), not released yet.** See the [project plan](doc/plan.md)
+> and the [TODO list](doc/TODO.md).
 
 ## Documentation
 
 Detailed documentation is in French:
 
-- [Project plan](doc/plan.md)
+- [User guide](doc/user-guide.md)
+- [Architecture](doc/architecture.md)
+- [Translations](doc/i18n.md)
+- [Project plan](doc/plan.md) and [TODO](doc/TODO.md)
 - [Platform limits](doc/limites-plateforme.md): gaps in OIE, Web Admin and RBAC
   that affect this plugin
 

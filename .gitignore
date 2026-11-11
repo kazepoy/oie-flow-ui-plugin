@@ -1,0 +1,4 @@
+/node_modules/
+/dist/
+/demo/.env
+/test/e2e/output/

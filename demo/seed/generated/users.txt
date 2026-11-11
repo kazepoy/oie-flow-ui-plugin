@@ -1,0 +1,4 @@
+lab-viewer|Laura|Viewer|Laboratory viewer
+ops|Oscar|Operator|Operations
+integrator|Iris|Integrator|Integrator
+auditor|Aldo|Auditor|Auditor

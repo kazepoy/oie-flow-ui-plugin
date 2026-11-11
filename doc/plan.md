@@ -13,6 +13,26 @@ Cible : OIE 4.7.0, Web Support 1.3.0 (Web Admin 1.3.0, API plugin 4.10), RBAC 1.
 
 ---
 
+## 0. État d'avancement (2026-11-11)
+
+| Phase | État |
+|---|---|
+| 0. Socle et vérifications | Fait : build esbuild, ZIP sans Java accepté (WS-01), menus et droits vérifiés |
+| 1. Démo | Fait : générateur `seed/`, base `db/oie-demo.sql.gz`, `reset.sh`, profil `traffic`, `examples/send.sh` |
+| 2. Fondations partagées | Fait : `host/`, i18n, jetons, contrôles, réglages, état de session |
+| 3. Flows Monitoring | Fait, vérifié dans la démo avec les comptes RBAC ; liens entre canaux (option *Links*) ajoutés |
+| 4. Channel Flow, schéma | Fait : trois vues calculées, sélecteur, action *Show flow* |
+| 5. Channel Flow, interaction | Fait : zoom et déplacement, onglet Flow, `+`. À vérifier sur un vrai pavé tactile et dans Safari |
+| 6. Aides et finitions | Fait en partie : aides `?`, indice, états vides. Revue d'accessibilité à faire |
+| 7. Documentation et livraison | Fait en partie : README, guide, architecture, i18n. CI et release à faire |
+| 8. Retrait dans le mapper | À faire |
+
+Écarts avec le plan ci-dessous : `pick-layout.js` est dans `model/flow-model.js` ;
+la mise en page est dans `layout/` (`geometry`, `line`, `columns`, `bands`,
+`edges`, `parts`, `scene`) ; l'accès à l'éditeur de canal est dans
+`host/editor.js` ; les réglages sont dans `settings/`. ESLint et Stylelint ne sont
+pas encore en place (vérification de types et tests seulement).
+
 ## 1. Ce que l'on sait de l'hôte (vérifié dans Web Admin 1.3.0)
 
 Constats tirés du WAR de Web Admin et du plugin RBAC installés dans la démo du mapper.
@@ -308,12 +328,13 @@ Deux niveaux, à ne pas confondre :
 | | Réglages | État de session |
 |---|---|---|
 | Quoi | Choix durables de l'utilisateur | Où il en était |
-| Exemples | Vue par défaut (Auto, Line, Columns, Bands) ; molette (zoom ou défilement) ; groupes dépliés par défaut (premier, tous, aucun) ; intervalle de rafraîchissement ; aides masquées | Channel Flow, par canal : vue, zoom, position. Flows Monitoring : groupes dépliés, filtre, *Lifetime*, défilement |
+| Exemples | Vue par défaut (Auto, Line, Columns, Bands) ; molette (zoom ou défilement) ; groupes dépliés par défaut (premier, tous, aucun) ; étapes visibles par tuile ; intervalle de rafraîchissement ; aides masquées | Channel Flow, par canal : vue, zoom, position. Flows Monitoring : groupes dépliés, filtre, *Lifetime*, défilement |
 | Stockage | Préférences de l'utilisateur dans OIE (`PUT /api/users/{id}/preferences/flowui.*`), donc les mêmes sur tous ses navigateurs | `sessionStorage` : survit à la navigation et au rechargement, disparaît avec l'onglet |
-| Où on les change | Bouton *Settings* (engrenage) de la barre de chaque écran | Rien à faire : restauré au retour sur la page |
+| Où on les change | Engrenage de chaque écran (ses réglages), ou Manage › Settings › Flow UI (tous) | Rien à faire : restauré au retour sur la page |
 
-Les réglages ne passent pas par un panneau de *Settings* de Web Admin : son accès
-peut être refusé par RBAC à un utilisateur qui consulte pourtant les flux. Si
+Chaque écran montre ses propres réglages sous son engrenage ; l'onglet
+**Manage › Settings › Flow UI** les montre tous. L'engrenage reste indispensable :
+RBAC peut refuser *Settings* à un utilisateur qui consulte pourtant les flux. Si
 l'écriture des préférences OIE échoue, les réglages restent dans le navigateur
 (`localStorage`) et un message le signale ([WA-06](limites-plateforme.md#wa-06)).
 
@@ -521,7 +542,7 @@ existent.
 | 12 | État des vues | Conservé pendant la session ; départ au début du flux, à 100 % (§5.4, §5.6) |
 | 13 | Données de la démo | Chargées dans PostgreSQL, sans Python ; réinitialisation par `down -v` (§7.1) |
 
-### 11.2 Propositions issues de ces retours, à valider
+### 11.2 Propositions issues de ces retours, appliquées dans la v0.1.0 (à confirmer)
 
 | # | Question | Proposition |
 |---|---|---|
@@ -538,7 +559,8 @@ mèneraient à un Messages vide.
 ## 12. Idées pour plus tard
 
 - **Mini-carte** pour les très grands canaux, dans Channel Flow.
-- **Liens entre canaux** (Channel Writer → Channel Reader) dans Flows Monitoring. Le
+- **Vue dédiée des liens entre canaux** (Channel Writer → Channel Reader). Les
+  pastilles « → canal » / « ← canal » de l'option *Links* sont faites. Le
   visuel reste à trouver, surtout quand les deux canaux sont dans des groupes
   différents. Pistes :
   - une option *Show channel links* dans la barre, qui affiche une vue dédiée de ces

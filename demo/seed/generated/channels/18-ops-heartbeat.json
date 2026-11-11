@@ -1,0 +1,309 @@
+{
+  "channel": {
+    "@version": "4.7.0",
+    "id": "375b787f-7de8-460c-ae99-40303f2cd2d8",
+    "nextMetaDataId": 2,
+    "name": "OPS · Heartbeat",
+    "description": "Produces a heartbeat every minute for the supervision tool.",
+    "revision": 0,
+    "sourceConnector": {
+      "@version": "4.7.0",
+      "metaDataId": 0,
+      "name": "sourceConnector",
+      "properties": {
+        "@class": "com.mirth.connect.connectors.js.JavaScriptReceiverProperties",
+        "@version": "4.7.0",
+        "pluginProperties": null,
+        "pollConnectorProperties": {
+          "@version": "4.7.0",
+          "pollingType": "INTERVAL",
+          "pollOnStart": false,
+          "pollingFrequency": 60000,
+          "pollingHour": 0,
+          "pollingMinute": 0,
+          "cronJobs": null,
+          "pollConnectorPropertiesAdvanced": {
+            "weekly": true,
+            "inactiveDays": {
+              "boolean": [
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false,
+                false
+              ]
+            },
+            "dayOfMonth": 1,
+            "allDay": true,
+            "startingHour": 8,
+            "startingMinute": 0,
+            "endingHour": 17,
+            "endingMinute": 0
+          }
+        },
+        "sourceConnectorProperties": {
+          "@version": "4.7.0",
+          "responseVariable": "None",
+          "respondAfterProcessing": true,
+          "processBatch": false,
+          "firstResponse": false,
+          "processingThreads": 1,
+          "resourceIds": {
+            "@class": "linked-hash-map",
+            "entry": [
+              {
+                "string": [
+                  "Default Resource",
+                  "[Default Resource]"
+                ]
+              }
+            ]
+          },
+          "queueBufferSize": 1000
+        },
+        "script": "// One heartbeat per poll.\nreturn '<heartbeat time=\"' + DateUtil.getCurrentDate('yyyy-MM-dd HH:mm:ss') + '\"/>';"
+      },
+      "transformer": {
+        "@version": "4.7.0",
+        "elements": null,
+        "inboundDataType": "XML",
+        "outboundDataType": "XML",
+        "inboundProperties": {
+          "@class": "com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties",
+          "@version": "4.7.0",
+          "serializationProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties",
+            "@version": "4.7.0",
+            "stripNamespaces": false
+          },
+          "batchProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties",
+            "@version": "4.7.0",
+            "splitType": "Element_Name",
+            "elementName": null,
+            "level": 1,
+            "query": null,
+            "batchScript": null
+          }
+        },
+        "outboundProperties": {
+          "@class": "com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties",
+          "@version": "4.7.0",
+          "serializationProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties",
+            "@version": "4.7.0",
+            "stripNamespaces": false
+          },
+          "batchProperties": {
+            "@class": "com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties",
+            "@version": "4.7.0",
+            "splitType": "Element_Name",
+            "elementName": null,
+            "level": 1,
+            "query": null,
+            "batchScript": null
+          }
+        }
+      },
+      "filter": {
+        "@version": "4.7.0",
+        "elements": null
+      },
+      "transportName": "JavaScript Reader",
+      "mode": "SOURCE",
+      "enabled": true,
+      "waitForPrevious": true
+    },
+    "destinationConnectors": {
+      "connector": [
+        {
+          "@version": "4.7.0",
+          "metaDataId": 1,
+          "name": "Supervision",
+          "properties": {
+            "@class": "com.mirth.connect.connectors.js.JavaScriptDispatcherProperties",
+            "@version": "4.7.0",
+            "pluginProperties": null,
+            "destinationConnectorProperties": {
+              "@version": "4.7.0",
+              "queueEnabled": false,
+              "sendFirst": false,
+              "retryIntervalMillis": 10000,
+              "regenerateTemplate": false,
+              "retryCount": 0,
+              "rotate": false,
+              "includeFilterTransformer": false,
+              "threadCount": 1,
+              "threadAssignmentVariable": null,
+              "validateResponse": false,
+              "resourceIds": {
+                "@class": "linked-hash-map",
+                "entry": [
+                  {
+                    "string": [
+                      "Default Resource",
+                      "[Default Resource]"
+                    ]
+                  }
+                ]
+              },
+              "queueBufferSize": 1000,
+              "reattachAttachments": true
+            },
+            "script": "// Publishes the heartbeat to the supervision tool.\nreturn;"
+          },
+          "transformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "XML",
+            "outboundDataType": "XML",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties",
+              "@version": "4.7.0",
+              "serializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties",
+                "@version": "4.7.0",
+                "stripNamespaces": false
+              },
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "Element_Name",
+                "elementName": null,
+                "level": 1,
+                "query": null,
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties",
+              "@version": "4.7.0",
+              "serializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties",
+                "@version": "4.7.0",
+                "stripNamespaces": false
+              },
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "Element_Name",
+                "elementName": null,
+                "level": 1,
+                "query": null,
+                "batchScript": null
+              }
+            }
+          },
+          "responseTransformer": {
+            "@version": "4.7.0",
+            "elements": null,
+            "inboundDataType": "XML",
+            "outboundDataType": "XML",
+            "inboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties",
+              "@version": "4.7.0",
+              "serializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties",
+                "@version": "4.7.0",
+                "stripNamespaces": false
+              },
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "Element_Name",
+                "elementName": null,
+                "level": 1,
+                "query": null,
+                "batchScript": null
+              }
+            },
+            "outboundProperties": {
+              "@class": "com.mirth.connect.plugins.datatypes.xml.XMLDataTypeProperties",
+              "@version": "4.7.0",
+              "serializationProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.xml.XMLSerializationProperties",
+                "@version": "4.7.0",
+                "stripNamespaces": false
+              },
+              "batchProperties": {
+                "@class": "com.mirth.connect.plugins.datatypes.xml.XMLBatchProperties",
+                "@version": "4.7.0",
+                "splitType": "Element_Name",
+                "elementName": null,
+                "level": 1,
+                "query": null,
+                "batchScript": null
+              }
+            }
+          },
+          "filter": {
+            "@version": "4.7.0",
+            "elements": null
+          },
+          "transportName": "JavaScript Writer",
+          "mode": "DESTINATION",
+          "enabled": true,
+          "waitForPrevious": true
+        }
+      ]
+    },
+    "preprocessingScript": "// Modify the message variable below to pre process data\nreturn message;",
+    "postprocessingScript": "// This script executes once after a message has been processed\n// Responses returned from here will be stored as \"Postprocessor\" in the response map\nreturn;",
+    "deployScript": "// Remember when the heartbeat started.\nglobalMap.put('heartbeatSince', DateUtil.getCurrentDate('yyyy-MM-dd HH:mm'));\nreturn;",
+    "undeployScript": "globalMap.remove('heartbeatSince');\nreturn;",
+    "properties": {
+      "@version": "4.7.0",
+      "clearGlobalChannelMap": true,
+      "messageStorageMode": "DEVELOPMENT",
+      "encryptData": false,
+      "encryptAttachments": false,
+      "encryptCustomMetaData": false,
+      "removeContentOnCompletion": false,
+      "removeOnlyFilteredOnCompletion": false,
+      "removeAttachmentsOnCompletion": false,
+      "initialState": "STARTED",
+      "storeAttachments": true,
+      "metaDataColumns": {
+        "metaDataColumn": [
+          {
+            "name": "SOURCE",
+            "type": "STRING",
+            "mappingName": "mirth_source"
+          },
+          {
+            "name": "TYPE",
+            "type": "STRING",
+            "mappingName": "mirth_type"
+          }
+        ]
+      },
+      "attachmentProperties": {
+        "@version": "4.7.0",
+        "type": "None",
+        "properties": null
+      },
+      "resourceIds": {
+        "@class": "linked-hash-map",
+        "entry": [
+          {
+            "string": [
+              "Default Resource",
+              "[Default Resource]"
+            ]
+          }
+        ]
+      }
+    },
+    "exportData": {
+      "metadata": {
+        "enabled": true,
+        "pruningSettings": {
+          "archiveEnabled": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+<!-- SPDX-License-Identifier: MPL-2.0 -->
+<!-- OIE extension descriptor. The plugin has no Java code: Web Support serves
+     its webadmin/ folder to the web administrator. -->
+<pluginMetaData path="flow-ui">
+  <name>Flow UI</name>
+  <author>kazepoy</author>
+  <pluginVersion>${version}</pluginVersion>
+  <mirthVersion>4.7.0</mirthVersion>
+  <description>Flows Monitoring and Channel Flow views for the OIE web administrator. Requires Web Support.</description>
+</pluginMetaData>

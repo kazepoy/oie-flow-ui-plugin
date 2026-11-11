@@ -1,0 +1,5 @@
+MSH|^~\&|LIS|NORTH-HOSPITAL|INTEGRATION|NORTH-HOSPITAL|{{ts}}||ORU^R01^ORU_R01|INC{{n}}|P|2.5.1
+PID|1||P{{n}}^^^NORTH-HOSPITAL^PI||Roux^Nathan^^^^^L||19880811|M
+OBR|1|INC{{n}}|INC{{n}}|PANEL^Basic metabolic panel^LOCAL|||{{ts}}|||||||||1234^Durand^Paul||||||{{ts}}|||P
+OBX|1|NM|K^Potassium^LOCAL||4.4|mmol/L|3.5-5.0|N|||F
+OBX|2|NM|TROP^Troponin^LOCAL|||ng/L|0-14||||P

@@ -1,0 +1,1 @@
+{ "claimId": "CLM-{{n}}", "patientId": "P{{n}}", "insurer": "MUTUELLE-NORD", "amount": 152.40, "currency": "EUR", "acts": ["CONSULT", "ECG"] }

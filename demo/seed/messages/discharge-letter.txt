@@ -1,0 +1,2 @@
+Discharge letter for patient P{{n}}.
+The patient was discharged on {{ts}} from the cardiology ward. Follow-up with the general practitioner in two weeks.

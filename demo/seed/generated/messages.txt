@@ -1,0 +1,17 @@
+6d1d3f7e-d707-4a17-9a35-f3af99961456|adt-a01.hl7|140|1,2|ADT · HIS inbound
+6d1d3f7e-d707-4a17-9a35-f3af99961456|adt-a08.hl7|60|1,2|ADT · HIS inbound
+6d1d3f7e-d707-4a17-9a35-f3af99961456|adt-a01-test.hl7|12|1,2|ADT · HIS inbound
+8c6a8a72-f71f-4ade-a446-43af7a07a157|adt-a40.hl7|18|1,2|ADT · Patient merge (A40)
+5a4aa0ff-b675-4e44-930a-2e23cffd6eb1|orm-o01.hl7|95|1|LAB · Orders to LIS (ORM)
+07516747-4e3e-4cee-80cf-6a9aaf05412e|oru-r01.hl7|120|1,2,3,4|LAB · Results from LIS (ORU)
+07516747-4e3e-4cee-80cf-6a9aaf05412e|oru-r01-critical.hl7|9|1,2,3,4|LAB · Results from LIS (ORU)
+07516747-4e3e-4cee-80cf-6a9aaf05412e|oru-r01-incomplete.hl7|7|1,2,3,4|LAB · Results from LIS (ORU)
+00a5626d-4dc6-4d37-ad45-193566bc8691|rad-orm-o01.hl7|64|1,2,3|RAD · Orders to RIS
+6bdd88af-b67e-4ddb-8635-5769d053caf3|mdm-t02.hl7|41|1|RAD · Reports to EHR (MDM)
+abbe5ca0-c796-4e1d-976f-b53e6ad91eeb|rde-o11.hl7|75|1,2|PHARM · Prescriptions (RDE)
+abbe5ca0-c796-4e1d-976f-b53e6ad91eeb|rde-o11-controlled.hl7|11|1,2|PHARM · Prescriptions (RDE)
+11f05b73-1769-4018-9419-02cbfe64bd58|charges.csv|30|1,2|BILL · Daily charges
+8a212f36-06f2-483c-b48d-678a0fa682f4|claim.json|23|1|BILL · Claims to insurer
+703cfc96-a148-4fde-908d-1353330b5dde|hie-request.json|52|1,2|HIE · Regional exchange API
+498c811a-a445-4c17-b17c-d6804db4808e|discharge-letter.txt|6|1|GP · Discharge letters
+4e27f52a-5698-4f2f-b5cb-f525bf622b19|adt-a01.hl7|15|1|OPS · Legacy interface

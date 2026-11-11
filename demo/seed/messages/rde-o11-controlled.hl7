@@ -1,0 +1,4 @@
+MSH|^~\&|WARDS|NORTH-HOSPITAL|PHARMACY|NORTH-HOSPITAL|{{ts}}||RDE^O11^RDE_O11|RXC{{n}}|P|2.5.1
+PID|1||P{{n}}^^^NORTH-HOSPITAL^PI||Bonnet^Paul^^^^^L||19480214|M
+ORC|NW|RXC{{n}}||||||||||1234^Durand^Paul
+RXE|^^^{{ts}}|MORPH^Morphine^LOCAL|10|mg|INJ

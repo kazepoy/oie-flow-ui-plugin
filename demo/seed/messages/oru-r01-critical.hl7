@@ -1,0 +1,4 @@
+MSH|^~\&|LIS|NORTH-HOSPITAL|INTEGRATION|NORTH-HOSPITAL|{{ts}}||ORU^R01^ORU_R01|CRI{{n}}|P|2.5.1
+PID|1||P{{n}}^^^NORTH-HOSPITAL^PI||Garnier^Emma^^^^^L||19550102|F
+OBR|1|CRIT{{n}}|CRIT{{n}}|PANEL^Basic metabolic panel^LOCAL|||{{ts}}|||||||||1234^Durand^Paul||||||{{ts}}|||F
+OBX|1|NM|K^Potassium^LOCAL||6.8|mmol/L|3.5-5.0|HH|||F
