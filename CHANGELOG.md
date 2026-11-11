@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.1 (2026-11-11)
+
+- **Channel Flow**: a click on a script (Deploy, Undeploy, Preprocessor,
+  Postprocessor), a connector or a step now opens that script, that destination
+  or that step in the editor, instead of the *Summary* tab or the first step. If
+  the editor's controls cannot be reached, a message says where to click.
+- Demo: one password for every account, `demo-oie-password`, as in the FHIR
+  Profile Mapper demo.
+
 ## 0.8.0 (2026-11-11)
 
 First version, rebuilt from the Flow and Flows screens of the FHIR Profile Mapper.
