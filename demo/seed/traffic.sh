@@ -18,7 +18,7 @@ while true; do
     grep -q "$id" /tmp/skip && continue
     query=$(echo "$destinations" | sed 's/^/destinationMetaDataId=/; s/,/\&destinationMetaDataId=/g')
     sed -e "s/{{n}}/T$(printf '%05d' "$n")/g" -e "s/{{ts}}/$(date +%Y%m%d%H%M%S)/g" "$SEED/messages/$file" > "$BODY"
-    curl --insecure --silent --output /dev/null --max-time 60 --user "admin:${OIE_PASSWORD:-demo-flow-ui-admin}" \
+    curl --insecure --silent --output /dev/null --max-time 60 --user "admin:${OIE_PASSWORD:-demo-oie-password}" \
       --header 'X-Requested-With: OpenAPI' --header 'Content-Type: text/plain; charset=UTF-8' \
       --data-binary "@$BODY" "$API/channels/$id/messages?$query" || echo "not sent: $name"
     n=$((n + 1))

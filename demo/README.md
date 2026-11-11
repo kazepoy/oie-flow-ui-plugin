@@ -24,11 +24,11 @@ Administration : <https://localhost:8444/oie-webadmin/> (certificat autosigné).
 
 | Compte | Mot de passe | Rôle | Ce qu'il voit |
 |---|---|---|---|
-| `admin` | `demo-flow-ui-admin` | Administrateur | Tout |
-| `lab-viewer` | `demo-flow-ui-user` | Laboratory viewer | Flows Monitoring et Messages, groupe *Laboratory* seulement ; chaînes masquées (pas de lecture des canaux) |
-| `ops` | `demo-flow-ui-user` | Operations | Flows Monitoring, Messages et Channel Flow (lecture), tous les canaux ; démarrer et arrêter |
-| `integrator` | `demo-flow-ui-user` | Integrator | Design et Monitor : Channel Flow, éditeur, `+` |
-| `auditor` | `demo-flow-ui-user` | Auditor | Flows Monitoring sans Messages : compteurs visibles, non cliquables |
+| `admin` | `demo-oie-password` | Administrateur | Tout |
+| `lab-viewer` | `demo-oie-password` | Laboratory viewer | Flows Monitoring et Messages, groupe *Laboratory* seulement ; chaînes masquées (pas de lecture des canaux) |
+| `ops` | `demo-oie-password` | Operations | Flows Monitoring, Messages et Channel Flow (lecture), tous les canaux ; démarrer et arrêter |
+| `integrator` | `demo-oie-password` | Integrator | Design et Monitor : Channel Flow, éditeur, `+` |
+| `auditor` | `demo-oie-password` | Auditor | Flows Monitoring sans Messages : compteurs visibles, non cliquables |
 
 ## Revenir à l'état initial
 

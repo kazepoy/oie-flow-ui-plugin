@@ -2,7 +2,7 @@
 # JetBrains HTTP Client). The certificate is self-signed.
 
 @oie = https://localhost:8444/api
-@auth = Basic admin:demo-flow-ui-admin
+@auth = Basic admin:demo-oie-password
 
 ### Deployed channels with their counters (what Flows Monitoring reads)
 GET {{oie}}/channels/statuses

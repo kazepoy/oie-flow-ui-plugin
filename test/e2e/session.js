@@ -4,7 +4,7 @@
 import { chromium, webkit } from "playwright";
 
 export const DEMO_URL = process.env.DEMO_URL || "https://localhost:8444/oie-webadmin/";
-export const PASSWORD = process.env.OIE_DEMO_PASSWORD || "demo-flow-ui-admin";
+export const PASSWORD = process.env.OIE_DEMO_PASSWORD || "demo-oie-password";
 
 /**
  * @param {{ user?: string, password?: string, browser?: "chromium" | "webkit",

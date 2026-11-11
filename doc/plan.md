@@ -462,8 +462,8 @@ d'un coup d'œil (de quelques messages à quelques centaines).
 
 ### 7.5 Comptes de démo
 
-Mots de passe : `demo-flow-ui-admin` pour `admin`, `demo-flow-ui-user` pour les
-autres (fixés dans la base de démo). Chaque compte illustre une situation RBAC.
+Mot de passe : `demo-oie-password` pour tous les comptes (fixé dans la base de
+démo). Chaque compte illustre une situation RBAC.
 
 | Compte | Rôle | Ce qu'il voit |
 |---|---|---|

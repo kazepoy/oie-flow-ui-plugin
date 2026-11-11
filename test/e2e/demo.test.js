@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
 import { DEMO_URL, openNav, signIn } from "./session.js";
 
-const USER_PASSWORD = process.env.OIE_DEMO_USER_PASSWORD || "demo-flow-ui-user";
+const USER_PASSWORD = process.env.OIE_DEMO_USER_PASSWORD || "demo-oie-password";
 const OUTPUT = new URL("./output/", import.meta.url).pathname;
 const LAB_RESULTS = "07516747-4e3e-4cee-80cf-6a9aaf05412e";
 const LAB_ORDERS = "5a4aa0ff-b675-4e44-930a-2e23cffd6eb1";

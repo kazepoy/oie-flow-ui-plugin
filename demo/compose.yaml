@@ -63,7 +63,7 @@ services:
       SERVER_ID: 3f1c2b9e-6a4d-4e8b-9c1f-0d2e5a7b8c61
       KEYSTORE_STOREPASS: ${OIE_KEYSTORE_STOREPASS:-demo-flow-ui-store}
       KEYSTORE_KEYPASS: ${OIE_KEYSTORE_KEYPASS:-demo-flow-ui-key}
-      _MP_SERVER_INITIALADMINPASSWORD: ${OIE_PASSWORD:-demo-flow-ui-admin}
+      _MP_SERVER_INITIALADMINPASSWORD: ${OIE_PASSWORD:-demo-oie-password}
       TZ: ${TZ:-Europe/Paris}
     ports:
       - "${OIE_BIND_ADDRESS:-127.0.0.1}:${OIE_HTTPS_PORT:-8444}:8443"

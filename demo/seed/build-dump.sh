@@ -17,8 +17,8 @@ MESSAGES="$SEED_DIR/messages"
 PROJECT=oie-flow-ui-seed
 PORT=${SEED_HTTPS_PORT:-8454}
 API="https://localhost:$PORT/api"
-ADMIN_PASSWORD="${OIE_PASSWORD:-demo-flow-ui-admin}"
-USER_PASSWORD="${OIE_DEMO_PASSWORD:-demo-flow-ui-user}"
+ADMIN_PASSWORD="${OIE_PASSWORD:-demo-oie-password}"
+USER_PASSWORD="${OIE_DEMO_PASSWORD:-demo-oie-password}"
 RESPONSE=$(mktemp)
 EMPTY_DB=$(mktemp -d)
 trap 'rm -rf "$RESPONSE" "$EMPTY_DB"' EXIT
