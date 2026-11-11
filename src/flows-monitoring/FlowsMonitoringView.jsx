@@ -3,9 +3,10 @@
 // channel, with message counters for each connector.
 import { useEffect, useMemo, useRef, useState } from "../host/react.js";
 import { can } from "../host/permissions.js";
-import { controlChannel } from "../host/api.js";
+import { channelStatus, controlChannel } from "../host/api.js";
 import { confirm, toast } from "../host/platform.js";
-import { COMMAND_PERMISSION, CONFIRMED } from "./controls.js";
+import { COMMAND_PERMISSION, CONFIRMED, EXPECTED_STATE } from "./controls.js";
+import { asList } from "../shared/model/xstream.js";
 import { channelEditorPath, channelFlowPath, messagesPath, navigate } from "../host/routes.js";
 import { readSession, writeSession } from "../host/session.js";
 import { formatTime, t } from "../i18n/index.js";
@@ -61,6 +62,18 @@ export function FlowsMonitoringView() {
     return () => clearTimeout(timer);
   }, [highlighted]);
 
+  /** Reads the target's state a few times until it is the expected one. */
+  async function waitForState(target, expected) {
+    for (let attempt = 0; attempt < 8; attempt++) {
+      const status = await channelStatus(target.channelId).catch(() => null);
+      const state = target.metaDataId == null ? status?.state
+        : asList(status?.childStatuses, "dashboardStatus").find(child => Number(child.metaDataId) === Number(target.metaDataId))?.state;
+      if (state === expected) return true;
+      await new Promise(resolve => setTimeout(resolve, 400));
+    }
+    return false;
+  }
+
   // Start, pause, resume or stop a channel or a connector, then read the new state.
   const busyKey = target => `${target.channelId}:${target.metaDataId ?? ""}`;
   async function control(command, target) {
@@ -73,7 +86,10 @@ export function FlowsMonitoringView() {
     setBusy(previous => new Set(previous).add(key));
     try {
       await controlChannel(command, target.channelId, target.metaDataId);
-      toast(t(`flows.control.done.${command}`, { name: target.name }));
+      // The engine may answer "done" and refuse the change (OIE-12): check the state.
+      const reached = await waitForState(target, EXPECTED_STATE[command]);
+      if (reached) toast(t(`flows.control.done.${command}`, { name: target.name }));
+      else toast(t("flows.control.unchanged", { name: target.name }), "warn");
     } catch (failure) {
       toast(t("flows.control.failed", { name: target.name, error: failure?.message || String(failure) }), "error");
     } finally {

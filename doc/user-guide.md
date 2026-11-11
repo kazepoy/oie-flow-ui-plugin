@@ -29,8 +29,11 @@ précédente.
   autre groupe.
 - **Démarrer, mettre en pause, arrêter.** La carte du canal propose les commandes
   permises par son état : pause et arrêt s'il tourne, reprise et arrêt s'il est en
-  pause, démarrage s'il est arrêté. Chaque connecteur d'un canal démarré s'arrête ou
-  redémarre seul. Un arrêt demande confirmation. Il faut le droit
+  pause, démarrage s'il est arrêté. Chaque connecteur d'un canal démarré ou en pause
+  s'arrête ou redémarre seul ; arrêter la source met le canal en pause. OIE n'arrête
+  une destination seule que si sa file d'attente est activée : sinon son bouton
+  d'arrêt est grisé (OIE-12). Un arrêt demande confirmation ; si l'état ne change
+  pas, un message le signale. Il faut le droit
   `startStopChannels` ; sans lui, les boutons n'apparaissent pas.
 - **Rafraîchissement.** Les compteurs se relisent toutes les 5 secondes (réglable),
   onglet visible. *Refresh* relit aussi les groupes, les chaînes et les liens.

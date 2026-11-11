@@ -44,6 +44,9 @@ export function controlChannel(command, channelId, metaDataId) {
     : status[command](channelId);
 }
 
+/** The dashboard status of one channel. */
+export const channelStatus = channelId => api().status.one(channelId);
+
 /** A user preference, as a string, or null when unset. */
 export async function userPreference(userId, name) {
   const value = await api().users.getPreference(userId, name, { raw: true });

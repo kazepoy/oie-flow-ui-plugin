@@ -47,6 +47,7 @@ function connectorOf(status, lifetime, fallbackName) {
     metaDataId: Number(status?.metaDataId ?? 0),
     name: status?.name || fallbackName,
     state: status?.state ?? null,
+    queueEnabled: isTrue(status?.queueEnabled ?? false),
     stats: status ? statsOf(status, lifetime) : emptyStats()
   };
 }

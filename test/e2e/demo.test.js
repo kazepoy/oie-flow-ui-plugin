@@ -13,6 +13,7 @@ const LAB_RESULTS = "07516747-4e3e-4cee-80cf-6a9aaf05412e";
 const LAB_ORDERS = "5a4aa0ff-b675-4e44-930a-2e23cffd6eb1";
 const RAD_ORDERS = "00a5626d-4dc6-4d37-ad45-193566bc8691";
 const OPS_HEARTBEAT = "375b787f-7de8-460c-ae99-40303f2cd2d8";
+const BILL_CLAIMS = "8a212f36-06f2-483c-b48d-678a0fa682f4";
 
 const url = path => new URL(path.replace(/^\//, ""), DEMO_URL).href;
 const shot = (page, name) => page.screenshot({ path: `${OUTPUT}${name}.png` });
@@ -157,6 +158,34 @@ describe("with RBAC roles", () => {
       await row.getByRole("button", { name: "Start OPS · Heartbeat", exact: true }).click();
       await row.getByRole("button", { name: "Stop OPS · Heartbeat", exact: true }).waitFor();
       assert.equal(await state(), "started");
+    } finally {
+      await session.close();
+    }
+  });
+
+  test("ops stops and starts connectors; a destination without queue cannot stop alone", async () => {
+    const session = await signIn({ user: "ops", password: USER_PASSWORD });
+    try {
+      const { page } = session;
+      await openNav(page, "flow-ui-flows");
+      await page.locator(".ofu-group").first().waitFor();
+      await page.getByRole("button", { name: "Open all groups" }).click();
+      const claims = page.locator(`#ofu-lane-${BILL_CLAIMS}`);
+      // A destination with a queue
+      await claims.getByRole("button", { name: "Stop BILL · Claims to insurer · Insurer gateway", exact: true }).click();
+      await page.getByRole("button", { name: "Stop", exact: true }).click();
+      await claims.getByRole("button", { name: "Start BILL · Claims to insurer · Insurer gateway", exact: true }).click();
+      await claims.getByRole("button", { name: "Stop BILL · Claims to insurer · Insurer gateway", exact: true }).waitFor();
+      // The source: stopping it pauses the channel, and it can be started again
+      await claims.getByRole("button", { name: "Stop BILL · Claims to insurer · Source", exact: true }).click();
+      await page.getByRole("button", { name: "Stop", exact: true }).click();
+      await claims.getByRole("button", { name: "Start BILL · Claims to insurer · Source", exact: true }).click();
+      await claims.getByRole("button", { name: "Stop BILL · Claims to insurer · Source", exact: true }).waitFor();
+      // A destination without queue: the stop button is disabled and says why
+      const orders = page.locator(`#ofu-lane-${LAB_ORDERS}`);
+      const refused = orders.locator(".ofu-card--destination .ofu-control");
+      assert.equal(await refused.isDisabled(), true);
+      assert.match(await refused.getAttribute("title"), /queue/);
     } finally {
       await session.close();
     }

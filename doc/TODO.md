@@ -10,7 +10,9 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
   2026-11-11) : commandes du canal selon son état, arrêt et démarrage de chaque
   connecteur d'un canal démarré, confirmation avant un arrêt, tâches RBAC `doStart`,
   `doPause`, `doStop`, `doStartConnector`, `doStopConnector` (`startStopChannels`).
-  Reste à envisager : l'arrêt forcé (*Halt*) et des commandes groupées par groupe.
+  Corrigé ensuite : destinations sans file (OIE-12), source arrêtée qui met le
+  canal en pause. Reste à envisager : l'arrêt forcé (*Halt*) et des commandes
+  groupées par groupe.
 - [ ] **Vue des liens entre canaux.** Les mentions *Sends to* / *Called by* sont
   faites (option *Links*). Reste une vue dédiée qui dessine ces liens (graphe des
   canaux, groupes en cadres), utile quand les canaux liés sont dans des groupes

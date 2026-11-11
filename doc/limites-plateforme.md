@@ -75,6 +75,7 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 | [OIE-09](#oie-09) | Moteur | Redémarrage nécessaire après installation d'une extension | Mineur | Ouvert |
 | [OIE-10](#oie-10) | Moteur | JAR d'API absents de Maven Central | Mineur | Ouvert |
 | [OIE-11](#oie-11) | Moteur | Message envoyé par l'API : aucune destination par défaut | Gênant | Contourné |
+| [OIE-12](#oie-12) | Moteur | Arrêt d'une destination sans file : « fait », mais rien ne se passe | Gênant | Contourné |
 
 ---
 
@@ -513,3 +514,22 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
   chaque canal (`seed/generated/messages.txt`).
 - **Demande amont.** Documenter ce comportement, ou envoyer à toutes les destinations
   par défaut comme la boîte *Send Message* de l'administrateur.
+
+### OIE-12
+
+**Arrêt d'une destination sans file : « fait », mais rien ne se passe.** · Gênant · Contourné
+
+- **Constat.** `POST /api/channels/{id}/connector/{n}/_stop` sur une destination dont
+  la file d'attente est désactivée répond 204, y compris avec `returnErrors=true`,
+  mais la destination reste démarrée. Le refus n'apparaît que dans le journal du
+  serveur : « Destination connectors must have queueing enabled to be stopped
+  individually ».
+- **Preuve.** Démo, destination *Laboratory (LIS)* de *LAB · Orders to LIS (ORM)*.
+- **Contournement.** Flows Monitoring n'offre l'arrêt d'une destination que si sa
+  file est activée (`queueEnabled` du statut) ; sinon le bouton est grisé et son
+  info-bulle explique pourquoi. Après chaque commande, l'état est relu : s'il n'a pas
+  changé, un message le dit.
+- **Demande amont.** Renvoyer une erreur (HTTP 4xx, ou le message avec
+  `returnErrors=true`) quand l'arrêt est refusé.
+- **À savoir aussi.** Arrêter la source met le canal en pause (`PAUSED`) ; la
+  redémarrer le remet à `STARTED`.

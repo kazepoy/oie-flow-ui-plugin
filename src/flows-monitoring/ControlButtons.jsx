@@ -7,11 +7,14 @@ import { Icon } from "../shared/ui/Icon.jsx";
 const ICON = { start: "play", resume: "play", startConnector: "play", pause: "pause", stop: "stop", stopConnector: "stop" };
 
 /**
- * @param {{ commands: string[], target: { channelId: string, metaDataId?: number, name: string }, actions: any }} props
+ * @param {{ commands: string[], blocked?: { command: string, reason: string } | null,
+ *           target: { channelId: string, metaDataId?: number, name: string }, actions: any }} props
+ *   blocked: a command the engine refuses here, shown disabled with its reason
  */
-export function ControlButtons({ commands, target, actions }) {
+export function ControlButtons({ commands, blocked = null, target, actions }) {
   const allowed = commands.filter(actions.canControl);
-  if (!allowed.length) return null;
+  const refused = blocked && actions.canControl(blocked.command) ? blocked : null;
+  if (!allowed.length && !refused) return null;
   const busy = actions.isBusy(target);
   return (
     <span className="ofu-controls" role="group" aria-label={t("flows.control.group", { name: target.name })}>
@@ -24,6 +27,12 @@ export function ControlButtons({ commands, target, actions }) {
           </button>
         );
       })}
+      {refused && (
+        <button type="button" className={`ofu-control ofu-control--${ICON[refused.command]}`} disabled
+          title={t(`flows.control.refused.${refused.reason}`)} aria-label={t(`flows.control.refused.${refused.reason}`)}>
+          <Icon name={ICON[refused.command]} />
+        </button>
+      )}
     </span>
   );
 }
