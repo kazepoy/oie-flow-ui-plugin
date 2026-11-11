@@ -4,7 +4,7 @@
 //   trackpad, two fingers      small pixel deltas, often on both axes  → move
 //   trackpad, pinch            ctrlKey set by Chrome, Edge and Firefox  → zoom
 //   mouse wheel                whole notches (wheelDelta multiple of 120) or lines
-//                              → zoom, or move when the user prefers (setting "wheel")
+//                              → move, as everywhere; or zoom if the user prefers (setting "wheel")
 //   ⌘ / Ctrl + mouse wheel     → zoom, whatever the setting
 //   Shift + mouse wheel        → move sideways
 // Safari reports a pinch with its own gesture events, handled by the viewport.
@@ -24,7 +24,7 @@ export function isMouseWheel(event) {
  * @param {"zoom" | "scroll"} wheelSetting what a mouse wheel does
  * @returns {{ kind: "zoom", factor: number } | { kind: "pan", dx: number, dy: number }}
  */
-export function wheelAction(event, wheelSetting = "zoom") {
+export function wheelAction(event, wheelSetting = "scroll") {
   const unit = event.deltaMode === 1 ? LINE : event.deltaMode === 2 ? PAGE : 1;
   const dx = event.deltaX * unit;
   const dy = event.deltaY * unit;

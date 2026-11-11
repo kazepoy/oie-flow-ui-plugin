@@ -49,8 +49,8 @@ step.
 
 ![Channel Flow](doc/images/channel-flow.png)
 
-- Smooth with a trackpad (two fingers to move, pinch to zoom), a mouse wheel and
-  the keyboard; each view keeps its zoom and position for the session.
+- Smooth with a trackpad (two fingers to move, pinch to zoom), a mouse (wheel to
+  move, Ctrl/⌘ + wheel to zoom) and the keyboard; each view keeps its zoom and position for the session.
 - Works with the Role Based Access Control plugin: only what the user's role allows.
 - Settings follow the user from one browser to another (gear button, or
   Manage › Settings › Flow UI).

@@ -134,8 +134,10 @@ button.ofu-channel__name:hover .ofu-channel__label {
 
 .ofu-channel__links {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 4px;
+  min-width: 0;
 }
 
 .ofu-channel__row {
@@ -240,14 +242,16 @@ button.ofu-channel__name:hover .ofu-channel__label {
 }
 
 /* Links between channels (option "Links") */
-/* A Channel Writer card holds its link on a third line. */
-.ofu-card--linked {
+/* A Channel Writer card holds its link on a third line; links stay inside their card. */
+.ofu-card.ofu-card--linked {
   height: auto;
   min-height: var(--card-height);
 }
 
-.ofu-card .ofu-link {
+.ofu-card .ofu-link,
+.ofu-channel .ofu-link {
   max-width: 100%;
+  min-width: 0;
   font-size: 12px;
 }
 

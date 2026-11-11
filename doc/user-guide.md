@@ -83,7 +83,7 @@ de 3, Columns s'il y a plusieurs chaînes, sinon Line).
 |---|---|
 | Pavé tactile, deux doigts | Déplacer |
 | Pavé tactile, pincement | Zoomer |
-| Molette de souris | Zoomer (ou déplacer, selon le réglage) ; Maj : déplacer à l'horizontale ; ⌘/Ctrl : zoomer toujours |
+| Molette de souris | Déplacer ; Maj + molette : à l'horizontale ; ⌘/Ctrl + molette : zoomer (un réglage peut faire zoomer la molette) |
 | Glisser le fond, ou Espace + glisser | Déplacer |
 | Flèches du clavier | Déplacer (Maj : plus vite) |
 | `+` `-` | Zoomer |
@@ -115,7 +115,7 @@ d'un navigateur à l'autre et s'appliquent aussitôt :
 | Écran | Réglage |
 |---|---|
 | Flows Monitoring | Groupes ouverts par défaut (le premier, tous, aucun) ; rafraîchissement des compteurs |
-| Channel Flow | Vue par défaut ; étapes affichées par tuile (3, 5, 8 ou toutes, puis « +N more ») ; effet de la molette (zoomer ou déplacer) |
+| Channel Flow | Vue par défaut ; étapes affichées par tuile (3, 5, 8 ou toutes, puis « +N more ») ; effet de la molette (déplacer, par défaut, ou zoomer) |
 
 Un lien permet de réafficher les indices masqués.
 

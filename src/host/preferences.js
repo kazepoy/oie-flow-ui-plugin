@@ -14,7 +14,7 @@ const LOCAL_KEY = "oie.flow-ui.settings";
 export const SETTING_CHOICES = {
   defaultLayout: ["auto", "line", "columns", "bands"],
   visibleSteps: [5, 3, 8, 0],
-  wheel: ["zoom", "scroll"],
+  wheel: ["scroll", "zoom"],
   expandedGroups: ["first", "all", "none"],
   refreshSeconds: [5, 10, 30, 60, 0]
 };
@@ -41,6 +41,12 @@ export function sanitize(value) {
   }
   if (Array.isArray(value.hiddenHints)) settings.hiddenHints = value.hiddenHints.filter(id => typeof id === "string");
   return settings;
+}
+
+/** Only what differs from the defaults is saved, so a default can change later. */
+export function changedSettings(value) {
+  const defaults = defaultSettings();
+  return Object.fromEntries(Object.entries(value).filter(([key, item]) => JSON.stringify(item) !== JSON.stringify(defaults[key])));
 }
 
 let settings = defaultSettings();
@@ -81,11 +87,11 @@ export async function loadSettings() {
 export async function updateSettings(patch) {
   settings = sanitize({ ...settings, ...patch });
   listeners.forEach(listener => listener(settings));
-  writeLocal(settings);
+  writeLocal(changedSettings(settings));
   const user = currentUser();
   if (!user || !savedOnServer) return;
   try {
-    await setUserPreference(user.id, PREFERENCE, JSON.stringify(settings));
+    await setUserPreference(user.id, PREFERENCE, JSON.stringify(changedSettings(settings)));
   } catch {
     savedOnServer = false;
     toast(t("settings.savedLocally"), "warn");

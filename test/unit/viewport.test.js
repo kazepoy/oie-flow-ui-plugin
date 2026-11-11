@@ -34,7 +34,7 @@ test("the starting view is 100 % from where the message enters", () => {
   assert.deepEqual(startView({ width: 3000, height: 2000 }, viewport, { x: 100, y: 40, centered: true }), { s: 1, x: 0, y: 0 });
 });
 
-test("a trackpad moves, a pinch zooms, a mouse wheel zooms unless set to scroll", () => {
+test("a trackpad and a mouse wheel move, a pinch and Ctrl + wheel zoom; a setting makes the wheel zoom", () => {
   const trackpad = { deltaX: 3, deltaY: 12, deltaMode: 0, wheelDeltaY: -14 };
   const mouse = { deltaX: 0, deltaY: 100, deltaMode: 0, wheelDeltaY: -120 };
   assert.equal(isMouseWheel(trackpad), false);
@@ -46,6 +46,8 @@ test("a trackpad moves, a pinch zooms, a mouse wheel zooms unless set to scroll"
   assert.equal(wheelAction(mouse, "zoom").kind, "zoom");
   assert.ok(wheelAction(mouse, "zoom").factor < 1, "wheel down zooms out");
   assert.deepEqual(wheelAction(mouse, "scroll"), { kind: "pan", dx: 0, dy: 100 });
+  assert.deepEqual(wheelAction(mouse), { kind: "pan", dx: 0, dy: 100 }, "moving is the default");
+  assert.equal(wheelAction({ ...mouse, ctrlKey: true }).kind, "zoom");
   assert.deepEqual(wheelAction({ ...mouse, shiftKey: true }, "zoom"), { kind: "pan", dx: 100, dy: 0 });
   assert.equal(wheelAction({ ...mouse, metaKey: true }, "scroll").kind, "zoom");
 });

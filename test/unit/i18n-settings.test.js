@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { catalogs, resolveLocale, t } from "../../src/i18n/index.js";
-import { defaultSettings, sanitize } from "../../src/host/preferences.js";
+import { changedSettings, defaultSettings, sanitize } from "../../src/host/preferences.js";
 import { placeUnder } from "../../src/shared/ui/place.js";
 
 test("texts take parameters and plural forms; an unknown key shows itself", () => {
@@ -38,10 +38,13 @@ test("settings keep known values only", () => {
   assert.deepEqual(sanitize(null), defaultSettings());
   const settings = sanitize({ defaultLayout: "bands", wheel: "sideways", refreshSeconds: 30, hiddenHints: ["a", 3], extra: true });
   assert.equal(settings.defaultLayout, "bands");
-  assert.equal(settings.wheel, "zoom");
+  assert.equal(settings.wheel, "scroll");
   assert.equal(settings.refreshSeconds, 30);
   assert.deepEqual(settings.hiddenHints, ["a"]);
   assert.equal("extra" in settings, false);
+  // Only changes are saved: a default can evolve.
+  assert.deepEqual(changedSettings(settings), { defaultLayout: "bands", refreshSeconds: 30, hiddenHints: ["a"] });
+  assert.deepEqual(changedSettings(defaultSettings()), {});
 });
 
 test("a popover opens under its button, or above it near the bottom of the window", () => {

@@ -68,14 +68,22 @@ describe("as admin", () => {
     await shot(page, "e2e-channel-flow-bands");
   });
 
-  test("zoom follows the wheel, and the view is kept when coming back", async () => {
+  test("the wheel moves, Ctrl + wheel zooms, and the view is kept when coming back", async () => {
     const { page } = session;
     const level = () => page.locator(".ofu-zoom__level").innerText();
     assert.equal(await level(), "100%");
     const box = await page.locator(".ofu-flow__viewport").boundingBox();
     await page.mouse.move(box.x + 300, box.y + 200);
+    const stage = page.locator(".ofu-flow__stage");
+    const before = await stage.evaluate(element => element.style.transform);
+    await page.mouse.wheel(0, 100);
+    await page.waitForTimeout(300);
+    assert.equal(await level(), "100%", "the wheel alone does not zoom");
+    assert.notEqual(await stage.evaluate(element => element.style.transform), before, "the wheel moves the diagram");
+    await page.keyboard.down("Control");
     await page.mouse.wheel(0, 100);
     await page.mouse.wheel(0, 100);
+    await page.keyboard.up("Control");
     await page.waitForTimeout(300);
     const zoomed = await level();
     assert.notEqual(zoomed, "100%");

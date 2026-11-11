@@ -71,8 +71,8 @@ export default {
     },
     wheel: {
       label: "Mouse wheel",
-      zoom: "Zooms",
-      scroll: "Scrolls"
+      scroll: "Moves (⌘/Ctrl + wheel zooms)",
+      zoom: "Zooms"
     }
   },
 
@@ -298,7 +298,7 @@ export default {
       gesture: {
         trackpadMove: "Two fingers move the diagram.",
         pinch: "Pinch to zoom.",
-        wheel: "The wheel zooms (or moves, see Settings). Shift + wheel moves sideways; ⌘/Ctrl + wheel always zooms.",
+        wheel: "The wheel moves; Shift + wheel moves sideways; ⌘/Ctrl + wheel zooms. A setting can make the wheel zoom.",
         drag: "Drag the background to move. Space + drag works anywhere.",
         arrows: "Move.",
         zoomKeys: "Zoom in and out.",
