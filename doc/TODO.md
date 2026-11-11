@@ -6,13 +6,11 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
 
 ## Fonctions
 
-- [ ] **Démarrer, mettre en pause, arrêter depuis Flows Monitoring.** Sur la carte du
-  canal : démarrer, pause, reprise, arrêt ; sur chaque carte de connecteur :
-  démarrer et arrêter le connecteur. API de Web Admin : `platform.api.status.start /
-  pause / resume / stop` et `startConnector / stopConnector`. Droit RBAC
-  `startStopChannels` (tâches `doStart`, `doPause`, `doStop`… à confirmer dans la table
-  du plugin RBAC) ; boutons masqués sans le droit ; confirmation avant un arrêt ;
-  compteurs et état relus aussitôt après l'action.
+- [x] **Démarrer, mettre en pause, arrêter depuis Flows Monitoring** (fait le
+  2026-11-11) : commandes du canal selon son état, arrêt et démarrage de chaque
+  connecteur d'un canal démarré, confirmation avant un arrêt, tâches RBAC `doStart`,
+  `doPause`, `doStop`, `doStartConnector`, `doStopConnector` (`startStopChannels`).
+  Reste à envisager : l'arrêt forcé (*Halt*) et des commandes groupées par groupe.
 - [ ] **Vue des liens entre canaux.** Les pastilles « → canal » / « ← canal » sont
   faites (option *Links*). Reste une vue dédiée qui dessine ces liens (graphe des
   canaux, groupes en cadres), utile quand les canaux liés sont dans des groupes

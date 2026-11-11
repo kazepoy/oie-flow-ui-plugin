@@ -15,7 +15,13 @@ export const TASKS = {
   editChannel: ["channel", "doEditChannel"],
   editFilter: ["channelEdit", "doEditFilter"],
   editTransformer: ["channelEdit", "doEditTransformer"],
-  editResponse: ["channelEdit", "doEditResponseTransformer"]
+  editResponse: ["channelEdit", "doEditResponseTransformer"],
+  // Dashboard tasks: start, pause and stop channels and connectors (startStopChannels).
+  startChannel: ["dashboard", "doStart"],
+  pauseChannel: ["dashboard", "doPause"],
+  stopChannel: ["dashboard", "doStop"],
+  startConnector: ["dashboard", "doStartConnector"],
+  stopConnector: ["dashboard", "doStopConnector"]
 };
 
 /**

@@ -38,7 +38,8 @@ More in the [demo guide](demo/README.md) (in French).
 
 **Flows Monitoring** (Monitor menu): deployed channels by group, one row per
 channel, with message counters for each connector. A counter opens Messages on
-that connector. *Links* shows which channels send to which.
+that connector. *Links* shows which channels send to which. Channels and
+connectors start, pause and stop from their cards.
 
 ![Flows Monitoring](doc/images/flows-monitoring.png)
 

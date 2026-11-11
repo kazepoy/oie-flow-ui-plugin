@@ -12,6 +12,7 @@ const OUTPUT = new URL("./output/", import.meta.url).pathname;
 const LAB_RESULTS = "07516747-4e3e-4cee-80cf-6a9aaf05412e";
 const LAB_ORDERS = "5a4aa0ff-b675-4e44-930a-2e23cffd6eb1";
 const RAD_ORDERS = "00a5626d-4dc6-4d37-ad45-193566bc8691";
+const OPS_HEARTBEAT = "375b787f-7de8-460c-ae99-40303f2cd2d8";
 
 const url = path => new URL(path.replace(/^\//, ""), DEMO_URL).href;
 const shot = (page, name) => page.screenshot({ path: `${OUTPUT}${name}.png` });
@@ -136,6 +137,31 @@ describe("with RBAC roles", () => {
     }
   });
 
+  test("ops pauses, resumes, stops and starts a channel from Flows Monitoring", async () => {
+    const session = await signIn({ user: "ops", password: USER_PASSWORD });
+    try {
+      const { page } = session;
+      await openNav(page, "flow-ui-flows");
+      await page.locator(".ofu-group").first().waitFor();
+      await page.getByRole("button", { name: "Open all groups" }).click();
+      const row = page.locator(`#ofu-lane-${OPS_HEARTBEAT}`);
+      const state = () => row.locator(".ofu-channel__row .ofu-muted").innerText();
+      await row.getByRole("button", { name: /^Pause OPS · Heartbeat/ }).click();
+      await row.getByRole("button", { name: "Resume OPS · Heartbeat", exact: true }).waitFor();
+      assert.equal(await state(), "paused");
+      await row.getByRole("button", { name: "Resume OPS · Heartbeat", exact: true }).click();
+      await row.getByRole("button", { name: "Stop OPS · Heartbeat", exact: true }).click();
+      await page.getByRole("button", { name: "Stop", exact: true }).click();  // Web Admin's confirmation
+      await row.getByRole("button", { name: "Start OPS · Heartbeat", exact: true }).waitFor();
+      assert.equal(await state(), "stopped");
+      await row.getByRole("button", { name: "Start OPS · Heartbeat", exact: true }).click();
+      await row.getByRole("button", { name: "Stop OPS · Heartbeat", exact: true }).waitFor();
+      assert.equal(await state(), "started");
+    } finally {
+      await session.close();
+    }
+  });
+
   test("auditor sees the counters, which open nothing", async () => {
     const session = await signIn({ user: "auditor", password: USER_PASSWORD });
     try {
@@ -143,6 +169,7 @@ describe("with RBAC roles", () => {
       await openNav(page, "flow-ui-flows");
       await page.locator(".ofu-group").first().waitFor();
       assert.equal(await page.locator("button.ofu-counter").count(), 0);
+      assert.equal(await page.locator(".ofu-control").count(), 0, "no start or stop without startStopChannels");
       assert.ok(await page.locator("span.ofu-counter").count() > 0);
     } finally {
       await session.close();

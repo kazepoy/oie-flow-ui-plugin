@@ -17,9 +17,9 @@ const isView = value => value && [value.s, value.x, value.y].every(Number.isFini
 const isControl = target => !!target.closest?.("button, a, input, select, textarea");
 
 /**
- * @param {{ scene: { width: number, height: number, anchor: any }, sessionKey: string, wheel: string }} options
+ * @param {{ scene: { width: number, height: number, anchor: any }, sessionKey: string }} options
  */
-export function useViewport({ scene, sessionKey, wheel }) {
+export function useViewport({ scene, sessionKey }) {
   const viewportRef = useRef(null);
   const stageRef = useRef(null);
   const zoomRef = useRef(null);
@@ -27,8 +27,8 @@ export function useViewport({ scene, sessionKey, wheel }) {
   const frame = useRef(0);
   const saveTimer = useRef(0);
   // Latest values for the listeners, which are installed once.
-  const latest = useRef({ scene, sessionKey, wheel });
-  latest.current = { scene, sessionKey, wheel };
+  const latest = useRef({ scene, sessionKey });
+  latest.current = { scene, sessionKey };
 
   function render() {
     frame.current = 0;
@@ -79,7 +79,7 @@ export function useViewport({ scene, sessionKey, wheel }) {
     };
     const onWheel = event => {
       event.preventDefault();
-      const action = wheelAction(event, latest.current.wheel);
+      const action = wheelAction(event);
       if (action.kind === "zoom") show(zoomAround(view.current, action.factor, ...pointerAt(event)));
       else show(panBy(view.current, action.dx, action.dy));
     };

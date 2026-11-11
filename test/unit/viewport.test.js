@@ -34,22 +34,20 @@ test("the starting view is 100 % from where the message enters", () => {
   assert.deepEqual(startView({ width: 3000, height: 2000 }, viewport, { x: 100, y: 40, centered: true }), { s: 1, x: 0, y: 0 });
 });
 
-test("a trackpad and a mouse wheel move, a pinch and Ctrl + wheel zoom; a setting makes the wheel zoom", () => {
+test("a trackpad and a mouse wheel move, a pinch and Ctrl + wheel zoom", () => {
   const trackpad = { deltaX: 3, deltaY: 12, deltaMode: 0, wheelDeltaY: -14 };
   const mouse = { deltaX: 0, deltaY: 100, deltaMode: 0, wheelDeltaY: -120 };
   assert.equal(isMouseWheel(trackpad), false);
   assert.equal(isMouseWheel(mouse), true);
   assert.equal(isMouseWheel({ deltaX: 0, deltaY: 3, deltaMode: 1 }), true);
-  assert.deepEqual(wheelAction(trackpad, "zoom"), { kind: "pan", dx: 3, dy: 12 });
-  assert.equal(wheelAction({ ...trackpad, ctrlKey: true }, "zoom").kind, "zoom");
+  assert.deepEqual(wheelAction(trackpad), { kind: "pan", dx: 3, dy: 12 });
+  assert.equal(wheelAction({ ...trackpad, ctrlKey: true }).kind, "zoom");
   assert.ok(wheelAction({ ...trackpad, ctrlKey: true, deltaY: -10 }).factor > 1, "pinching out zooms in");
-  assert.equal(wheelAction(mouse, "zoom").kind, "zoom");
-  assert.ok(wheelAction(mouse, "zoom").factor < 1, "wheel down zooms out");
-  assert.deepEqual(wheelAction(mouse, "scroll"), { kind: "pan", dx: 0, dy: 100 });
-  assert.deepEqual(wheelAction(mouse), { kind: "pan", dx: 0, dy: 100 }, "moving is the default");
+  assert.deepEqual(wheelAction(mouse), { kind: "pan", dx: 0, dy: 100 });
   assert.equal(wheelAction({ ...mouse, ctrlKey: true }).kind, "zoom");
-  assert.deepEqual(wheelAction({ ...mouse, shiftKey: true }, "zoom"), { kind: "pan", dx: 100, dy: 0 });
-  assert.equal(wheelAction({ ...mouse, metaKey: true }, "scroll").kind, "zoom");
+  assert.ok(wheelAction({ ...mouse, ctrlKey: true }).factor < 1, "Ctrl + wheel down zooms out");
+  assert.equal(wheelAction({ ...mouse, metaKey: true }).kind, "zoom");
+  assert.deepEqual(wheelAction({ ...mouse, shiftKey: true }), { kind: "pan", dx: 100, dy: 0 });
 });
 
 test("keys move, zoom, fit and go back to the start", () => {

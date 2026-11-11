@@ -20,6 +20,15 @@ export function currentUser() {
   return current?.store?.getState("user") ?? null;
 }
 
+/**
+ * Web Admin's confirmation dialog; resolves to true when the user confirms.
+ * @param {{ danger?: boolean, okLabel?: string }} [options]
+ */
+export function confirm(title, message, options) {
+  const dialog = current?.ui?.confirmDialog;
+  return dialog ? dialog(title, message, options) : Promise.resolve(window.confirm(`${title}\n\n${message}`));
+}
+
 /** A short notification in the corner of the page. */
 export function toast(message, type = "info") {
   current?.ui?.toast?.(message, type);

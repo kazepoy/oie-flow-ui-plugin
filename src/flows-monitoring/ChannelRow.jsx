@@ -5,6 +5,8 @@
 import { t } from "../i18n/index.js";
 import { cx } from "../shared/ui/Button.jsx";
 import { ChannelLink, ConnectorCard } from "./ConnectorCard.jsx";
+import { ControlButtons } from "./ControlButtons.jsx";
+import { channelCommands } from "./controls.js";
 
 const STATE_TONE = { STARTED: "ok", PAUSED: "warn", STOPPED: "error" };
 
@@ -31,6 +33,7 @@ function ChannelCard({ lane, actions }) {
           <button type="button" className="ofu-button ofu-button--link" title={t("flows.channel.editTitle")}
             onClick={() => actions.openEditor(lane.id)}>{t("flows.channel.edit")}</button>
         )}
+        <ControlButtons commands={channelCommands(lane.state)} target={{ channelId: lane.id, name: lane.name }} actions={actions} />
       </div>
       {actions.showLinks && lane.calledBy.length > 0 && (
         <div className="ofu-channel__links">

@@ -10,7 +10,7 @@ import { channelLinks, waitsOf } from "./model.js";
 /**
  * @param {number} refreshSeconds 0 = only on demand
  * @returns {{ statuses: any[] | null, groups: any[], groupsReadable: boolean, waits: Map<string, Map<number, boolean>>, links: any,
- *             error: string, updated: Date | null, refresh: () => void }}
+ *             error: string, updated: Date | null, refresh: () => void, reloadCounters: () => Promise<void> }}
  */
 export function useStatuses(refreshSeconds) {
   const [data, setData] = useState({ statuses: null, groups: [], groupsReadable: true, waits: new Map(), links: channelLinks([]) });
@@ -50,5 +50,5 @@ export function useStatuses(refreshSeconds) {
     return () => clearInterval(timer);
   }, [load, refreshSeconds]);
 
-  return { ...data, error, updated, refresh: () => load(true) };
+  return { ...data, error, updated, refresh: () => load(true), reloadCounters: () => load(false) };
 }

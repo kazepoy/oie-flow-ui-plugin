@@ -68,11 +68,6 @@ export default {
       line: "Line",
       columns: "Columns",
       bands: "Bands"
-    },
-    wheel: {
-      label: "Mouse wheel",
-      scroll: "Moves (⌘/Ctrl + wheel zooms)",
-      zoom: "Zooms"
     }
   },
 
@@ -84,6 +79,28 @@ export default {
     lifetimeTitle: "Counters since the channels were created, instead of since their statistics were last reset",
     links: "Links",
     linksTitle: "Show which channels send to which (Channel Writer → Channel Reader)",
+    control: {
+      group: "Start, pause or stop {name}",
+      start: "Start {name}",
+      resume: "Resume {name}",
+      pause: "Pause {name}: the source stops receiving, destinations keep sending",
+      stop: "Stop {name}",
+      startConnector: "Start {name}",
+      stopConnector: "Stop {name}",
+      confirm: {
+        stop: { title: "Stop the channel?", message: "{name} stops receiving and sending messages until it is started again.", ok: "Stop" },
+        stopConnector: { title: "Stop the connector?", message: "{name} stops until it is started again. The rest of the channel keeps running.", ok: "Stop" }
+      },
+      done: {
+        start: "{name} started",
+        resume: "{name} resumed",
+        pause: "{name} paused",
+        stop: "{name} stopped",
+        startConnector: "{name} started",
+        stopConnector: "{name} stopped"
+      },
+      failed: "{name} could not change state: {error}"
+    },
     link: {
       to: "Sends to {name}",
       from: "Called by {name}",
@@ -175,10 +192,7 @@ export default {
       bands: "Source, destinations and postprocessing in three bands, one block per line. For many destinations or long chains."
     },
     autoTitle: "Chooses the view from the shape of the channel (now: {layout})",
-    hint: {
-      wheelZooms: "Wheel or pinch to zoom · two fingers or drag to move",
-      wheelScrolls: "Pinch or ⌘/Ctrl + wheel to zoom · wheel, two fingers or drag to move"
-    },
+    hint: "Pinch or ⌘/Ctrl + wheel to zoom · wheel, two fingers or drag to move",
     zoom: "Zoom",
     zoomIn: "Zoom in (+)",
     zoomOut: "Zoom out (−)",
@@ -298,7 +312,7 @@ export default {
       gesture: {
         trackpadMove: "Two fingers move the diagram.",
         pinch: "Pinch to zoom.",
-        wheel: "The wheel moves; Shift + wheel moves sideways; ⌘/Ctrl + wheel zooms. A setting can make the wheel zoom.",
+        wheel: "The wheel moves; Shift + wheel moves sideways; ⌘/Ctrl + wheel zooms.",
         drag: "Drag the background to move. Space + drag works anywhere.",
         arrows: "Move.",
         zoomKeys: "Zoom in and out.",

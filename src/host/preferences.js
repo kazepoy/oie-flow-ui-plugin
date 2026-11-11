@@ -14,13 +14,12 @@ const LOCAL_KEY = "oie.flow-ui.settings";
 export const SETTING_CHOICES = {
   defaultLayout: ["auto", "line", "columns", "bands"],
   visibleSteps: [5, 3, 8, 0],
-  wheel: ["scroll", "zoom"],
   expandedGroups: ["first", "all", "none"],
   refreshSeconds: [5, 10, 30, 60, 0]
 };
 
 /**
- * @typedef {{ defaultLayout: string, wheel: string, expandedGroups: string, visibleSteps: number,
+ * @typedef {{ defaultLayout: string, expandedGroups: string, visibleSteps: number,
  *             refreshSeconds: number, hiddenHints: string[] }} Settings
  */
 

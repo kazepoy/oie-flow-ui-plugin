@@ -32,6 +32,18 @@ export async function channelNames() {
   }));
 }
 
+/**
+ * Starts, pauses, resumes or stops a channel, or starts or stops one of its
+ * connectors, as the Dashboard does.
+ * @param {"start" | "pause" | "resume" | "stop" | "startConnector" | "stopConnector"} command
+ */
+export function controlChannel(command, channelId, metaDataId) {
+  const status = api().status;
+  return command === "startConnector" || command === "stopConnector"
+    ? status[command](channelId, metaDataId)
+    : status[command](channelId);
+}
+
 /** A user preference, as a string, or null when unset. */
 export async function userPreference(userId, name) {
   const value = await api().users.getPreference(userId, name, { raw: true });

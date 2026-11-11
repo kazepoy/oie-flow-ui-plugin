@@ -21,6 +21,11 @@ précédente.
 - **Groupes.** Le premier est ouvert, les autres fermés ; un groupe fermé garde ses
   totaux. Le filtre par nom ouvre les groupes qui contiennent un résultat.
   *Lifetime* affiche les compteurs depuis la création des canaux.
+- **Démarrer, mettre en pause, arrêter.** La carte du canal propose les commandes
+  permises par son état : pause et arrêt s'il tourne, reprise et arrêt s'il est en
+  pause, démarrage s'il est arrêté. Chaque connecteur d'un canal démarré s'arrête ou
+  redémarre seul. Un arrêt demande confirmation. Il faut le droit
+  `startStopChannels` ; sans lui, les boutons n'apparaissent pas.
 - Les compteurs se rafraîchissent toutes les 5 secondes (réglable), onglet visible.
   *Refresh* relit aussi les groupes et les chaînes.
 - **Liens entre canaux.** Avec l'option *Links* (cochée par défaut), une destination
@@ -83,7 +88,7 @@ de 3, Columns s'il y a plusieurs chaînes, sinon Line).
 |---|---|
 | Pavé tactile, deux doigts | Déplacer |
 | Pavé tactile, pincement | Zoomer |
-| Molette de souris | Déplacer ; Maj + molette : à l'horizontale ; ⌘/Ctrl + molette : zoomer (un réglage peut faire zoomer la molette) |
+| Molette de souris | Déplacer ; Maj + molette : à l'horizontale ; ⌘/Ctrl + molette : zoomer |
 | Glisser le fond, ou Espace + glisser | Déplacer |
 | Flèches du clavier | Déplacer (Maj : plus vite) |
 | `+` `-` | Zoomer |
@@ -115,7 +120,7 @@ d'un navigateur à l'autre et s'appliquent aussitôt :
 | Écran | Réglage |
 |---|---|
 | Flows Monitoring | Groupes ouverts par défaut (le premier, tous, aucun) ; rafraîchissement des compteurs |
-| Channel Flow | Vue par défaut ; étapes affichées par tuile (3, 5, 8 ou toutes, puis « +N more ») ; effet de la molette (déplacer, par défaut, ou zoomer) |
+| Channel Flow | Vue par défaut ; étapes affichées par tuile (3, 5, 8 ou toutes, puis « +N more ») |
 
 Un lien permet de réafficher les indices masqués.
 
@@ -133,6 +138,7 @@ Flow UI suit les droits de Web Admin :
 | Channel Flow | `viewChannels` |
 | Compteurs et noms cliquables vers Messages | `viewMessages` |
 | *Edit*, ouverture des éditeurs, `+` | `manageChannels` |
+| Démarrer, pause, reprise, arrêt (canal et connecteurs) | `startStopChannels` |
 
 Le serveur ne renvoie que les canaux autorisés : un rôle restreint à quelques
 canaux ne voit qu'eux, et les totaux ne comptent qu'eux.

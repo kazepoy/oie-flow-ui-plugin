@@ -36,7 +36,7 @@ export function ChannelFlow({ channel, mode, onChange }) {
   const selected = choice ?? settings.defaultLayout;
   const layout = selected === "auto" ? pickLayout(model) : selected;
   const scene = layoutScene(layout, model, { visibleSteps: settings.visibleSteps });
-  const viewport = useViewport({ scene, sessionKey: `channel-flow.view.${channel.id}.${layout}`, wheel: settings.wheel });
+  const viewport = useViewport({ scene, sessionKey: `channel-flow.view.${channel.id}.${layout}` });
 
   const choose = value => {
     setChoice(value);
@@ -75,7 +75,7 @@ export function ChannelFlow({ channel, mode, onChange }) {
     <div className="ofu-flow">
       <div className="ofu-toolbar">
         <SegmentedControl label={t("channelFlow.layout")} value={selected} options={options} onChange={choose} />
-        <Hint id="channel-flow.gestures">{t(settings.wheel === "zoom" ? "channelFlow.hint.wheelZooms" : "channelFlow.hint.wheelScrolls")}</Hint>
+        <Hint id="channel-flow.gestures">{t("channelFlow.hint")}</Hint>
         <span className="ofu-toolbar__end">
           <span className="ofu-zoom" role="group" aria-label={t("channelFlow.zoom")}>
             <Button label={t("channelFlow.zoomOut")} onClick={viewport.zoomOut}>−</Button>

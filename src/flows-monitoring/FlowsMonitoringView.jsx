@@ -3,6 +3,9 @@
 // channel, with message counters for each connector.
 import { useEffect, useMemo, useRef, useState } from "../host/react.js";
 import { can } from "../host/permissions.js";
+import { controlChannel } from "../host/api.js";
+import { confirm, toast } from "../host/platform.js";
+import { COMMAND_PERMISSION, CONFIRMED } from "./controls.js";
 import { channelEditorPath, channelFlowPath, messagesPath, navigate } from "../host/routes.js";
 import { readSession, writeSession } from "../host/session.js";
 import { formatTime, t } from "../i18n/index.js";
@@ -22,12 +25,13 @@ const SCROLL_KEY = "flows.scroll";
 
 export function FlowsMonitoringView() {
   const [settings] = useSettings();
-  const { statuses, groups, groupsReadable, waits, links, error, updated, refresh } = useStatuses(settings.refreshSeconds);
+  const { statuses, groups, groupsReadable, waits, links, error, updated, refresh, reloadCounters } = useStatuses(settings.refreshSeconds);
   const [view, setView] = useState(() => readSession(SESSION_KEY, { filter: "", lifetime: false, toggled: {}, links: true }));
   const body = useRef(null);
   const restored = useRef(false);
   const scrollTimer = useRef(0);
   const [highlighted, setHighlighted] = useState(null);
+  const [busy, setBusy] = useState(() => new Set());
 
   const update = patch => setView(previous => ({ ...previous, ...patch }));
   useEffect(() => writeSession(SESSION_KEY, view), [view]);
@@ -57,6 +61,27 @@ export function FlowsMonitoringView() {
     return () => clearTimeout(timer);
   }, [highlighted]);
 
+  // Start, pause, resume or stop a channel or a connector, then read the new state.
+  const busyKey = target => `${target.channelId}:${target.metaDataId ?? ""}`;
+  async function control(command, target) {
+    if (CONFIRMED.has(command)) {
+      const confirmed = await confirm(t(`flows.control.confirm.${command}.title`),
+        t(`flows.control.confirm.${command}.message`, { name: target.name }), { danger: true, okLabel: t(`flows.control.confirm.${command}.ok`) });
+      if (!confirmed) return;
+    }
+    const key = busyKey(target);
+    setBusy(previous => new Set(previous).add(key));
+    try {
+      await controlChannel(command, target.channelId, target.metaDataId);
+      toast(t(`flows.control.done.${command}`, { name: target.name }));
+    } catch (failure) {
+      toast(t("flows.control.failed", { name: target.name, error: failure?.message || String(failure) }), "error");
+    } finally {
+      await reloadCounters();
+      setBusy(previous => { const next = new Set(previous); next.delete(key); return next; });
+    }
+  }
+
   // The scroll position is saved apart, without re-rendering the view.
   const saveScroll = event => {
     const top = event.currentTarget.scrollTop;
@@ -72,6 +97,9 @@ export function FlowsMonitoringView() {
     openFlow: channelId => navigate(channelFlowPath(channelId)),
     openEditor: channelId => navigate(channelEditorPath(channelId)),
     showLinks: view.links,
+    canControl: command => can(COMMAND_PERMISSION[command]),
+    isBusy: target => busy.has(busyKey(target)),
+    control,
     highlighted,
     channelName: channelId => names.get(String(channelId)) ?? null,
     focusLane: channelId => {

@@ -4,6 +4,8 @@ import { t } from "../i18n/index.js";
 import { cx } from "../shared/ui/Button.jsx";
 import { DESTINATION_COUNTERS, SOURCE_COUNTERS } from "../shared/model/stats.js";
 import { ConnectorCounters } from "./Counters.jsx";
+import { ControlButtons } from "./ControlButtons.jsx";
+import { connectorCommands } from "./controls.js";
 
 /**
  * @param {{ lane: any, connector: any, isSource: boolean, actions: any }} props
@@ -25,9 +27,13 @@ export function ConnectorCard({ lane, connector, isSource, actions }) {
     <div className={cx("ofu-card", isSource ? "ofu-card--source" : "ofu-card--destination",
       connector.stats.ERROR > 0 ? "ofu-card--error" : connector.stats.QUEUED > 0 && "ofu-card--queued",
       stopped && "ofu-card--stopped", linked && "ofu-card--linked")}>
-      {open
-        ? <button type="button" className="ofu-card__title" title={t("flows.card.openMessages", { where })} onClick={open}>{title}</button>
-        : <div className="ofu-card__title">{title}</div>}
+      <div className="ofu-card__head">
+        {open
+          ? <button type="button" className="ofu-card__title" title={t("flows.card.openMessages", { where })} onClick={open}>{title}</button>
+          : <div className="ofu-card__title">{title}</div>}
+        <ControlButtons commands={connectorCommands(lane.state, connector.state)}
+          target={{ channelId: lane.id, metaDataId: connector.metaDataId, name: where }} actions={actions} />
+      </div>
       <ConnectorCounters stats={connector.stats} keys={isSource ? SOURCE_COUNTERS : DESTINATION_COUNTERS}
         where={where} onOpen={open} />
       {/* Inside the card: outside, the arrows of parallel chains would cross it. */}

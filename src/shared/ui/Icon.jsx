@@ -17,6 +17,9 @@ const PATHS = {
   close: "M6 6l12 12M18 6L6 18",
   flow: "M3 6h5v4H3zM16 3h5v4h-5zM16 14h5v4h-5zM8 8h4v8h4M12 5h4M12 16h4",
   expand: "M4 9l8-6 8 6M4 15l8 6 8-6",
+  play: "M8 5l11 7-11 7z",
+  pause: "M8 5v14M16 5v14",
+  stop: "M6 6h12v12H6z",
   collapse: "M4 3l8 6 8-6M4 21l8-6 8 6"
 };
 

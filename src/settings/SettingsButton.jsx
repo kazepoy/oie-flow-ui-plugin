@@ -10,7 +10,7 @@ import { useSettings } from "../shared/ui/useSettings.js";
 /** The settings of each screen. */
 const SCREENS = {
   flows: { title: "flows.title", names: ["expandedGroups", "refreshSeconds"] },
-  channelFlow: { title: "channelFlow.title", names: ["defaultLayout", "visibleSteps", "wheel"] }
+  channelFlow: { title: "channelFlow.title", names: ["defaultLayout", "visibleSteps"] }
 };
 
 /** One setting: its label on the left, its choices on the right, as in Web Admin's Settings. */

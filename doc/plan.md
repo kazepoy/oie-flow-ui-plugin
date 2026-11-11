@@ -298,16 +298,14 @@ Objectif : fluide à 60 images/s au pavé tactile, à la souris et au clavier.
 |---|---|
 | Pavé tactile, deux doigts | Déplacement |
 | Pavé tactile, pincement | Zoom autour des doigts (Chrome/Firefox : `wheel` + `ctrlKey` ; Safari : `gesturestart/change`) |
-| Molette de souris | Déplacement (standard) ; `Shift` + molette : horizontal ; `⌘`/`Ctrl` + molette : zoom autour du pointeur. Réglage *Wheel zooms* pour zoomer à la molette |
+| Molette de souris | Déplacement (standard) ; `Shift` + molette : horizontal ; `⌘`/`Ctrl` + molette : zoom autour du pointeur |
 | Glisser le fond, ou `Espace` + glisser, ou bouton du milieu | Déplacement |
 | Clavier, schéma focalisé | Flèches : déplacement (`Shift` : plus vite) ; `+` / `-` : zoom ; `0` : ajuster ; `1` : 100 % |
 | Barre d'outils | `−`, niveau, `+`, *Fit*, *100%* |
 
 - Une seule transformation CSS sur la scène, appliquée dans `requestAnimationFrame`.
   Aucun rendu React pendant un geste (vérifié par un test).
-- Détection souris / pavé tactile isolée dans `gestures.js` et testée. Réglage de
-  secours *Wheel zooms* / *Wheel scrolls* (§5.6), pour les souris à défilement fin mal
-  reconnues.
+- Détection souris / pavé tactile isolée dans `gestures.js` et testée.
 - **Point de départ : le début du flux, lisible.** À la première ouverture d'un canal
   et à chaque changement de vue, le schéma s'affiche à 100 %, ancré sur l'émetteur
   (en haut à gauche, là où entre le message ; en haut au centre dans la vue Columns).
@@ -328,7 +326,7 @@ Deux niveaux, à ne pas confondre :
 | | Réglages | État de session |
 |---|---|---|
 | Quoi | Choix durables de l'utilisateur | Où il en était |
-| Exemples | Vue par défaut (Auto, Line, Columns, Bands) ; molette (zoom ou défilement) ; groupes dépliés par défaut (premier, tous, aucun) ; étapes visibles par tuile ; intervalle de rafraîchissement ; aides masquées | Channel Flow, par canal : vue, zoom, position. Flows Monitoring : groupes dépliés, filtre, *Lifetime*, défilement |
+| Exemples | Vue par défaut (Auto, Line, Columns, Bands) ; groupes dépliés par défaut (premier, tous, aucun) ; étapes visibles par tuile ; intervalle de rafraîchissement ; aides masquées | Channel Flow, par canal : vue, zoom, position. Flows Monitoring : groupes dépliés, filtre, *Lifetime*, défilement |
 | Stockage | Préférences de l'utilisateur dans OIE (`PUT /api/users/{id}/preferences/flowui.*`), donc les mêmes sur tous ses navigateurs | `sessionStorage` : survit à la navigation et au rechargement, disparaît avec l'onglet |
 | Où on les change | Engrenage de chaque écran (ses réglages), ou Manage › Settings › Flow UI (tous) | Rien à faire : restauré au retour sur la page |
 
@@ -532,7 +530,7 @@ existent.
 | 2 | Clic sur un compteur de statut | Messages filtré sur le connecteur seulement, jusqu'à `?status=` en amont |
 | 3 | Outillage | esbuild + JSX + JSDoc vérifié par `tsc`, pas de TypeScript compilé |
 | 4 | Géométrie du schéma | Calculée (§5.3) plutôt que mesurée dans le DOM |
-| 5 | Molette de souris | Comportement standard : la molette déplace, `⌘`/`Ctrl` + molette zoome (révisé le 2026-11-11, la v2 zoomait) ; réglage pour zoomer à la molette |
+| 5 | Molette de souris | Comportement standard : la molette déplace, `⌘`/`Ctrl` + molette zoome (révisé le 2026-11-11, la v2 zoomait) ; pas de réglage |
 | 6 | Identité du plugin | Nom « OIE Flow UI », id et dossier d'extension `flow-ui`, licence MPL-2.0 |
 | 7 | Libellés du menu | « Flows Monitoring » (Monitor) et « Channel Flow » (Design) |
 | 8 | Langue de la documentation | README en anglais, `doc/` en français (comme le mapper) |

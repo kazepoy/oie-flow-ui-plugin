@@ -59,13 +59,14 @@
 .ofu-status-QUEUED { --ofu-status: var(--ofu-queued); }
 .ofu-status-ERROR { --ofu-status: var(--ofu-error); }
 
-.ofu *,
-.ofu *::before,
-.ofu *::after {
+/* Base rules without weight (:where), so any component class overrides them. */
+:where(.ofu) *,
+:where(.ofu) *::before,
+:where(.ofu) *::after {
   box-sizing: border-box;
 }
 
-.ofu button {
+:where(.ofu) button {
   font: inherit;
   color: inherit;
 }
