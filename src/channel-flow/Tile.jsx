@@ -88,7 +88,7 @@ export function Tile({ placed, where, act }) {
       {steps && !tile.empty && (
         <ul className="ofu-tile__steps">
           {tile.items.slice(0, shown).map(item => (
-            <li key={item.index}><StepChip item={item} onOpen={canOpen ? () => act.open({ ...tile.target, index: item.index }) : undefined} /></li>
+            <li key={item.index}><StepChip item={item} onOpen={canOpen ? () => act.open({ ...tile.target, index: item.index, name: item.name }) : undefined} /></li>
           ))}
           {more > 0 && (
             <li>

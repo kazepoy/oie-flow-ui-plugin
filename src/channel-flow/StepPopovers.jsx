@@ -16,7 +16,7 @@ export function StepList({ popover, act, onClose }) {
       <ol className="ofu-step-list">
         {tile.items.map(item => (
           <li key={item.index}>
-            <StepChip item={item} onOpen={canOpen ? () => { onClose(); act.open({ ...tile.target, index: item.index }); } : undefined} />
+            <StepChip item={item} onOpen={canOpen ? () => { onClose(); act.open({ ...tile.target, index: item.index, name: item.name }); } : undefined} />
           </li>
         ))}
       </ol>

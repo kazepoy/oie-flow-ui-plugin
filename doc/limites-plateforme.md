@@ -103,11 +103,20 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
   (`/channels/:id/filter/:metaDataId`…), sans paramètre pour sélectionner une étape.
   L'onglet actif de l'éditeur, la destination sélectionnée et le script affiché
   sont un état interne, sans route ni API.
-- **Preuve.** `assets/channel-editor-*.js` : l'onglet courant est un état React local.
-- **Impact.** Un clic sur un connecteur ou un script dans Channel Flow ne peut pas
-  ouvrir le bon endroit. Le mapper passait par le DOM (focus d'onglet Radix, setter
-  natif de `select`, lignes `.dest-grid`).
-- **Contournement.** Ouverture de l'éditeur du canal, sans ciblage.
+- **Preuve.** Chaque écran démarre sur une valeur fixe :
+  `assets/channel-editor-*.js` : onglet `useState("Summary")`, script `useState(Tt[0])`
+  (*Deploy*) ; `assets/filter-transformer-*.js` : sélection
+  `useState(() => elements.length ? [0] : null)` (première étape).
+- **Impact.** Sans ciblage, un clic sur un script, un connecteur ou une étape autre
+  que la première dans Channel Flow arrive sur *Summary* ou sur l'étape 1.
+- **Contournement.** Contournement par le DOM, assumé et circonscrit à
+  `src/host/editor-dom.js` : après la navigation, Flow UI actionne les contrôles
+  accessibles que l'éditeur affiche déjà, comme un utilisateur au clavier (focus de
+  l'onglet `[role="tab"]` de *Channel sections*, setter natif du `select` des scripts,
+  clic sur la ligne `.dest-grid` ou `tr[data-path]`). Si un contrôle n'apparaît pas
+  dans les 5 secondes, un toast dit où cliquer. Test e2e : *a click reaches the step,
+  the script or the destination in the editor*. À revérifier à chaque version de
+  Web Admin.
 - **Demande amont.** `/channels/:id/edit?tab=destinations&metaDataId=3`,
   `?tab=scripts&script=deploy`, `?tab=source`, et `?step=4` sur les routes de filtre
   et de transformer.

@@ -107,6 +107,39 @@ describe("as admin", () => {
     await page.waitForURL(/\/transformer\/0$/);
   });
 
+  test("a click reaches the step, the script or the destination in the editor (WA-02)", async () => {
+    const { page } = session;
+    const selectedTab = () => page.locator('[role="tablist"][aria-label="Channel sections"] [role="tab"][aria-selected="true"]').innerText();
+    const openFlow = async () => {
+      await page.goto(url(`channel-flow/${LAB_RESULTS}`));
+      await page.locator(".ofu-block").first().waitFor();
+    };
+    // Second step of the source transformer: the editor selects the first one by itself.
+    await openFlow();
+    await page.locator(".ofu-chip[title='Order number']").click();
+    await page.waitForURL(/\/transformer\/0$/);
+    await page.locator('tr[data-path="1"].selected').waitFor();
+    for (const [name, key] of [["Postprocessor", "postprocessingScript"], ["Deploy", "deployScript"], ["Undeploy", "undeployScript"]]) {
+      await openFlow();
+      await page.getByRole("button", { name: new RegExp(`^Open ${name} ·`) }).click();
+      await page.waitForURL(/\/edit$/);
+      await page.waitForFunction(value => document.querySelector('[role="tabpanel"] select')?.value === value, key);
+      assert.equal(await selectedTab(), "Scripts");
+    }
+    await openFlow();
+    await page.getByRole("button", { name: /^Open Connector · Destination 3 ·/ }).click();
+    await page.locator(".dest-grid tbody tr.selected td.num", { hasText: "3" }).waitFor();
+    assert.equal(await selectedTab(), "Destinations");
+    // From the editor's own Flow tab, only the tab changes.
+    await page.getByRole("tab", { name: "Flow" }).click();
+    await page.locator(".ofu-block").first().waitFor();
+    await page.getByRole("button", { name: /^Open Postprocessor ·/ }).click();
+    await page.waitForFunction(() => document.querySelector('[role="tabpanel"] select')?.value === "postprocessingScript");
+    assert.equal(await selectedTab(), "Scripts");
+    await shot(page, "e2e-open-postprocessor");
+    assert.deepEqual(pluginErrors(session.errors), []);
+  });
+
   test("the channel editor has a Flow tab, where + adds a step", async () => {
     const { page } = session;
     await page.goto(url(`channels/${LAB_ORDERS}/edit`));

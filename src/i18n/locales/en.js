@@ -294,7 +294,8 @@ export default {
       source: "Open the Source tab to edit the source connector.",
       destination: "Open the Destinations tab, destination {id}, to edit this connector.",
       script: "Open the Scripts tab, {script}, to edit this script.",
-      attachments: "Open the Summary tab to edit the attachments."
+      attachments: "Open the Summary tab to edit the attachments.",
+      step: "Select step {index} ({name}) in the list to edit it."
     },
     help: {
       reading: "Reading the diagram",

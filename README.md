@@ -68,6 +68,11 @@ moved into Web Admin later. When that API falls short, the plugin offers a
 simpler behaviour and the gap is recorded as a request for Web Admin
 ([platform limits](doc/limites-plateforme.md)).
 
+One exception: Web Admin cannot open a tab, a script, a destination or a step of
+the channel editor, so Channel Flow selects them through the controls the editor
+renders. This code is kept in one file (`src/host/editor-dom.js`) and, if a
+control is missing, a message says where to click.
+
 ## Origin
 
 I first wrote Flow and Flows quickly, by vibe coding, inside my

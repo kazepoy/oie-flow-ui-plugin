@@ -83,7 +83,7 @@ code. Les décisions UX validées sur la v2 sont conservées (voir §6).
 | CSS dans des chaînes JS, règles compressées sur une ligne | Illisible, non outillable | Fichiers `.css` par composant, jetons communs, lint CSS |
 | Filtre *Status* de Messages coché en simulant des clics (MutationObserver, `PointerEvent`) | Hack fragile, casse au moindre changement de Messages | Ouverture filtrée par connecteur seulement ; statut quand Web Admin aura `?status=` (§10) |
 | Ouverture automatique de l'onglet Flow par focus d'un onglet Radix, écouteur global sur `window` | Hack, détourne le comportement de l'éditeur | Supprimée : Channel Flow devient une vue Design à part entière (§5.1) |
-| Navigation vers Scripts / Destinations par le DOM (setter natif de `select`, `.dest-grid`) | Dépend du markup interne | Ouvre l'éditeur du canal ; ciblage fin quand Web Admin aura les paramètres d'URL (§10) |
+| Navigation vers Scripts / Destinations par le DOM (setter natif de `select`, `.dest-grid`) | Dépend du markup interne | Conservée, mais isolée dans `src/host/editor-dom.js`, couverte par un test e2e, avec un toast qui dit où cliquer si un contrôle manque ; à retirer quand Web Admin aura les paramètres d'URL (§10, [WA-02](limites-plateforme.md#wa-02)) |
 | Lien *Edit* affiché sans `manageChannels` | Mène à *Access denied* | Masqué via `platform.checkTask` |
 | Deux règles de chaînage (`destinationChains` et `channelLanes`) | Logique dupliquée | Un module `model/chains` partagé |
 | Géométrie des flèches mesurée dans le DOM et divisée par l'échelle | Couplage au rendu, difficile à tester | Mise en page calculée par des fonctions pures (§5.3) |
@@ -519,7 +519,8 @@ Chaque phase se termine par une vérification visuelle dans la démo.
 ## 10. Demandes à faire en amont (Web Admin)
 
 À proposer au projet Web Support / Web Admin. En attendant, le plugin dégrade
-proprement, sans manipuler le DOM. Le détail des constats, preuves et contournements
+proprement ; seule l'ouverture d'un onglet, d'un script, d'une destination ou d'une
+étape de l'éditeur passe par le DOM (2.). Le détail des constats, preuves et contournements
 est tenu dans [limites-plateforme.md](limites-plateforme.md).
 
 1. Messages : paramètre `?status=` (et éventuellement `?status=ERROR,QUEUED`).
