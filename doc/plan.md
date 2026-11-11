@@ -20,18 +20,16 @@ Cible : OIE 4.7.0, Web Support 1.3.0 (Web Admin 1.3.0, API plugin 4.10), RBAC 1.
 | 0. Socle et vérifications | Fait : build esbuild, ZIP sans Java accepté (WS-01), menus et droits vérifiés |
 | 1. Démo | Fait : générateur `seed/`, base `db/oie-demo.sql.gz`, `reset.sh`, profil `traffic`, `examples/send.sh` |
 | 2. Fondations partagées | Fait : `host/`, i18n, jetons, contrôles, réglages, état de session |
-| 3. Flows Monitoring | Fait, vérifié dans la démo avec les comptes RBAC ; liens entre canaux (option *Links*) ajoutés |
+| 3. Flows Monitoring | Fait, vérifié dans la démo avec les comptes RBAC ; ajouts : liens entre canaux (option *Links*), démarrer / pause / arrêt des canaux et connecteurs |
 | 4. Channel Flow, schéma | Fait : trois vues calculées, sélecteur, action *Show flow* |
-| 5. Channel Flow, interaction | Fait : zoom et déplacement, onglet Flow, `+`. À vérifier sur un vrai pavé tactile et dans Safari |
-| 6. Aides et finitions | Fait en partie : aides `?`, indice, états vides. Revue d'accessibilité à faire |
-| 7. Documentation et livraison | Fait en partie : README, guide, architecture, i18n. CI et release à faire |
+| 5. Channel Flow, interaction | Fait : zoom et déplacement (molette standard), onglet Flow, `+`, étapes visibles réglables. À vérifier sur un vrai pavé tactile et dans Safari |
+| 6. Aides et finitions | Fait en partie : aides `?`, indice, états vides, réglages dans chaque écran et dans Manage › Settings. Revue d'accessibilité à faire |
+| 7. Documentation et livraison | Fait en partie : README, guide avec captures, architecture, i18n, CI écrite. CI à faire tourner, release à publier |
 | 8. Retrait dans le mapper | À faire |
 
-Écarts avec le plan ci-dessous : `pick-layout.js` est dans `model/flow-model.js` ;
-la mise en page est dans `layout/` (`geometry`, `line`, `columns`, `bands`,
-`edges`, `parts`, `scene`) ; l'accès à l'éditeur de canal est dans
-`host/editor.js` ; les réglages sont dans `settings/`. ESLint et Stylelint ne sont
-pas encore en place (vérification de types et tests seulement).
+L'arborescence du §3.1 décrit le code tel qu'il est. Écart restant : ESLint et
+Stylelint ne sont pas en place (vérification de types et tests seulement). Ce qui
+reste à faire est suivi dans [TODO.md](TODO.md).
 
 ## 1. Ce que l'on sait de l'hôte (vérifié dans Web Admin 1.3.0)
 
@@ -54,8 +52,8 @@ Constats tirés du WAR de Web Admin et du plugin RBAC installés dans la démo d
   avec `getAssetText` + `blob:` pour chaque fichier, ce que l'on abandonne.
 - **Plugins servis par le moteur.** Web Support expose le dossier
   `extensions/<path>/webadmin/` de chaque extension (recherche de `plugin.json`).
-  Une extension sans code Java (un `plugin.xml` sans `serverClasses`) devrait donc
-  suffire. **À confirmer en phase 0.**
+  Une extension sans code Java (un `plugin.xml` sans `serverClasses`) suffit :
+  vérifié en phase 0 (WS-01).
 - **Messages.** La vue ne lit que `?messageId=` et `?metaDataId=`. Aucun paramètre
   pour le statut : le mapper coche le menu *Status* par manipulation du DOM.
 - **Éditeur de canal.** Routes dédiées pour filtre, transformer et response
@@ -90,7 +88,7 @@ code. Les décisions UX validées sur la v2 sont conservées (voir §6).
 | Deux règles de chaînage (`destinationChains` et `channelLanes`) | Logique dupliquée | Un module `model/chains` partagé |
 | Géométrie des flèches mesurée dans le DOM et divisée par l'échelle | Couplage au rendu, difficile à tester | Mise en page calculée par des fonctions pures (§5.3) |
 | Libellés anglais en dur | Pas de traduction possible | Catalogue i18n, aucune chaîne en dur dans les composants |
-| Détection souris / pavé tactile par `wheelDelta % 120` | Heuristique non isolée | Module de gestes isolé, testé, avec réglage manuel de secours |
+| Molette = zoom, détection souris / pavé tactile par `wheelDelta % 120` | Heuristique non isolée, molette non standard | Module de gestes isolé et testé ; molette standard (défilement, Ctrl/⌘ + molette pour zoomer) |
 
 Le principe : **n'utiliser que l'API publique de Web Admin**. Ce qu'elle ne permet pas
 est soit abandonné, soit dégradé proprement, et fait l'objet d'une demande en amont.
@@ -101,61 +99,61 @@ est soit abandonné, soit dégradé proprement, et fait l'objet d'une demande en
 
 ```text
 oie-flow-ui-plugin/
-  README.md                 présentation (en), captures, installation
-  LICENSE                   MPL-2.0, comme le mapper dont le code est issu
-  CHANGELOG.md
-  package.json              scripts build / test / lint ; dépendances de dev seulement
-  build.mjs                 esbuild : src/ → dist/, puis ZIP d'extension
+  README.md, LICENSE (MPL-2.0), CHANGELOG.md
+  package.json              scripts build / test / check / test:e2e ; dépendances de dev seulement
+  build.mjs                 esbuild : src/ → dist/flow-ui/, puis ZIP d'extension
+  jsconfig.json             vérification de types du JavaScript (tsc --checkJs)
+  tools/zip.mjs             écriture du ZIP, sans outil externe
   extension/
-    plugin.xml              métadonnées OIE (version injectée au build)
+    plugin.xml              métadonnées OIE (version injectée au build), sans Java
     plugin.json             manifeste Web Admin (apiMin, entry)
+  .github/workflows/build.yml  tests, build ; release sur tag vX.Y.Z
   src/
-    index.js                register(platform) : branche les deux écrans, rien d'autre
+    index.js                register(platform) : vues, menus, onglet, action, panneau Settings
+    styles.js               ordre des feuilles CSS
+    types.d.ts              déclarations pour la vérification de types
     host/                   seul endroit qui touche `platform`
-      react.js              liaison au React de l'hôte (JSX)
-      routes.js             chemins Messages, éditeur, filtre/transformer, vues du plugin
-      permissions.js        tâches RBAC utilisées et `can(task)`
-      api.js                statuts, groupes, canaux (appels platform.api typés en JSDoc)
-      styles.js             injection unique des feuilles du plugin
-      preferences.js        réglages de l'utilisateur, enregistrés dans ses préférences OIE (§5.6)
-      session.js            état des vues conservé pendant la session (sessionStorage)
+      platform.js           platform, utilisateur, messages, confirmation
+      react.js, jsx-runtime.js  React de l'hôte, h() pour le JSX
+      api.js                statuts, groupes, canaux, commandes, préférences
+      routes.js             chemins des vues et navigation
+      permissions.js        tâches RBAC et can()
+      editor.js             types d'étapes, ajout d'une étape, ouverture des éditeurs
+      preferences.js        réglages de l'utilisateur (préférences OIE, §5.6)
+      session.js            état des vues pour la session (sessionStorage)
+      styles.js             injection unique des feuilles
     i18n/
-      index.js              t(key, params), pluriels (Intl.PluralRules), nombres, dates
+      index.js              t(key, params), pluriels, nombres, heures
       locales/en.js         catalogue anglais (référence)
     shared/
-      model/chains.js       règle de chaînage des destinations (unique)
-      model/stats.js        lecture des statistiques du moteur
-      ui/                   Button, IconButton, SegmentedControl, Counter, Tooltip,
-                            HelpPopover, EmptyState, Icon (un composant par fichier)
-      styles/tokens.css     jetons du plugin dérivés des jetons de l'hôte
-      styles/controls.css   boutons, segments, champs, popovers
+      model/                xstream.js (listes XStream), chains.js (chaînes), stats.js
+      ui/                   Button, Icon, Popover (+ place.js), Hint, EmptyState, useSettings
+      styles/               tokens.css (couleurs), controls.css (contrôles communs)
+    settings/
+      SettingsButton.jsx    engrenage de chaque écran et panneau Manage › Settings › Flow UI
     flows-monitoring/
-      FlowsMonitoringView.jsx, Toolbar.jsx, GroupSection.jsx, ChannelRow.jsx,
-      ConnectorCard.jsx, Totals.jsx, Legend.jsx
-      useStatuses.js        rafraîchissement, pause onglet caché
-      model.js              groupes → lignes → chaînes → compteurs
+      FlowsMonitoringView.jsx, GroupSection.jsx, ChannelRow.jsx, ConnectorCard.jsx,
+      Counters.jsx, ControlButtons.jsx, FlowsHelp.jsx
+      model.js              groupes → lignes → chaînes → compteurs ; liens entre canaux
+      controls.js           commandes permises selon l'état (démarrer, pause, arrêt)
+      useStatuses.js        chargement et rafraîchissement
       flows-monitoring.css
     channel-flow/
-      ChannelFlowView.jsx   vue routée Design (sélecteur de canal + schéma)
-      ChannelFlowTab.jsx    onglet de l'éditeur (même schéma, brouillon en cours)
-      ChannelPicker.jsx, Toolbar.jsx, Diagram.jsx, Block.jsx, Tile.jsx, Edge.jsx,
-      StepList.jsx, AddStepMenu.jsx, Legend.jsx
-      model/flow-model.js   canal → blocs et tuiles
-      model/pick-layout.js  choix Auto
-      layout/               line.js, columns.js, bands.js, geometry.js (positions + tracés)
-      viewport/             viewport.js (état pan/zoom), gestures.js, keyboard.js
-      editing.js            ajout d'une étape comme le fait l'éditeur
+      ChannelFlowView.jsx   vue Design (sélecteur ou canal enregistré) et onglet de l'éditeur
+      ChannelFlow.jsx       barre d'outils, schéma, popovers
+      ChannelPicker.jsx, Scene.jsx, Block.jsx, Tile.jsx, StepPopovers.jsx, ChannelFlowHelp.jsx
+      model/                flow-model.js (canal → blocs et tuiles, choix Auto), picker.js
+      layout/               geometry, line, columns, bands, edges, parts, scene : positions et flèches
+      viewport/             viewport.js (vue), gestures.js, keyboard.js, useViewport.js
       channel-flow.css
   test/
-    unit/                   node:test, miroir de src/
-    e2e/                    Playwright contre la démo (Chromium, WebKit pour Safari)
+    unit/                   node:test : modèles, géométrie, gestes, i18n, réglages
+    e2e/                    Playwright contre la démo ; screenshots.mjs (captures de la doc)
   demo/                     voir §7
   doc/
-    prompt.md, plan.md
-    architecture.md         modules, flux de données, règles de dépendance
-    user-guide.md           mode d'emploi des deux écrans (captures)
-    i18n.md                 ajouter une langue
-    decisions/              une fiche par décision (format ADR court)
+    plan.md, TODO.md, limites-plateforme.md
+    architecture.md, user-guide.md, i18n.md
+    images/                 captures du README et du guide
 ```
 
 ### 3.2 Règles de code
@@ -227,13 +225,21 @@ Reprise fonctionnelle de la vue Flows du mapper.
   destination attend la précédente). Cartes alignées d'une ligne à l'autre.
 - Compteurs dans le même ordre partout : statut principal (Received pour la source,
   Sent pour une destination), Filtered, Queued, Errored. Vert, gris-bleu, orange,
-  rouge. Carte en erreur bordée de rouge, en file d'attente bordée d'orange,
-  connecteur arrêté en pointillés.
+  rouge. Carte en erreur ou en file d'attente : bordure de 1,5 px, barre à gauche et
+  fond teinté (rouge ou orange) ; connecteur arrêté en pointillés.
 - Clic sur une carte ou un compteur : Messages filtré sur le connecteur. Le statut
   n'est pas présélectionné tant que Web Admin n'accepte pas `?status=` ; l'info-bulle
   le dit (« Opens messages of this connector »).
 - Nouveaux liens : **Flow** sur chaque ligne (ouvre Channel Flow du canal), *Edit*
   soumis au droit.
+- **Liens entre canaux** (option *Links*) : dans sa carte, une destination Channel
+  Writer indique le canal appelé (*Sends to*) ; la carte du canal appelé indique ses
+  appelants (*Called by*). Un clic montre la ligne liée, même dans un autre groupe.
+- **Démarrer, pause, reprise, arrêt** du canal selon son état, et arrêt ou
+  démarrage de chaque connecteur d'un canal démarré ; confirmation avant un arrêt ;
+  droit `startStopChannels`.
+- Sans `viewChannelGroups`, une seule liste (*Groups hidden*) ; sans `viewChannels`,
+  les chaînes et les liens restent inconnus (*Chains hidden*, OIE-01).
 - Rafraîchissement des compteurs toutes les 5 s, onglet visible seulement ;
   structure (groupes, chaînes) au chargement et sur *Refresh*. *Lifetime*, filtre par
   nom.
@@ -272,7 +278,8 @@ quand l'éditeur contient des modifications non enregistrées pour ce canal.
   titre, puis types de données ; titre tronqué avec info-bulle.
 - Flèches : ambre (trajet), pointillés gris (*waits for Dn*), violet (réponse),
   pointillés clairs (destination désactivée). Chaînes parallèles signalées.
-- Cinq étapes visibles par filtre, transformer ou response ; *+N more* ouvre la liste.
+- Cinq étapes visibles par défaut par filtre, transformer ou response (réglage :
+  3, 5, 8 ou toutes) ; *+N more* ouvre la liste.
 - Vues **Line**, **Columns**, **Bands** et **Auto** (Bands à partir de 5 destinations
   ou d'une chaîne de 3, Columns si plusieurs chaînes, sinon Line). Vue par défaut
   réglable (§5.6) ; le choix fait sur un canal est conservé pendant la session.
@@ -345,7 +352,7 @@ Décisions validées pendant la v2 dans le mapper, à respecter :
   info-bulle.
 - Tous les liens sont des flèches ; aucun lien sous un bloc ; lecture de gauche à
   droite (sauf vue Columns).
-- 5 étapes visibles par composant, *+N more* ouvre une liste.
+- 5 étapes visibles par composant (réglable), *+N more* ouvre une liste.
 - Flows : une ligne par canal alignée en haut, compteurs colorés cliquables.
 
 Changement assumé : Flow ne s'ouvre plus automatiquement à l'entrée dans un canal
@@ -380,7 +387,7 @@ ou de canal.
 
 | Service | Contenu |
 |---|---|
-| `oie-engine` | Build officiel d'OIE 4.7.0 (profil `build`). `OIE_ENGINE_IMAGE` permet de réutiliser une image déjà construite, par exemple celle du mapper |
+| `oie-engine` | Build officiel d'OIE 4.7.0 (profil `build`). `OIE_ENGINE_CONTEXT` permet de réutiliser une image déjà construite, par exemple celle du mapper |
 | `oie-db` | PostgreSQL 18 ; charge `db/oie-demo.sql.gz` à la création du volume |
 | `oie-app` | OIE + Web Support 1.3.0 + RBAC 1.3.0 (archives vérifiées par SHA-256) + Flow UI construit dans un étage Node ; `SERVER_ID` fixe |
 | `traffic` | Facultatif (profil `traffic`) : image curl, boucle shell qui envoie des messages réalistes pour voir les compteurs bouger |
@@ -393,29 +400,32 @@ utilise 8443 et 8081-8099), tous réglables dans `.env`. Projet compose
 
 ```text
 demo/
-  compose.yaml, Dockerfile, .env.example, reset.sh
+  compose.yaml, Dockerfile, .env.example, reset.sh, README.md
   db/oie-demo.sql.gz        généré : ne pas modifier à la main
-  seed/                     sources lisibles du dump
-    channels/<groupe>/*.xml   un canal par fichier, rangés par groupe
-    groups.xml                groupes de canaux
-    rbac/roles.json           rôles RBAC (export du plugin)
-    users.txt                 comptes de démo (identifiant, rôle)
-    messages/<canal>/*.hl7|json|xml   messages joués pour les compteurs
+  seed/                     sources lisibles du dump (voir seed/README.md)
+    channels.mjs              canaux, groupes, rôles RBAC et comptes : la source à modifier
+    dsl.mjs                   vocabulaire de channels.mjs (connecteurs, étapes, règles)
+    messages/                 messages joués ({{n}} : numéro, {{ts}} : horodatage)
+    tools/generate.mjs        channels.mjs → generated/, avec les défauts de Web Admin
+    generated/                canaux (JSON), groupes, rôles (XML), listes pour le shell
     build-dump.sh             régénère db/oie-demo.sql.gz (shell + curl)
+    traffic.sh                trafic continu (profil traffic)
   examples/
     send.sh                   envoie un message vers un listener (MLLP par nc, HTTP par curl)
     demo.http                 appels REST commentés
 ```
 
-`build-dump.sh` lance une pile vide (profil `seed`), importe canaux, groupes, rôles et
-comptes par l'API REST, déploie, joue les messages de `seed/messages/`, attend la fin
-des traitements, met les canaux d'exemple dans l'état voulu (arrêté, en pause),
-puis exporte la base avec `pg_dump` (même image PostgreSQL). Le script est en shell
-et curl, comme l'init de la démo du mapper ; il n'est utile qu'aux mainteneurs.
+`tools/generate.mjs` (Node, pour les mainteneurs) part des valeurs par défaut que
+Web Admin donne aux connecteurs, types de données, étapes et règles : il charge ses
+modules depuis le WAR extrait de l'image. `build-dump.sh` lance une pile vide dans un
+projet compose à part, importe canaux, groupes, rôles et comptes par l'API REST,
+déploie, joue les messages en nommant les destinations (OIE-11), met les canaux
+d'exemple dans l'état voulu (arrêté, en pause), puis exporte la base avec
+`pg_dump`. Le script est en shell et curl.
 
-À vérifier en phase 1 : démarrage d'OIE sur une base restaurée avec un volume
-`appdata` neuf (keystore, clé de chiffrement), et dates des messages (celles de la
-génération du dump ; le profil `traffic` en ajoute de récents).
+Vérifié en phase 1 : OIE démarre sur la base restaurée avec un volume `appdata`
+neuf. Les messages gardent la date de génération du dump ; le profil `traffic` en
+ajoute de récents.
 
 ### 7.4 Canaux d'exemple
 
@@ -423,7 +433,7 @@ Scénario réaliste : la plateforme d'intégration d'un hôpital. Les canaux son
 et rangés comme en production, du plus simple au plus complexe. Aucun ne reprend les
 exemples FHIR du mapper. Les systèmes externes sont simulés par des canaux du groupe
 *Simulators* : tout le trafic reste dans la démo, sauf les destinations volontairement
-injoignables. Connecteurs et types natifs seulement (MLLP/TCP, HTTP, File, Database,
+injoignables. Connecteurs et types natifs seulement (MLLP/TCP, HTTP, File, SMTP,
 Channel Reader/Writer, JavaScript ; HL7v2, JSON, XML, Delimited, Raw).
 
 | Groupe | Canal | Complexité | Ce qu'il montre |
@@ -435,9 +445,9 @@ Channel Reader/Writer, JavaScript ; HL7v2, JSON, XML, Delimited, Raw).
 | Laboratory | `LAB · Results from LIS (ORU)` | Moyen | Chaîne validate → store (base) → notify ; erreurs sur résultats incomplets (*Errored*) |
 | Laboratory | `LAB · Critical values` | Moyen | Filtre de 9 règles (*+4 more*) ; alerte par HTTP |
 | Radiology | `RAD · Orders to RIS` | Simple | Trois destinations parallèles : Auto choisit Columns |
-| Radiology | `RAD · Reports to EHR (MDM)` | Moyen | Rapport PDF en pièce jointe (tuile *Attachments*) |
+| Radiology | `RAD · Reports to EHR (MDM)` | Moyen | Rapport gardé en pièce jointe (tuile *Attachments*) |
 | Pharmacy | `PHARM · Prescriptions (RDE)` | Complexe | Transformer de 12 étapes de types variés (*+7 more*) |
-| Billing | `BILL · Daily charges batch` | Moyen | Source fichier interrogée (*Polled*), traitement par lot |
+| Billing | `BILL · Daily charges` | Moyen | Source fichier interrogée (*Polled*), CSV |
 | Billing | `BILL · Claims to insurer` | Simple | Hôte injoignable avec file d'attente (*Queued*) |
 | External Partners | `HIE · Regional exchange API` | Moyen | Listener HTTP JSON ; réponse de la destination 2 renvoyée à l'appelant (flèche violette) ; postprocessor |
 | External Partners | `GP · Discharge letters` | Simple | Canal en pause |
@@ -450,16 +460,16 @@ d'un coup d'œil (de quelques messages à quelques centaines).
 
 ### 7.5 Comptes de démo
 
-Mot de passe commun dans `.env` (`OIE_DEMO_PASSWORD`). Chaque compte illustre une
-situation RBAC.
+Mots de passe : `demo-flow-ui-admin` pour `admin`, `demo-flow-ui-user` pour les
+autres (fixés dans la base de démo). Chaque compte illustre une situation RBAC.
 
 | Compte | Rôle | Ce qu'il voit |
 |---|---|---|
 | `admin` | Administrateur | Tout |
-| `lab-viewer` | Consultation du laboratoire | Flows Monitoring et Messages, canaux du groupe *Laboratory* seulement ; pas de Design |
-| `ops` | Exploitation | Flows Monitoring et Messages sur tous les canaux ; démarrer et arrêter ; pas de Design |
-| `integrator` | Intégrateur | Design et Monitor complets : Channel Flow avec `+` et ouverture des éditeurs |
-| `auditor` | Audit | Flows Monitoring sans Messages : compteurs visibles, non cliquables |
+| `lab-viewer` | Laboratory viewer | Flows Monitoring et Messages, canaux du groupe *Laboratory* seulement ; ni Design ni lecture des canaux (*Chains hidden*) |
+| `ops` | Operations | Flows Monitoring, Messages et Channel Flow en lecture, tous les canaux ; démarrer, pause, arrêt |
+| `integrator` | Integrator | Design et Monitor complets : Channel Flow avec `+` et ouverture des éditeurs |
+| `auditor` | Auditor | Flows Monitoring sans Messages : compteurs visibles, non cliquables, pas de commandes |
 
 RBAC restreint par liste de canaux, pas par groupe ([RB-06](limites-plateforme.md#rb-06)) :
 le rôle `lab-viewer` liste les canaux du groupe *Laboratory* au moment de la génération
@@ -481,9 +491,9 @@ fautive. Puis le même parcours avec `lab-viewer` et `auditor` pour montrer RBAC
   Captures de la documentation produites par ces tests.
 - **Accessibilité** : tout est atteignable au clavier, rôles et libellés ARIA,
   `focus-visible`, contraste vérifié dans les deux thèmes.
-- **Performances** : Flows Monitoring avec 200 canaux (second dump facultatif
-  `db/oie-scale.sql.gz`, produit par le même script) ; Channel Flow avec 30
-  destinations. Aucun rendu React pendant un
+- **Performances** (à faire, voir TODO) : Flows Monitoring avec 200 canaux (second
+  dump facultatif `db/oie-scale.sql.gz`, produit par le même script) ; Channel Flow
+  avec 30 destinations. Aucun rendu React pendant un
   geste, rafraîchissement sans saut de mise en page.
 - **CI** (GitHub Actions) : lint, tests unitaires, build ; sur tag `vX.Y.Z`, ZIP
   d'extension et `SHA256SUMS` publiés en release, comme le mapper.
@@ -558,11 +568,7 @@ mèneraient à un Messages vide.
 
 - **Mini-carte** pour les très grands canaux, dans Channel Flow.
 - **Vue dédiée des liens entre canaux** (Channel Writer → Channel Reader). Les
-  pastilles « → canal » / « ← canal » de l'option *Links* sont faites. Le
+  mentions *Sends to* / *Called by* de l'option *Links* sont faites. Le
   visuel reste à trouver, surtout quand les deux canaux sont dans des groupes
-  différents. Pistes :
-  - une option *Show channel links* dans la barre, qui affiche une vue dédiée de ces
-    liens (graphe des canaux, groupes en cadres) ;
-  - dans la vue habituelle, un badge sur la carte de destination (« → ADT · Broadcast
-    to departments ») qui fait défiler jusqu'au canal cible et le met en évidence,
-    en dépliant son groupe si besoin.
+  différents. Piste : une vue dédiée de ces liens (graphe des canaux, groupes en
+  cadres), ouverte depuis la barre de Flows Monitoring.

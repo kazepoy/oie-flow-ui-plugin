@@ -20,7 +20,7 @@ open <https://localhost:8444/oie-webadmin/> (self-signed certificate) and sign i
 |---|---|---|
 | `admin` | `demo-flow-ui-admin` | Everything |
 | `integrator` | `demo-flow-ui-user` | Design and Monitor: Channel Flow, channel editor, `+` to add a step |
-| `ops` | `demo-flow-ui-user` | Monitoring of every channel, messages, start and stop |
+| `ops` | `demo-flow-ui-user` | Monitoring of every channel, messages, Channel Flow, start, pause and stop |
 | `lab-viewer` | `demo-flow-ui-user` | The *Laboratory* group only, without channel configurations |
 | `auditor` | `demo-flow-ui-user` | Counters only, without messages |
 
@@ -51,7 +51,8 @@ step.
 ![Channel Flow](doc/images/channel-flow.png)
 
 - Smooth with a trackpad (two fingers to move, pinch to zoom), a mouse (wheel to
-  move, Ctrl/⌘ + wheel to zoom) and the keyboard; each view keeps its zoom and position for the session.
+  move, Ctrl/⌘ + wheel to zoom) and the keyboard; each view keeps its zoom and
+  position for the session.
 - Works with the Role Based Access Control plugin: only what the user's role allows.
 - Settings follow the user from one browser to another (gear button, or
   Manage › Settings › Flow UI).

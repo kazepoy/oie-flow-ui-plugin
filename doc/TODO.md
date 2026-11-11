@@ -11,19 +11,20 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
   connecteur d'un canal démarré, confirmation avant un arrêt, tâches RBAC `doStart`,
   `doPause`, `doStop`, `doStartConnector`, `doStopConnector` (`startStopChannels`).
   Reste à envisager : l'arrêt forcé (*Halt*) et des commandes groupées par groupe.
-- [ ] **Vue des liens entre canaux.** Les pastilles « → canal » / « ← canal » sont
+- [ ] **Vue des liens entre canaux.** Les mentions *Sends to* / *Called by* sont
   faites (option *Links*). Reste une vue dédiée qui dessine ces liens (graphe des
   canaux, groupes en cadres), utile quand les canaux liés sont dans des groupes
   différents.
 - [ ] **Mini-carte** pour les très grands canaux, dans Channel Flow.
 - [ ] Filtre de statut dans Messages depuis un compteur, dès que Web Admin accepte
-  `?status=` (WA-01) ; ouverture d'un onglet, d'une destination ou d'une étape précis
+  `?status=` (WA-01), et champ *Connector* à jour (WA-15) ; ouverture d'un onglet, d'une destination ou d'une étape précis
   de l'éditeur (WA-02).
 
 ## Qualité
 
 - [ ] Essai réel au pavé tactile (deux doigts, pincement) et dans Safari (événements
-  `gesture*`), à la souris à molette crantée et à défilement fin.
+  `gesture*`), à la souris à molette crantée et à défilement fin (molette = défilement,
+  Ctrl/⌘ + molette = zoom).
 - [ ] Revue d'accessibilité : navigation au clavier dans le schéma, lecteur d'écran,
   contraste des deux thèmes.
 - [ ] ESLint (`react/jsx-no-literals`) et Stylelint (couleurs hors `tokens.css`),

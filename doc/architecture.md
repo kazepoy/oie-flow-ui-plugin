@@ -16,31 +16,36 @@ compilé vers `h()` (`src/host/react.js`), lié au React de l'hôte : aucune cop
 React dans le bundle.
 
 L'extension n'a pas de code Java : `plugin.xml` décrit l'extension, Web Support sert
-son dossier `webadmin/` (WS-01, vérifié).
+son dossier `webadmin/` (WS-01, vérifié). `build.mjs` écrit ensuite
+`dist/flow-ui-<version>.zip` avec `tools/zip.mjs`, un petit écrivain de ZIP en
+Node : le build ne dépend d'aucun outil installé (l'image Node de la démo n'a pas
+`zip`) et produit une archive identique à chaque fois (dates fixes).
 
 ## Modules
 
 ```text
 src/
-  index.js            register(platform) : vues, entrées de menu, onglet, action
+  index.js            register(platform) : vues, entrées de menu, onglet, action,
+                      panneau Settings
   styles.js           ordre des feuilles CSS
   host/               seul dossier qui lit `platform`
-    platform.js         l'objet platform, l'utilisateur, les messages
+    platform.js         l'objet platform, l'utilisateur, les messages, la confirmation
     react.js            React de l'hôte, h() et hooks
-    api.js              statuts, groupes, canaux, préférences (API de Web Admin)
+    api.js              statuts, groupes, canaux, commandes, préférences (API de Web Admin)
     routes.js           chemins des vues et navigation
     permissions.js      tâches RBAC et can()
     editor.js           types d'étapes, ajout d'une étape, ouverture des éditeurs
-    preferences.js      réglages de l'utilisateur (préférences OIE)
+    preferences.js      réglages de l'utilisateur (préférences OIE, seuls les changements)
     session.js          état des vues pour la session (sessionStorage)
     styles.js           injection des feuilles
   i18n/               t(), pluriels, nombres ; locales/en.js
   shared/
     model/              lecture XStream, chaînes de destinations, statistiques
-    ui/                 boutons, popover, aide, indice, état vide, réglages
+    ui/                 boutons, icônes, popover, indice, état vide, useSettings
     styles/             jetons (tokens.css) et contrôles communs
-  settings/           bouton et panneau des réglages
-  flows-monitoring/   écran Flows Monitoring
+  settings/           engrenage de chaque écran, onglet Manage › Settings › Flow UI
+  flows-monitoring/   écran Flows Monitoring : model.js (groupes, chaînes, liens),
+                      controls.js (commandes selon l'état), useStatuses.js, composants
   channel-flow/
     model/              canal → blocs et tuiles, choix Auto, liste du sélecteur
     layout/             géométrie, trois vues, flèches : fonctions pures
@@ -54,7 +59,10 @@ Règles :
 - la logique (modèles, mise en page, gestes) est en `.js`, testée sans navigateur ;
   les composants (`.jsx`) l'affichent ;
 - toute couleur vient de `shared/styles/tokens.css`, dérivé des variables de Web
-  Admin (thèmes clair et sombre) ;
+  Admin (thèmes clair et sombre) ; les règles de base du plugin sont écrites avec
+  `:where(.ofu)`, sans poids, pour que la classe d'un composant l'emporte toujours ;
+- l'onglet Settings reprend les classes `panel` de Web Admin, pour ressembler aux
+  autres onglets ;
 - tout texte visible passe par `t()` ([i18n.md](i18n.md)).
 
 ## Flux de données
@@ -62,7 +70,9 @@ Règles :
 **Flows Monitoring.** `useStatuses` lit les statuts toutes les N secondes (onglet
 visible), les groupes et les configurations des canaux au chargement et sur
 *Refresh* : les statuts ne disent pas quelles destinations s'attendent (OIE-01).
-`model.js` en tire groupes → lignes → chaînes → compteurs.
+`model.js` en tire groupes → lignes → chaînes → compteurs, et les liens entre
+canaux (destinations Channel Writer). Une commande (démarrer, pause, arrêt) passe
+par l'API de Web Admin, puis les statuts sont relus aussitôt.
 
 **Channel Flow.** `flowModel` transforme la configuration du canal (enregistrée,
 ou brouillon de l'éditeur) en blocs et tuiles. `layoutScene` calcule les positions
@@ -74,8 +84,8 @@ et le déplacement par une transformation CSS, une fois par image, sans rendu Re
 
 | Quoi | Où | Durée |
 |---|---|---|
-| Réglages (vue par défaut, molette, groupes, rafraîchissement, aides masquées) | Préférence OIE `flowui.settings` de l'utilisateur ; repli `localStorage` | Permanents, sur tous ses navigateurs |
-| Vue, zoom et position par canal ; filtre, groupes et défilement de Flows Monitoring | `sessionStorage`, clés `oie.flow-ui.*` | L'onglet du navigateur |
+| Réglages (groupes ouverts, rafraîchissement, vue par défaut, étapes par tuile, indices masqués) | Préférence OIE `flowui.settings` de l'utilisateur, seuls les changements ; repli `localStorage` | Permanents, sur tous ses navigateurs |
+| Vue, zoom et position par canal ; filtre, groupes, *Lifetime*, *Links* et défilement de Flows Monitoring | `sessionStorage`, clés `oie.flow-ui.*` | L'onglet du navigateur |
 
 ## Tests
 
@@ -83,3 +93,4 @@ et le déplacement par une transformation CSS, une fois par image, sans rendu Re
   chevauche, aucune flèche ne traverse une tuile), des gestes, de l'i18n.
 - `npm run check` : vérification de types du JavaScript (JSDoc, `tsc --checkJs`).
 - `npm run test:e2e` : Playwright contre la démo, avec les comptes RBAC.
+- `node test/e2e/screenshots.mjs` : captures du README et du guide (`doc/images/`).

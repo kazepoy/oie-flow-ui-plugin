@@ -43,11 +43,17 @@ volume. Tout ce qui a été modifié depuis est perdu.
 
 ```sh
 docker compose --profile traffic up -d     # un message toutes les 3 s (TRAFFIC_INTERVAL)
-./examples/send.sh adt                     # un message par les vrais listeners
+./examples/send.sh adt                     # admission par le listener MLLP 8181
+./examples/send.sh result                  # résultat de laboratoire (MLLP 8184)
 ./examples/send.sh critical                # résultat critique : bip du biologiste
 ./examples/send.sh incomplete              # résultat incomplet : erreur de validation
 ./examples/send.sh claim                   # demande de remboursement : file d'attente
+./examples/send.sh hie                     # demande HIE : la synthèse revient à l'appelant
 ```
+
+Avec le compte `ops` ou `admin`, Flows Monitoring démarre, met en pause et arrête
+les canaux et leurs connecteurs depuis leurs cartes ; `./reset.sh` remet tout en
+place.
 
 [`examples/demo.http`](examples/demo.http) regroupe des appels REST commentés.
 

@@ -11,27 +11,29 @@ précédente.
 
 - **Compteurs.** Received (source) ou Sent (destination), puis Filtered, Queued,
   Errored. Un compteur non nul prend la couleur de son statut : vert, gris-bleu,
-  orange, rouge. Une carte en erreur a une bordure rouge, une carte avec une file
-  d'attente une bordure orange ; un connecteur arrêté est en pointillés.
+  orange, rouge. Une carte en erreur ou avec une file d'attente se voit de loin :
+  bordure, barre à gauche et fond rouges ou orange. Un connecteur arrêté est en
+  pointillés.
 - **Clics.** Une carte ou un compteur ouvre Messages sur ce connecteur ; le nom du
   canal ouvre Messages pour tout le canal ; *Flow* ouvre Channel Flow ; *Edit*
   ouvre l'éditeur. Messages s'ouvre filtré sur le connecteur : la ligne *Current
   Search* l'indique, même si le champ *Connector* affiche encore *Any* (WA-15). Il ne
   peut pas encore s'ouvrir sur un statut : le choisir dans son filtre *Status*.
-- **Groupes.** Le premier est ouvert, les autres fermés ; un groupe fermé garde ses
-  totaux. Le filtre par nom ouvre les groupes qui contiennent un résultat.
+- **Groupes.** Le premier est ouvert, les autres fermés (réglable) ; un groupe fermé
+  garde ses totaux. Le filtre par nom ouvre les groupes qui contiennent un résultat.
   *Lifetime* affiche les compteurs depuis la création des canaux.
+- **Liens entre canaux.** Avec l'option *Links* (cochée par défaut), une destination
+  *Channel Writer* indique dans sa carte le canal qu'elle appelle (*Sends to*), et la
+  carte du canal appelé ceux qui l'appellent (*Called by*). Un clic ouvre le groupe du
+  canal lié, y fait défiler la page et le met en évidence, même s'il est dans un
+  autre groupe.
 - **Démarrer, mettre en pause, arrêter.** La carte du canal propose les commandes
   permises par son état : pause et arrêt s'il tourne, reprise et arrêt s'il est en
   pause, démarrage s'il est arrêté. Chaque connecteur d'un canal démarré s'arrête ou
   redémarre seul. Un arrêt demande confirmation. Il faut le droit
   `startStopChannels` ; sans lui, les boutons n'apparaissent pas.
-- Les compteurs se rafraîchissent toutes les 5 secondes (réglable), onglet visible.
-  *Refresh* relit aussi les groupes et les chaînes.
-- **Liens entre canaux.** Avec l'option *Links* (cochée par défaut), une destination
-  *Channel Writer* affiche dans sa carte le canal qu'elle appelle (*Sends to*), et la
-  carte du canal appelé ceux qui l'appellent (*Called by*). Un clic ouvre le groupe du canal lié, y fait
-  défiler la page et le met en évidence, même s'il est dans un autre groupe.
+- **Rafraîchissement.** Les compteurs se relisent toutes les 5 secondes (réglable),
+  onglet visible. *Refresh* relit aussi les groupes, les chaînes et les liens.
 
 ![Liens entre canaux et lignes ouvertes](images/flows-links.png)
 
@@ -134,7 +136,7 @@ Flow UI suit les droits de Web Admin :
 |---|---|
 | Flows Monitoring | `viewDashboard` |
 | Groupes dans Flows Monitoring et le sélecteur | `viewChannelGroups` (sinon une seule liste, *Groups hidden*) |
-| Chaînes de destinations dans Flows Monitoring | `viewChannels` (sinon les destinations dans l'ordre, *Chains hidden*) |
+| Chaînes de destinations et liens dans Flows Monitoring | `viewChannels` (sinon les destinations dans l'ordre, sans liens, *Chains hidden*) |
 | Channel Flow | `viewChannels` |
 | Compteurs et noms cliquables vers Messages | `viewMessages` |
 | *Edit*, ouverture des éditeurs, `+` | `manageChannels` |
@@ -156,6 +158,8 @@ Avec la [démo](../demo/README.md), compte `admin` :
    parallèle.
 4. Ouvrir le **Transformer** de *Validate results* : l'étape qui rejette les
    résultats incomplets.
-5. Se reconnecter en `lab-viewer` : seul le groupe *Laboratory* reste, sans
-   Channel Flow ni *Edit*, et les chaînes sont masquées (*Chains hidden*) faute de
-   pouvoir lire les canaux. En `auditor` : les compteurs ne s'ouvrent plus.
+5. Se reconnecter en `ops` : sur la ligne *OPS · Heartbeat*, mettre le canal en
+   pause, le reprendre, l'arrêter (confirmation) puis le redémarrer.
+6. Se reconnecter en `lab-viewer` : seul le groupe *Laboratory* reste, sans
+   Channel Flow, *Edit* ni commandes, et les chaînes sont masquées (*Chains hidden*)
+   faute de pouvoir lire les canaux. En `auditor` : les compteurs ne s'ouvrent plus.
