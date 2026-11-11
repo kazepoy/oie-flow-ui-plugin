@@ -395,9 +395,19 @@ button.ofu-link:hover {
 .ofu-control--pause:hover { border-color: var(--ofu-queued); color: var(--ofu-queued); }
 .ofu-control--stop:hover { border-color: var(--ofu-error); color: var(--ofu-error); }
 
+/* Disabled: refused by the engine (not-allowed), or a command running (progress). */
 .ofu-control:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.ofu-control--busy:disabled {
   cursor: progress;
-  opacity: 0.5;
+}
+
+.ofu-control:disabled:hover {
+  border-color: var(--ofu-line);
+  color: var(--ofu-dim);
 }
 
 /* Connector cards */

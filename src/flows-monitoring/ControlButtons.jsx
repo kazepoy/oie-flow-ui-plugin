@@ -21,7 +21,7 @@ export function ControlButtons({ commands, blocked = null, target, actions }) {
       {allowed.map(command => {
         const label = t(`flows.control.${command}`, { name: target.name });
         return (
-          <button key={command} type="button" className={`ofu-control ofu-control--${ICON[command]}`}
+          <button key={command} type="button" className={`ofu-control ofu-control--${ICON[command]}${busy ? " ofu-control--busy" : ""}`}
             title={label} aria-label={label} disabled={busy} onClick={() => actions.control(command, target)}>
             <Icon name={ICON[command]} />
           </button>
