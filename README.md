@@ -66,4 +66,4 @@ Detailed documentation is in French:
 
 ## License
 
-[Mozilla Public License 2.0](https://mozilla.org/MPL/2.0/) (proposed, see the plan).
+[Mozilla Public License 2.0](https://mozilla.org/MPL/2.0/).

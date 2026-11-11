@@ -45,7 +45,7 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 | [WA-03](#wa-03) | Web Admin | Onglets de plugin après les natifs, jamais par défaut | Gênant | Contourné |
 | [WA-04](#wa-04) | Web Admin | Onglets de canal non filtrés par tâche RBAC | Mineur | Contourné |
 | [WA-05](#wa-05) | Web Admin | Pas d'abonnement public aux changements de route | Mineur | Contourné |
-| [WA-06](#wa-06) | Web Admin | Préférences utilisateur non exposées aux plugins | Mineur | Contourné |
+| [WA-06](#wa-06) | Web Admin | Préférences utilisateur non exposées aux plugins | Mineur | À vérifier |
 | [WA-07](#wa-07) | Web Admin | Aucun mécanisme i18n | Gênant | Contourné |
 | [WA-08](#wa-08) | Web Admin | WAR : entrée importée depuis `blob:`, imports relatifs impossibles | Gênant | Contourné |
 | [WA-09](#wa-09) | Web Admin | Clés de `platform.store` non documentées | Mineur | À vérifier |
@@ -61,6 +61,7 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 | [RB-03](#rb-03) | RBAC | Liens internes aux vues de plugin non couverts | Mineur | Contourné |
 | [RB-04](#rb-04) | RBAC | Format d'import des rôles non documenté | Mineur | À vérifier |
 | [RB-05](#rb-05) | RBAC | Échec du plugin d'autorisation : tous les plugins bloqués | Mineur | Ouvert |
+| [RB-06](#rb-06) | RBAC | Restriction par liste de canaux, pas par groupe | Gênant | Ouvert |
 | [OIE-01](#oie-01) | Moteur | `waitForPrevious` toujours `false` dans les statuts | Gênant | Contourné |
 | [OIE-02](#oie-02) | Moteur | Statuts limités aux connecteurs déployés | Mineur | Contourné |
 | [OIE-03](#oie-03) | Moteur | *Queued* hors de la table des statistiques | Mineur | Contourné |
@@ -154,9 +155,13 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
   `onPrefsChange`) mais ne le transmet pas aux plugins.
 - **Preuve.** `core/prefs.js` ; absent de `core/platform.js` et des paquets
   `@oie/web-*`.
-- **Impact.** Vue choisie, groupes repliés et aides masquées restent propres au
+- **Impact.** Sans contournement, les réglages du plugin resteraient propres au
   navigateur, pas à l'utilisateur.
-- **Contournement.** `localStorage`, espace `oie.flow-ui.*`, dans `src/host/preferences.js`.
+- **Contournement.** Préférences de l'utilisateur dans OIE par l'API REST
+  (`PUT /api/users/{id}/preferences/flowui.*`). La table `person_preference` accepte
+  des noms libres (la démo y écrit déjà `firstlogin`) ; reste à vérifier qu'un
+  utilisateur sans droits d'administration peut écrire les siennes. Repli sur
+  `localStorage` en cas d'échec. Code dans `src/host/preferences.js`.
 - **Demande amont.** `platform.prefs` avec un espace de noms par plugin.
 
 ### WA-07
@@ -338,6 +343,20 @@ fait), *Contourné* (Flow UI vit avec), *Signalé* (issue ouverte), *Résolu* (v
 - **Preuve.** `core/platform.js` (plugin d'autorisation obligatoire, `blockAuthorization`).
 - **Impact.** Comportement de sécurité voulu, mais Flow UI disparaît avec lui. À
   mentionner dans le dépannage.
+
+### RB-06
+
+**Restriction par liste de canaux, pas par groupe.** · Gênant · Ouvert
+
+- **Constat.** Un rôle restreint liste des canaux un par un. Il n'existe pas de
+  restriction « tous les canaux du groupe X ».
+- **Preuve.** Schéma de la base : `rbac_role.restricted` et
+  `rbac_role_channel (role_id, channel_id)`, sans référence aux groupes.
+- **Impact.** Un rôle « consultation du laboratoire » ne suit pas le groupe : un canal
+  ajouté ensuite au groupe *Laboratory* reste invisible tant qu'on ne l'ajoute pas au
+  rôle. Dans la démo, le rôle `lab-viewer` est figé au moment du dump.
+- **Contournement.** Aucun dans Flow UI ; documenté dans le guide de la démo.
+- **Demande amont.** Restriction par groupe de canaux, évaluée à chaque requête.
 
 ## Open Integration Engine 4.7.0
 
