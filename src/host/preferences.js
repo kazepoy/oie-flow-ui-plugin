@@ -2,7 +2,7 @@
 // The user's settings for both screens. They are saved in the user's OIE
 // preferences ("flowui.settings"), so they follow the user from one browser to
 // another. When the server refuses, they are kept in this browser instead
-// (doc/limites-plateforme.md, WA-06).
+// (doc/platform-limits.md, WA-06).
 import { currentUser, toast } from "./platform.js";
 import { setUserPreference, userPreference } from "./api.js";
 import { t } from "../i18n/index.js";

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
-// Workaround for WA-02 (doc/limites-plateforme.md): Web Admin 1.3 has no route or
+// Workaround for WA-02 (doc/platform-limits.md): Web Admin 1.3 has no route or
 // API to open a tab of the channel editor, a script, a destination or a step.
 // These functions drive the controls the editor already renders, through their
 // accessible markup, as a keyboard user would. Every selector is in this file.

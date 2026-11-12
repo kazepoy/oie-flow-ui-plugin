@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 // Paths of the plugin's views and of the Web Admin views it links to.
 // Only routes that Web Admin declares are used; what they cannot target (an editor
-// tab, a destination row, a step) is listed in doc/limites-plateforme.md (WA-01,
+// tab, a destination row, a step) is listed in doc/platform-limits.md (WA-01,
 // WA-02) and, for WA-02, reached through editor-dom.js.
 import { platform } from "./platform.js";
 

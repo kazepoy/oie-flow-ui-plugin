@@ -3,7 +3,7 @@
 // when installed; without it every task is allowed, as in Web Admin).
 //
 // Flow UI declares no permission of its own: a web-only plugin cannot, and an
-// unknown task name would be allowed by RBAC (see doc/limites-plateforme.md, RB-01).
+// unknown task name would be allowed by RBAC (see doc/platform-limits.md, RB-01).
 // It reuses the tasks that guard the matching Web Admin views.
 import { platform } from "./platform.js";
 

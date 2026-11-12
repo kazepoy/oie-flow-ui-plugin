@@ -66,7 +66,7 @@ The plugin is a place to build and validate them first. It therefore uses only
 the public plugin API of Web Admin, without workarounds, so that the code can be
 moved into Web Admin later. When that API falls short, the plugin offers a
 simpler behaviour and the gap is recorded as a request for Web Admin
-([platform limits](doc/limites-plateforme.md)).
+([platform limits](doc/platform-limits.md)).
 
 One exception: Web Admin cannot open a tab, a script, a destination or a step of
 the channel editor, so Channel Flow selects them through the controls the editor
@@ -114,7 +114,7 @@ Detailed documentation is in French:
 - [Architecture](doc/architecture.md)
 - [Translations](doc/i18n.md)
 - [Project plan](doc/plan.md) and [TODO](doc/TODO.md)
-- [Platform limits](doc/limites-plateforme.md): gaps in OIE, Web Admin and RBAC
+- [Platform limits](doc/platform-limits.md): gaps in OIE, Web Admin and RBAC
   that affect this plugin
 
 ## License

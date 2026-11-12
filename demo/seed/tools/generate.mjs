@@ -171,7 +171,7 @@ for (const [index, role] of ROLES.entries()) await write(`roles/${number(index)}
 // Plain text lists for the shell script, one record per line, fields separated by "|".
 await write("users.txt", USERS.map(user => [user.username, user.firstName, user.lastName, user.role].join("|")).join("\n"));
 // The API sends a message to the destinations it is given, and to none without
-// (doc/limites-plateforme.md, OIE-11): list the enabled ones.
+// (doc/platform-limits.md, OIE-11): list the enabled ones.
 const enabledDestinations = c => c.destinations.flatMap((d, index) => d.enabled === false ? [] : [index + 1]).join(",");
 await write("messages.txt", DEPLOY_ORDER.flatMap(c => (c.seed ?? [])
   .map(([file, times]) => [c.id, file, times, enabledDestinations(c), c.name].join("|"))).join("\n"));

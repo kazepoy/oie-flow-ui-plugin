@@ -2,7 +2,7 @@
 
 Travaux demandés ou repérés, pas encore faits. Les décisions et le contexte sont
 dans le [plan](plan.md) ; les limites de la plateforme dans
-[limites-plateforme.md](limites-plateforme.md).
+[platform-limits.md](platform-limits.md).
 
 ## Fonctions
 

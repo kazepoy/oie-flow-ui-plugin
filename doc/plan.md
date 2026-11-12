@@ -83,7 +83,7 @@ code. Les décisions UX validées sur la v2 sont conservées (voir §6).
 | CSS dans des chaînes JS, règles compressées sur une ligne | Illisible, non outillable | Fichiers `.css` par composant, jetons communs, lint CSS |
 | Filtre *Status* de Messages coché en simulant des clics (MutationObserver, `PointerEvent`) | Hack fragile, casse au moindre changement de Messages | Ouverture filtrée par connecteur seulement ; statut quand Web Admin aura `?status=` (§10) |
 | Ouverture automatique de l'onglet Flow par focus d'un onglet Radix, écouteur global sur `window` | Hack, détourne le comportement de l'éditeur | Supprimée : Channel Flow devient une vue Design à part entière (§5.1) |
-| Navigation vers Scripts / Destinations par le DOM (setter natif de `select`, `.dest-grid`) | Dépend du markup interne | Conservée, mais isolée dans `src/host/editor-dom.js`, couverte par un test e2e, avec un toast qui dit où cliquer si un contrôle manque ; à retirer quand Web Admin aura les paramètres d'URL (§10, [WA-02](limites-plateforme.md#wa-02)) |
+| Navigation vers Scripts / Destinations par le DOM (setter natif de `select`, `.dest-grid`) | Dépend du markup interne | Conservée, mais isolée dans `src/host/editor-dom.js`, couverte par un test e2e, avec un toast qui dit où cliquer si un contrôle manque ; à retirer quand Web Admin aura les paramètres d'URL (§10, [WA-02](platform-limits.md#wa-02)) |
 | Lien *Edit* affiché sans `manageChannels` | Mène à *Access denied* | Masqué via `platform.checkTask` |
 | Deux règles de chaînage (`destinationChains` et `channelLanes`) | Logique dupliquée | Un module `model/chains` partagé |
 | Géométrie des flèches mesurée dans le DOM et divisée par l'échelle | Couplage au rendu, difficile à tester | Mise en page calculée par des fonctions pures (§5.3) |
@@ -151,7 +151,7 @@ oie-flow-ui-plugin/
     e2e/                    Playwright contre la démo ; screenshots.mjs (captures de la doc)
   demo/                     voir §7
   doc/
-    plan.md, TODO.md, limites-plateforme.md
+    plan.md, TODO.md, platform-limits.md
     architecture.md, user-guide.md, i18n.md
     images/                 captures du README et du guide
 ```
@@ -343,7 +343,7 @@ Chaque écran montre ses propres réglages sous son engrenage ; l'onglet
 **Manage › Settings › Flow UI** les montre tous. L'engrenage reste indispensable :
 RBAC peut refuser *Settings* à un utilisateur qui consulte pourtant les flux. Si
 l'écriture des préférences OIE échoue, les réglages restent dans le navigateur
-(`localStorage`) et un message le signale ([WA-06](limites-plateforme.md#wa-06)).
+(`localStorage`) et un message le signale ([WA-06](platform-limits.md#wa-06)).
 
 ## 6. Exigences UX conservées
 
@@ -473,7 +473,7 @@ démo). Chaque compte illustre une situation RBAC.
 | `integrator` | Integrator | Design et Monitor complets : Channel Flow avec `+` et ouverture des éditeurs |
 | `auditor` | Auditor | Flows Monitoring sans Messages : compteurs visibles, non cliquables, pas de commandes |
 
-RBAC restreint par liste de canaux, pas par groupe ([RB-06](limites-plateforme.md#rb-06)) :
+RBAC restreint par liste de canaux, pas par groupe ([RB-06](platform-limits.md#rb-06)) :
 le rôle `lab-viewer` liste les canaux du groupe *Laboratory* au moment de la génération
 du dump.
 
@@ -521,7 +521,7 @@ Chaque phase se termine par une vérification visuelle dans la démo.
 À proposer au projet Web Support / Web Admin. En attendant, le plugin dégrade
 proprement ; seule l'ouverture d'un onglet, d'un script, d'une destination ou d'une
 étape de l'éditeur passe par le DOM (2.). Le détail des constats, preuves et contournements
-est tenu dans [limites-plateforme.md](limites-plateforme.md).
+est tenu dans [platform-limits.md](platform-limits.md).
 
 1. Messages : paramètre `?status=` (et éventuellement `?status=ERROR,QUEUED`).
 2. Éditeur de canal : paramètres d'URL pour l'onglet, la destination et le script

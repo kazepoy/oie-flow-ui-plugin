@@ -3,7 +3,7 @@
 ## Principe
 
 Flow UI n'utilise que l'API publique des plugins de Web Admin. Ce qu'elle ne
-permet pas est dégradé proprement et noté dans [limites-plateforme.md](limites-plateforme.md).
+permet pas est dégradé proprement et noté dans [platform-limits.md](platform-limits.md).
 Le but est que ce code puisse un jour rejoindre Web Admin.
 
 ## Chargement
