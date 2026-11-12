@@ -17,6 +17,7 @@ import { flowModel, pickLayout } from "./model/flow-model.js";
 import { layoutScene } from "./layout/scene.js";
 import { useViewport } from "./viewport/useViewport.js";
 import { Scene } from "./Scene.jsx";
+import { Minimap } from "./Minimap.jsx";
 import { AddStepMenu, StepList } from "./StepPopovers.jsx";
 import { ChannelFlowHelp } from "./ChannelFlowHelp.jsx";
 
@@ -26,7 +27,7 @@ const LAYOUT_CHOICES = ["auto", "line", "columns", "bands"];
  * @param {{ channel: any, mode: "saved" | "draft", onChange?: () => void }} props
  */
 export function ChannelFlow({ channel, mode, onChange }) {
-  const [settings] = useSettings();
+  const [settings, updateSettings] = useSettings();
   const layoutKey = `channel-flow.layout.${channel.id}`;
   const [choice, setChoice] = useState(() => readSession(layoutKey, { value: null }).value);
   const [popover, setPopover] = useState(null);
@@ -94,6 +95,9 @@ export function ChannelFlow({ channel, mode, onChange }) {
           <Scene scene={scene} model={model} act={act} />
         </div>
       </div>
+      {settings.minimap !== "off" && (
+        <Minimap scene={scene} viewport={viewport} onClose={() => updateSettings({ minimap: "off" })} />
+      )}
       {popover?.kind === "steps" && <StepList popover={popover} act={act} onClose={close} />}
       {popover?.kind === "add" && (
         <AddStepMenu popover={popover} types={addableTypes(popover.tile.target.section, popover.tile.target.metaDataId)}

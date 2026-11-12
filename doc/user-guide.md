@@ -19,7 +19,7 @@ précédente.
   ouvre l'éditeur. Messages s'ouvre filtré sur le connecteur : la ligne *Current
   Search* l'indique, même si le champ *Connector* affiche encore *Any* (WA-15). Il ne
   peut pas encore s'ouvrir sur un statut : le choisir dans son filtre *Status*.
-- **Groupes.** Le premier est ouvert, les autres fermés (réglable) ; un groupe fermé
+- **Groupes.** Tous ouverts par défaut (réglable) ; un groupe fermé
   garde ses totaux. Le filtre par nom ouvre les groupes qui contiennent un résultat.
   *Lifetime* affiche les compteurs depuis la création des canaux.
 - **Liens entre canaux.** Avec l'option *Links* (cochée par défaut), une destination
@@ -27,7 +27,7 @@ précédente.
   carte du canal appelé ceux qui l'appellent (*Called by*). Un clic ouvre le groupe du
   canal lié, y fait défiler la page et le met en évidence, même s'il est dans un
   autre groupe.
-- **Détails.** Avec l'option *Details* (cochée par défaut), chaque carte indique sur
+- **Détails.** Avec l'option *Details* (décochée par défaut), chaque carte indique sur
   une ligne grise le type du connecteur et son adresse (« HTTP Sender · http://… »).
   Pour un *Channel Writer*, le lien violet en tient lieu. Il faut pouvoir lire les
   canaux (`viewChannels`).
@@ -103,6 +103,7 @@ de 3, Columns s'il y a plusieurs chaînes, sinon Line).
 | `+` `-` | Zoomer |
 | `0` | Tout afficher (*Fit*) |
 | `1` | Taille réelle, depuis le début du flux (*100%*) |
+| Mini-carte | Clic ou glisser dans l'aperçu (affiché quand le schéma dépasse la fenêtre) |
 
 ![Ouverture à 100 %, au début du flux](images/channel-flow-start.png)
 
@@ -128,8 +129,8 @@ d'un navigateur à l'autre et s'appliquent aussitôt :
 
 | Écran | Réglage |
 |---|---|
-| Flows Monitoring | Groupes ouverts par défaut (le premier, tous, aucun) ; rafraîchissement des compteurs |
-| Channel Flow | Vue par défaut ; étapes affichées par tuile (3, 5, 8 ou toutes, puis « +N more ») |
+| Flows Monitoring | Groupes ouverts par défaut (tous, le premier, aucun) ; rafraîchissement des compteurs |
+| Channel Flow | Vue par défaut ; étapes affichées par tuile (3, 5, 8 ou toutes, puis « +N more ») ; mini-carte (quand nécessaire ou désactivée) |
 
 Un lien permet de réafficher les indices masqués.
 

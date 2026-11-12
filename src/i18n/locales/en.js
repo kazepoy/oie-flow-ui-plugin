@@ -68,6 +68,11 @@ export default {
       line: "Line",
       columns: "Columns",
       bands: "Bands"
+    },
+    minimap: {
+      label: "Minimap",
+      auto: "When needed",
+      off: "Off"
     }
   },
 
@@ -203,6 +208,11 @@ export default {
     fit: "Fit",
     fitTitle: "Show the whole diagram (0)",
     startTitle: "Actual size, from the start of the flow (1)",
+    minimap: {
+      label: "Minimap",
+      hide: "Hide minimap",
+      navigate: "Click or drag to move"
+    },
     diagram: "Flow of {name}",
     diagramRole: "diagram",
     breadcrumb: "Location",
@@ -312,13 +322,15 @@ export default {
         trackpadMove: "Trackpad",
         pinch: "Trackpad",
         wheel: "Mouse",
-        drag: "Mouse"
+        drag: "Mouse",
+        minimap: "Minimap"
       },
       gesture: {
         trackpadMove: "Two fingers move the diagram.",
         pinch: "Pinch to zoom.",
         wheel: "The wheel moves; Shift + wheel moves sideways; ⌘/Ctrl + wheel zooms.",
         drag: "Drag the background to move. Space + drag works anywhere.",
+        minimap: "Click or drag in the corner overview on large diagrams.",
         arrows: "Move.",
         zoomKeys: "Zoom in and out.",
         fitKey: "Show the whole diagram.",

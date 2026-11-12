@@ -26,15 +26,18 @@ describe("as admin", () => {
   before(async () => { session = await signIn({ viewport: { width: 1600, height: 1000 } }); });
   after(() => session.close());
 
-  test("Flows Monitoring shows the groups, the first one open, with counters", async () => {
+  test("Flows Monitoring shows all groups open, details off by default, with counters", async () => {
     const { page } = session;
     await openNav(page, "flow-ui-flows");
     await page.locator(".ofu-group").first().waitFor();
     const groups = await page.locator(".ofu-group__name").allInnerTexts();
     assert.deepEqual(groups.map(name => name.toLowerCase()), ["billing", "external partners", "laboratory", "operations", "patient administration", "pharmacy", "radiology", "simulators"]);
-    assert.equal(await page.locator(".ofu-group__head[aria-expanded=true]").count(), 1);
+    assert.equal(await page.locator(".ofu-group__head[aria-expanded=true]").count(), groups.length);
     assert.match(await page.locator(".ofu-toolbar .ofu-totals").innerText(), /[1-9][\d,]*\s+received/);
+    assert.equal(await page.locator(".ofu-detail").count(), 0, "connector details hidden by default");
+    await page.getByLabel("Details").check();
     assert.match(await page.locator(".ofu-detail").first().innerText(), /HTTP Listener|TCP Listener|File Reader/, "connector details shown");
+    await page.getByLabel("Details").uncheck();
     await shot(page, "e2e-flows");
   });
 
@@ -99,6 +102,32 @@ describe("as admin", () => {
     await page.keyboard.press("1");
     await page.waitForTimeout(300);
     assert.equal(await level(), "100%");
+  });
+
+  test("the minimap appears on large diagrams, moves the view and hides on Fit", async () => {
+    const { page } = session;
+    const minimap = page.locator(".ofu-minimap");
+    const canvas = page.locator(".ofu-minimap__canvas");
+    await canvas.waitFor({ state: "visible" });
+    const stage = page.locator(".ofu-flow__stage");
+    const before = await stage.evaluate(element => element.style.transform);
+    const box = await canvas.boundingBox();
+    await page.mouse.click(box.x + box.width / 2, box.y + box.height * 0.85);
+    await page.waitForTimeout(100);
+    assert.notEqual(await stage.evaluate(element => element.style.transform), before);
+    await page.getByRole("button", { name: "Hide minimap" }).click();
+    assert.equal(await minimap.count(), 0);
+    await page.getByRole("button", { name: "Channel Flow settings" }).click();
+    await page.getByLabel("Minimap").selectOption("auto");
+    await page.keyboard.press("Escape");
+    await canvas.waitFor({ state: "visible" });
+    await page.locator(".ofu-flow__viewport").focus();
+    await page.keyboard.press("0");
+    await page.waitForTimeout(300);
+    assert.equal(await minimap.isVisible(), false);
+    await page.keyboard.press("1");
+    await page.waitForTimeout(300);
+    assert.equal(await minimap.isVisible(), true);
   });
 
   test("a transformer opens its editor", async () => {

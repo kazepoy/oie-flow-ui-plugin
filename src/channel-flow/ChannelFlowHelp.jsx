@@ -14,7 +14,7 @@ const Keys = ({ keys }) => keys.map(key => <kbd key={key} className="ofu-kbd">{k
 
 export function ChannelFlowHelp() {
   const gestures = [
-    ["trackpadMove", []], ["pinch", []], ["wheel", []], ["drag", []],
+    ["trackpadMove", []], ["pinch", []], ["wheel", []], ["drag", []], ["minimap", []],
     ["arrows", ["←", "→", "↑", "↓"]], ["zoomKeys", ["+", "−"]], ["fitKey", ["0"]], ["startKey", ["1"]]
   ];
   return (

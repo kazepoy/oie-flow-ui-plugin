@@ -36,14 +36,17 @@ test("every text key used in the code exists in the English catalog", async () =
 
 test("settings keep known values only", () => {
   assert.deepEqual(sanitize(null), defaultSettings());
-  const settings = sanitize({ defaultLayout: "sideways", expandedGroups: "all", refreshSeconds: 30, hiddenHints: ["a", 3], extra: true });
+  assert.equal(defaultSettings().expandedGroups, "all");
+  assert.equal(defaultSettings().minimap, "auto");
+  const settings = sanitize({ defaultLayout: "sideways", expandedGroups: "first", minimap: "off", refreshSeconds: 30, hiddenHints: ["a", 3], extra: true });
   assert.equal(settings.defaultLayout, "auto");
-  assert.equal(settings.expandedGroups, "all");
+  assert.equal(settings.expandedGroups, "first");
+  assert.equal(settings.minimap, "off");
   assert.equal(settings.refreshSeconds, 30);
   assert.deepEqual(settings.hiddenHints, ["a"]);
   assert.equal("extra" in settings, false);
   // Only changes are saved: a default can evolve.
-  assert.deepEqual(changedSettings(settings), { expandedGroups: "all", refreshSeconds: 30, hiddenHints: ["a"] });
+  assert.deepEqual(changedSettings(settings), { expandedGroups: "first", minimap: "off", refreshSeconds: 30, hiddenHints: ["a"] });
   assert.deepEqual(changedSettings(defaultSettings()), {});
 });
 

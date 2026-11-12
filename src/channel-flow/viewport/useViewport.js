@@ -8,6 +8,7 @@ import { readSession, writeSession } from "../../host/session.js";
 import { fitView, panBy, startView, transformOf, zoomAround } from "./viewport.js";
 import { wheelAction } from "./gestures.js";
 import { keyAction } from "./keyboard.js";
+import { clampLens, isSceneVisible, minimapDragMove, minimapDragStart, minimapLayout, minimapLens } from "./minimap.js";
 
 const ANIMATION_MS = 250;
 
@@ -23,34 +24,61 @@ export function useViewport({ scene, sessionKey }) {
   const viewportRef = useRef(null);
   const stageRef = useRef(null);
   const zoomRef = useRef(null);
+  const minimapRef = useRef(null);
+  const minimapCanvasRef = useRef(null);
+  const minimapLensRef = useRef(null);
   const view = useRef({ s: 1, x: 0, y: 0 });
   const frame = useRef(0);
   const saveTimer = useRef(0);
+  const mapDrag = useRef(null);
   // Latest values for the listeners, which are installed once.
   const latest = useRef({ scene, sessionKey });
   latest.current = { scene, sessionKey };
+
+  const viewportSize = () => ({ width: viewportRef.current?.clientWidth || 0, height: viewportRef.current?.clientHeight || 0 });
+  const center = () => [viewportSize().width / 2, viewportSize().height / 2];
 
   function render() {
     frame.current = 0;
     if (stageRef.current) stageRef.current.style.transform = transformOf(view.current);
     if (zoomRef.current) zoomRef.current.textContent = `${Math.round(view.current.s * 100)}%`;
+    const minimap = minimapRef.current;
+    if (minimap) {
+      const currentScene = latest.current.scene;
+      const vp = viewportSize();
+      const visible = !isSceneVisible(currentScene, view.current, vp);
+      minimap.classList.toggle("ofu-minimap--hidden", !visible);
+      const lensEl = minimapLensRef.current;
+      if (visible && lensEl) {
+        const map = minimapLayout(currentScene);
+        const lens = clampLens(minimapLens(view.current, vp, map), map);
+        lensEl.style.left = `${lens.x}px`;
+        lensEl.style.top = `${lens.y}px`;
+        lensEl.style.width = `${lens.width}px`;
+        lensEl.style.height = `${lens.height}px`;
+      }
+    }
   }
 
   function show(next, { animate = false } = {}) {
     view.current = next;
     const stage = stageRef.current;
-    if (animate && stage) {
-      stage.classList.add("ofu-flow__stage--animated");
-      setTimeout(() => stage.classList.remove("ofu-flow__stage--animated"), ANIMATION_MS);
+    const lensEl = minimapLensRef.current;
+    if (animate) {
+      if (stage) {
+        stage.classList.add("ofu-flow__stage--animated");
+        setTimeout(() => stage.classList.remove("ofu-flow__stage--animated"), ANIMATION_MS);
+      }
+      if (lensEl) {
+        lensEl.classList.add("ofu-minimap__lens--animated");
+        setTimeout(() => lensEl.classList.remove("ofu-minimap__lens--animated"), ANIMATION_MS);
+      }
     }
     if (!frame.current) frame.current = requestAnimationFrame(render);
     clearTimeout(saveTimer.current);
     const key = latest.current.sessionKey;
     saveTimer.current = setTimeout(() => writeSession(key, view.current), 200);
   }
-
-  const viewportSize = () => ({ width: viewportRef.current.clientWidth, height: viewportRef.current.clientHeight });
-  const center = () => [viewportRef.current.clientWidth / 2, viewportRef.current.clientHeight / 2];
 
   const controls = {
     zoomIn: () => show(zoomAround(view.current, 1.25, ...center()), { animate: true }),
@@ -59,6 +87,23 @@ export function useViewport({ scene, sessionKey }) {
     start: () => show(startView(latest.current.scene, viewportSize(), latest.current.scene.anchor), { animate: true })
   };
 
+  function minimapStart(mx, my) {
+    const currentScene = latest.current.scene;
+    const map = minimapLayout(currentScene);
+    const { view: next, grabOffset } = minimapDragStart(currentScene, view.current, viewportSize(), mx, my, map);
+    mapDrag.current = { grabOffset, map };
+    if (next) show(next);
+  }
+
+  function minimapMove(mx, my) {
+    if (!mapDrag.current) return;
+    show(minimapDragMove(latest.current.scene, view.current, viewportSize(), mx, my, mapDrag.current.map, mapDrag.current.grabOffset));
+  }
+
+  function minimapEnd() {
+    mapDrag.current = null;
+  }
+
   // A new channel or layout: back where the user was during this session, or at
   // the start of the flow.
   useLayoutEffect(() => {
@@ -66,6 +111,10 @@ export function useViewport({ scene, sessionKey }) {
     view.current = isView(saved) ? saved : startView(scene, viewportSize(), scene.anchor);
     render();
   }, [sessionKey]);
+
+  useLayoutEffect(() => {
+    render();
+  }, [scene.width, scene.height]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -134,12 +183,20 @@ export function useViewport({ scene, sessionKey }) {
       ["gesturestart", onGestureStart], ["gesturechange", onGestureChange]
     ];
     listeners.forEach(([type, listener, options]) => viewport.addEventListener(type, listener, options));
+    const observer = typeof ResizeObserver === "function" ? new ResizeObserver(() => render()) : null;
+    observer?.observe(viewport);
     return () => {
       listeners.forEach(([type, listener]) => viewport.removeEventListener(type, listener));
+      observer?.disconnect();
       cancelAnimationFrame(frame.current);
       clearTimeout(saveTimer.current);
     };
   }, []);
 
-  return { viewportRef, stageRef, zoomRef, ...controls };
+  return {
+    viewportRef, stageRef, zoomRef,
+    minimapRef, minimapCanvasRef, minimapLensRef,
+    syncMinimap: render, minimapStart, minimapMove, minimapEnd,
+    ...controls
+  };
 }

@@ -17,7 +17,10 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
   faites (option *Links*). Reste une vue dédiée qui dessine ces liens (graphe des
   canaux, groupes en cadres), utile quand les canaux liés sont dans des groupes
   différents.
-- [ ] **Mini-carte** pour les très grands canaux, dans Channel Flow.
+- [x] **Mini-carte** pour les très grands canaux, dans Channel Flow (fait le
+  2026-11-12) : aperçu SVG en bas à droite dès que le schéma dépasse la fenêtre,
+  navigation par clic ou glisser de la fenêtre visible, fermable et réouvrable
+  depuis les réglages.
 - [ ] Filtre de statut dans Messages depuis un compteur, dès que Web Admin accepte
   `?status=` (WA-01), et champ *Connector* à jour (WA-15) ; ouverture d'un onglet, d'une destination ou d'une étape précis
   de l'éditeur (WA-02).
@@ -32,12 +35,12 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
 - [ ] ESLint (`react/jsx-no-literals`) et Stylelint (couleurs hors `tokens.css`),
   prévus au plan.
 - [ ] Performances avec 200 canaux (second dump `oie-scale.sql.gz`).
-- [ ] Faire tourner la CI (`.github/workflows/build.yml`) une fois le dépôt publié.
+- [ x] Faire tourner la CI (`.github/workflows/build.yml`) une fois le dépôt publié.
 
 ## Projet
 
-- [ ] Retirer Flow et Flows du FHIR Profile Mapper (phase 8 du plan).
-- [ ] Signaler en privé RB-07 (préférences d'autres utilisateurs modifiables) aux
+- [ x] Retirer Flow et Flows du FHIR Profile Mapper (phase 8 du plan).
+- [ x] Signaler RB-07 (préférences d'autres utilisateurs modifiables) aux
   projets RBAC et OIE.
 - [ ] Proposer à Web Admin les demandes du §10 du plan (`?status=`, paramètres
   d'URL de l'éditeur, onglet par défaut, i18n).
