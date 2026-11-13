@@ -57,10 +57,10 @@ export function ChannelFlow({ channel, mode, onChange }) {
     const { tile, where } = popover;
     close();
     try {
-      addElement(channel, tile.target.section, tile.target.metaDataId, type.type);
+      const step = addElement(channel, tile.target.section, tile.target.metaDataId, type.type);
       onChange?.();
       toast(t("channelFlow.added", { type: type.label, what: t(`channelFlow.tile.${tile.kind}`), where }));
-      openStepEditor(channel, tile.target.section, tile.target.metaDataId, { draft: true });
+      openStepEditor(channel, tile.target.section, tile.target.metaDataId, { draft: true, step });
     } catch (error) {
       toast(t("channelFlow.addFailed", { error: error.message }), "error");
     }

@@ -22,8 +22,8 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
   navigation par clic ou glisser de la fenêtre visible, fermable et réouvrable
   depuis les réglages.
 - [ ] Filtre de statut dans Messages depuis un compteur, dès que Web Admin accepte
-  `?status=` (WA-01), et champ *Connector* à jour (WA-15) ; ouverture d'un onglet, d'une destination ou d'une étape précis
-  de l'éditeur (WA-02).
+  `?status=` (WA-01), et champ *Connector* à jour (WA-15). (L'ouverture ciblée dans
+  l'éditeur WA-02 est faite via paramètres d'URL sur la branche `feat/editor-url-params`.)
 
 ## Qualité
 

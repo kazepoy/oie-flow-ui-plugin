@@ -300,13 +300,6 @@ export default {
     added: "Added {type} to {what} · {where}. Save the channel to keep it.",
     addFailed: "The step could not be added: {error}",
     noStepTypes: "No step types available",
-    openTab: {
-      source: "Open the Source tab to edit the source connector.",
-      destination: "Open the Destinations tab, destination {id}, to edit this connector.",
-      script: "Open the Scripts tab, {script}, to edit this script.",
-      attachments: "Open the Summary tab to edit the attachments.",
-      step: "Select step {index} ({name}) in the list to edit it."
-    },
     help: {
       reading: "Reading the diagram",
       blocks: "A message enters on the left (or at the top), goes through the source, then through each chain of destinations. Chains receive it in parallel.",

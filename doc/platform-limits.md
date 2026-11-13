@@ -41,7 +41,7 @@ entry remains, with the version that fixes it.
 | ID | Component | Finding | Severity | Status |
 |---|---|---|---|---|
 | [WA-01](#wa-01) | Web Admin | Messages: no status filter in URL | Inconvenient | Worked around |
-| [WA-02](#wa-02) | Web Admin | Channel editor: no URL for a tab, a destination, a script | Inconvenient | Worked around |
+| [WA-02](#wa-02) | Web Admin | Channel editor: no URL for a tab, a destination, a script | Inconvenient | Resolved (with URL params) |
 | [WA-03](#wa-03) | Web Admin | Plugin tabs placed after built-in ones, never default | Inconvenient | Worked around |
 | [WA-04](#wa-04) | Web Admin | Channel tabs not filtered by RBAC task | Minor | Worked around |
 | [WA-05](#wa-05) | Web Admin | No public subscription to route changes | Minor | Worked around |
@@ -97,28 +97,17 @@ entry remains, with the version that fixes it.
 
 ### WA-02
 
-**Channel editor: no URL for a tab, a destination, a script.** · Inconvenient · Worked around
+**Channel editor: no URL for a tab, a destination, a script.** · Inconvenient · Resolved (with URL params)
 
-- **Finding.** Filters, transformers and responses have their own route
-  (`/channels/:id/filter/:metaDataId`…), with no parameter to select a step. The
-  editor's active tab, selected destination and displayed script are internal state,
-  with no route or API.
-- **Evidence.** Each screen starts on a fixed value: `assets/channel-editor-*.js`:
-  tab `useState("Summary")`, script `useState(Tt[0])` (*Deploy*);
-  `assets/filter-transformer-*.js`: selection `useState(() => elements.length ? [0] : null)`
-  (first step).
-- **Impact.** Without targeting, clicking a script, connector or step other than the
-  first in Channel Flow lands on *Summary* or on step 1.
-- **Workaround.** DOM workaround, intentional and isolated in `src/host/editor-dom.js`:
-  after navigation, Flow UI drives the accessible controls the editor already renders,
-  as a keyboard user would (focusing the `[role="tab"]` of *Channel sections*, native
-  setter on the scripts `<select>`, clicking the `.dest-grid` or `tr[data-path]` row).
-  If a control does not appear within 5 seconds, a toast tells the user where to click.
-  E2E test: *a click reaches the step, the script or the destination in the editor*.
-  Re-verify on each Web Admin upgrade.
-- **Upstream request.** `/channels/:id/edit?tab=destinations&metaDataId=3`,
-  `?tab=scripts&script=deploy`, `?tab=source`, and `?step=4` on filter and transformer
-  routes.
+- **Finding.** Originally, filters, transformers and responses had routes without a
+  step parameter, and the editor's active tab, selected destination and displayed
+  script were internal component state.
+- **Resolution.** Web Admin (`feat/editor-url-params`) added `?tab=`, `?metaDataId=`
+  and `?script=` on `/channels/:id/edit`, plus `?step=` on
+  `/channels/:id/{filter|transformer|response}/:metaDataId`, preserving the unsaved
+  draft across in-flow `/channels/:id/` navigation. Flow UI's `src/host/routes.js` and
+  `src/host/editor.js` now navigate directly using these URL parameters; the
+  former DOM workaround (`src/host/editor-dom.js`) has been removed.
 
 ### WA-03
 

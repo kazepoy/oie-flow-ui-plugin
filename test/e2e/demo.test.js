@@ -136,33 +136,35 @@ describe("as admin", () => {
     await page.waitForURL(/\/transformer\/0$/);
   });
 
-  test("a click reaches the step, the script or the destination in the editor (WA-02)", async () => {
+  test("a click reaches the step, the script or the destination in the editor", async () => {
     const { page } = session;
     const selectedTab = () => page.locator('[role="tablist"][aria-label="Channel sections"] [role="tab"][aria-selected="true"]').innerText();
     const openFlow = async () => {
       await page.goto(url(`channel-flow/${LAB_RESULTS}`));
       await page.locator(".ofu-block").first().waitFor();
     };
-    // Second step of the source transformer: the editor selects the first one by itself.
+    // Second step of the source transformer: the URL selects step 1 directly.
     await openFlow();
     await page.locator(".ofu-chip[title='Order number']").click();
-    await page.waitForURL(/\/transformer\/0$/);
+    await page.waitForURL(/\/transformer\/0\?step=1$/);
     await page.locator('tr[data-path="1"].selected').waitFor();
     for (const [name, key] of [["Postprocessor", "postprocessingScript"], ["Deploy", "deployScript"], ["Undeploy", "undeployScript"]]) {
       await openFlow();
       await page.getByRole("button", { name: new RegExp(`^Open ${name} ·`) }).click();
-      await page.waitForURL(/\/edit$/);
+      await page.waitForURL(new RegExp(`/edit\\?tab=scripts&script=${key}$`));
       await page.waitForFunction(value => document.querySelector('[role="tabpanel"] select')?.value === value, key);
       assert.equal(await selectedTab(), "Scripts");
     }
     await openFlow();
     await page.getByRole("button", { name: /^Open Connector · Destination 3 ·/ }).click();
+    await page.waitForURL(/\/edit\?tab=destinations&metaDataId=3$/);
     await page.locator(".dest-grid tbody tr.selected td.num", { hasText: "3" }).waitFor();
     assert.equal(await selectedTab(), "Destinations");
-    // From the editor's own Flow tab, only the tab changes.
+    // From the editor's own Flow tab, the URL updates while keeping the draft.
     await page.getByRole("tab", { name: "Flow" }).click();
     await page.locator(".ofu-block").first().waitFor();
     await page.getByRole("button", { name: /^Open Postprocessor ·/ }).click();
+    await page.waitForURL(/\/edit\?tab=scripts&script=postprocessingScript$/);
     await page.waitForFunction(() => document.querySelector('[role="tabpanel"] select')?.value === "postprocessingScript");
     assert.equal(await selectedTab(), "Scripts");
     await shot(page, "e2e-open-postprocessor");
@@ -178,7 +180,7 @@ describe("as admin", () => {
     await shot(page, "e2e-flow-tab");
     await page.getByRole("button", { name: /^Add to Transformer · Source/ }).click();
     await page.getByRole("menuitem", { name: "JavaScript" }).click();
-    await page.waitForURL(/\/transformer\/0$/);
+    await page.waitForURL(/\/transformer\/0\?step=\d+$/);
     assert.deepEqual(pluginErrors(session.errors), []);
   });
 });
