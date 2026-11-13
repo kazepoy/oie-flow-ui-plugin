@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.3 (2026-11-13)
+
+- **Channel Flow**: channel picker redesigned with channel cards grouped by
+  collapsible channel group, colored channel tags, and a filter bar by channel
+  name and tag.
+- **Flows Monitoring**: colored channel tags displayed when *Details* is
+  checked, and text filter matches both channel names and tag names.
+- Demo: 8 sample channel tags seeded in the database dump, with RBAC `viewTags`
+  granted to *Operations* and *Integrator*.
+
 ## 0.8.2 (2026-11-13)
 
 - **Channel Flow**: minimap in the bottom-right corner when a diagram overflows
