@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { endpointOf, flowModel, hasScript, pickLayout } from "../../src/channel-flow/model/flow-model.js";
-import { pickerGroups } from "../../src/channel-flow/model/picker.js";
+import { availablePickerTags, pickerGroups, tagColor } from "../../src/channel-flow/model/picker.js";
 import { channel, destination, elementLabel } from "./fixtures.js";
 
 test("the model lists components in processing order, with data types and the response", () => {
@@ -53,4 +53,29 @@ test("the picker lists channels by group, ungrouped last, and filters them", () 
   assert.deepEqual(pickerGroups(names, groups, "", "Default Group").map(group => [group.name, group.channels.map(c => c.name)]),
     [["Laboratory", ["LAB · Orders"]], ["Default Group", ["ADT · Inbound", "OPS · Heartbeat"]]]);
   assert.deepEqual(pickerGroups(names, groups, "ops", "Default Group").map(group => group.name), ["Default Group"]);
+});
+
+test("the picker attaches sorted tags, filters by name or tag, and hides tags of unseen channels", () => {
+  const names = new Map([["a", "LAB · Orders"], ["b", "ADT · Inbound"], ["c", "OPS · Heartbeat"]]);
+  const groups = [{ id: "g", name: "Laboratory", channels: { channel: [{ id: "a" }] } }];
+  const tags = [
+    { id: "t2", name: "HL7v2", channelIds: { string: ["a", "b"] }, backgroundColor: { red: 30, green: 144, blue: 255, alpha: 255 } },
+    { id: "t1", name: "Critical", channelIds: { string: "a" } },
+    { id: "t3", name: "Hidden", channelIds: { string: "secret" } }
+  ];
+  assert.equal(tagColor(tags[0]), "rgb(30, 144, 255)");
+  assert.equal(tagColor(tags[1]), null);
+  assert.deepEqual(availablePickerTags(names, tags).map(t => t.name), ["Critical", "HL7v2"]);
+
+  const all = pickerGroups(names, groups, "", "Default Group", { tags });
+  assert.deepEqual(all[0].channels[0].tags.map(t => t.name), ["Critical", "HL7v2"]);
+  assert.deepEqual(all[1].channels.find(c => c.id === "c").tags, []);
+
+  // Text filter matches both channel name and tag name.
+  assert.deepEqual(pickerGroups(names, groups, "hl7", "Default Group", { tags }).map(g => [g.name, g.channels.map(c => c.id)]),
+    [["Laboratory", ["a"]], ["Default Group", ["b"]]]);
+  // Tag filter combines with text filter.
+  assert.deepEqual(pickerGroups(names, groups, "inbound", "Default Group", { tags, tagId: "t2" }).map(g => g.channels.map(c => c.id)),
+    [["b"]]);
+  assert.deepEqual(pickerGroups(names, groups, "inbound", "Default Group", { tags, tagId: "t1" }), []);
 });

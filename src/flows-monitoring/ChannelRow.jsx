@@ -4,6 +4,7 @@
 // destination that waits for the previous one.
 import { t } from "../i18n/index.js";
 import { cx } from "../shared/ui/Button.jsx";
+import { TagList } from "../shared/ui/Tag.jsx";
 import { ChannelLink, ConnectorCard } from "./ConnectorCard.jsx";
 import { ControlButtons } from "./ControlButtons.jsx";
 import { channelCommands } from "./controls.js";
@@ -35,6 +36,7 @@ function ChannelCard({ lane, actions }) {
         )}
         <ControlButtons commands={channelCommands(lane.state)} target={{ channelId: lane.id, name: lane.name }} actions={actions} />
       </div>
+      {actions.showDetails && <TagList tags={lane.tags} />}
       {actions.showLinks && lane.calledBy.length > 0 && (
         <div className="ofu-channel__links">
           {[...new Set(lane.calledBy.map(link => link.channelId))].map(channelId => (

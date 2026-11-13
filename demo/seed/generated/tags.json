@@ -1,0 +1,164 @@
+{
+  "set": {
+    "channelTag": [
+      {
+        "@version": "4.7.0",
+        "id": "ed2ed352-cfb2-4d54-aa8a-f4b1324d6190",
+        "name": "HL7v2",
+        "channelIds": {
+          "string": [
+            "6d1d3f7e-d707-4a17-9a35-f3af99961456",
+            "8ec16e83-2f62-4278-9362-78518e5f1527",
+            "8c6a8a72-f71f-4ade-a446-43af7a07a157",
+            "5a4aa0ff-b675-4e44-930a-2e23cffd6eb1",
+            "07516747-4e3e-4cee-80cf-6a9aaf05412e",
+            "e46636e7-66aa-4d0c-9699-772cce29088e",
+            "00a5626d-4dc6-4d37-ad45-193566bc8691",
+            "6bdd88af-b67e-4ddb-8635-5769d053caf3",
+            "abbe5ca0-c796-4e1d-976f-b53e6ad91eeb",
+            "4e27f52a-5698-4f2f-b5cb-f525bf622b19",
+            "5e1fd032-c661-49f2-badb-56767c21ea3b",
+            "47e24fec-779e-4d14-ad4e-61a40bf771f5",
+            "a81535d0-838d-4352-8557-9d9b0fd2ece4"
+          ]
+        },
+        "backgroundColor": {
+          "red": 37,
+          "green": 99,
+          "blue": 235,
+          "alpha": 255
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "22081a51-16b8-4e84-acab-6bc674073758",
+        "name": "JSON",
+        "channelIds": {
+          "string": [
+            "8a212f36-06f2-483c-b48d-678a0fa682f4",
+            "703cfc96-a148-4fde-908d-1353330b5dde"
+          ]
+        },
+        "backgroundColor": {
+          "red": 2,
+          "green": 132,
+          "blue": 199,
+          "alpha": 255
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "4931e1f5-9d83-4a3a-af84-42a0c2abb000",
+        "name": "CSV",
+        "channelIds": {
+          "string": [
+            "11f05b73-1769-4018-9419-02cbfe64bd58"
+          ]
+        },
+        "backgroundColor": {
+          "red": 217,
+          "green": 119,
+          "blue": 6,
+          "alpha": 255
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "bbc30f43-6792-4076-af1c-bfbd36466eca",
+        "name": "MLLP",
+        "channelIds": {
+          "string": [
+            "6d1d3f7e-d707-4a17-9a35-f3af99961456",
+            "8c6a8a72-f71f-4ade-a446-43af7a07a157",
+            "5a4aa0ff-b675-4e44-930a-2e23cffd6eb1",
+            "07516747-4e3e-4cee-80cf-6a9aaf05412e",
+            "00a5626d-4dc6-4d37-ad45-193566bc8691",
+            "abbe5ca0-c796-4e1d-976f-b53e6ad91eeb",
+            "4e27f52a-5698-4f2f-b5cb-f525bf622b19",
+            "5e1fd032-c661-49f2-badb-56767c21ea3b",
+            "47e24fec-779e-4d14-ad4e-61a40bf771f5",
+            "a81535d0-838d-4352-8557-9d9b0fd2ece4"
+          ]
+        },
+        "backgroundColor": {
+          "red": 79,
+          "green": 70,
+          "blue": 229,
+          "alpha": 255
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "80d9e967-cb20-40fc-a8dc-3cf7ffcf6c5e",
+        "name": "HTTP",
+        "channelIds": {
+          "string": [
+            "6bdd88af-b67e-4ddb-8635-5769d053caf3",
+            "8a212f36-06f2-483c-b48d-678a0fa682f4",
+            "703cfc96-a148-4fde-908d-1353330b5dde",
+            "470a3eec-9e3b-4385-bf16-b8d354f5d060"
+          ]
+        },
+        "backgroundColor": {
+          "red": 8,
+          "green": 145,
+          "blue": 178,
+          "alpha": 255
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "51b9bd7d-2e25-48a5-a576-a623bed3ec10",
+        "name": "critical",
+        "channelIds": {
+          "string": [
+            "6d1d3f7e-d707-4a17-9a35-f3af99961456",
+            "e46636e7-66aa-4d0c-9699-772cce29088e",
+            "abbe5ca0-c796-4e1d-976f-b53e6ad91eeb"
+          ]
+        },
+        "backgroundColor": {
+          "red": 190,
+          "green": 24,
+          "blue": 93,
+          "alpha": 255
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "794bc212-88fd-438f-a2f2-3818ebfd71e2",
+        "name": "simulator",
+        "channelIds": {
+          "string": [
+            "5e1fd032-c661-49f2-badb-56767c21ea3b",
+            "47e24fec-779e-4d14-ad4e-61a40bf771f5",
+            "470a3eec-9e3b-4385-bf16-b8d354f5d060",
+            "a81535d0-838d-4352-8557-9d9b0fd2ece4"
+          ]
+        },
+        "backgroundColor": {
+          "red": 71,
+          "green": 85,
+          "blue": 105,
+          "alpha": 255
+        }
+      },
+      {
+        "@version": "4.7.0",
+        "id": "9b281b10-023c-483a-a649-be1ced7e6c3e",
+        "name": "legacy",
+        "channelIds": {
+          "string": [
+            "4e27f52a-5698-4f2f-b5cb-f525bf622b19"
+          ]
+        },
+        "backgroundColor": {
+          "red": 180,
+          "green": 83,
+          "blue": 9,
+          "alpha": 255
+        }
+      }
+    ]
+  }
+}

@@ -26,7 +26,7 @@ const SCROLL_KEY = "flows.scroll";
 
 export function FlowsMonitoringView() {
   const [settings] = useSettings();
-  const { statuses, groups, groupsReadable, waits, links, details, error, updated, refresh, reloadCounters } = useStatuses(settings.refreshSeconds);
+  const { statuses, groups, groupsReadable, waits, links, details, tags, error, updated, refresh, reloadCounters } = useStatuses(settings.refreshSeconds);
   const [view, setView] = useState(() => readSession(SESSION_KEY, { filter: "", lifetime: false, toggled: {}, links: true, details: false }));
   const body = useRef(null);
   const restored = useRef(false);
@@ -39,10 +39,10 @@ export function FlowsMonitoringView() {
 
   const grouped = useMemo(() => statuses
     ? groupLanes(statuses, groups, {
-      filter: view.filter, lifetime: view.lifetime, waits, links, details,
+      filter: view.filter, lifetime: view.lifetime, waits, links, details, tags,
       defaultGroupName: t(groupsReadable ? "flows.group.default" : "flows.group.all")
     })
-    : [], [statuses, groups, groupsReadable, waits, links, details, view.filter, view.lifetime]);
+    : [], [statuses, groups, groupsReadable, waits, links, details, tags, view.filter, view.lifetime]);
   const names = useMemo(() => new Map((statuses ?? []).map(status => [String(status.channelId), status.name])), [statuses]);
   const open = openGroups(grouped, view.toggled, settings.expandedGroups, view.filter.trim() !== "");
   const totals = grouped.reduce((sum, group) => addStats(sum, group.stats), emptyStats());
@@ -134,7 +134,7 @@ export function FlowsMonitoringView() {
       <div className="ofu-toolbar">
         <h1 className="ofu-toolbar__title">{t("flows.title")}</h1>
         <Totals stats={totals} label={t("flows.totalsLabel")} />
-        <input type="search" className="ofu-search" placeholder={t("flows.filter")} aria-label={t("flows.filter")}
+        <input type="search" className="ofu-search" placeholder={t(tags.size ? "flows.filterWithTags" : "flows.filter")} aria-label={t(tags.size ? "flows.filterWithTags" : "flows.filter")}
           value={view.filter} onChange={event => update({ filter: event.target.value })} />
         <label className="ofu-check" title={t("flows.lifetimeTitle")}>
           <input type="checkbox" checked={view.lifetime} onChange={event => update({ lifetime: event.target.checked })} />

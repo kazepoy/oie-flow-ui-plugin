@@ -42,6 +42,17 @@ test("the filter keeps matching channels only", () => {
   assert.deepEqual(result[0].lanes.map(lane => lane.name), ["LAB · Orders"]);
 });
 
+test("the filter also matches channel tags and attaches them to lanes", () => {
+  const tags = new Map([
+    ["a", [{ id: "1", name: "HL7v2", color: "#2e7d32" }]],
+    ["b", [{ id: "2", name: "FHIR", color: "#1565c0" }]]
+  ]);
+  const result = groupLanes([status("a", "LAB · Orders"), status("b", "ADT · Inbound")], [], { filter: "fhir", tags, defaultGroupName: "Default" });
+  assert.deepEqual(result[0].lanes.map(lane => lane.name), ["ADT · Inbound"]);
+  assert.deepEqual(result[0].lanes[0].tags, [{ id: "2", name: "FHIR", color: "#1565c0" }]);
+  assert.deepEqual(channelLane(status("c", "C")).tags, []);
+});
+
 test("groups open as set by the user, else by the setting; a filter opens them all", () => {
   const groups = [{ id: "a" }, { id: "b" }, { id: "c" }];
   assert.deepEqual([...openGroups(groups, {}, "first", false)], ["a"]);

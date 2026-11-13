@@ -21,6 +21,11 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
   2026-11-12) : aperçu SVG en bas à droite dès que le schéma dépasse la fenêtre,
   navigation par clic ou glisser de la fenêtre visible, fermable et réouvrable
   depuis les réglages.
+- [x] **Tags dans Channel Flow et Flows Monitoring** (fait le 2026-11-13) :
+  cartes par canal regroupées par groupe dépliable/repliable et filtre par nom
+  ou tag dans le sélecteur de Channel Flow ; pastilles de tags colorées sous
+  *Details* et filtre par nom ou tag dans Flows Monitoring ; jeu de tags de démo
+  et permission RBAC `viewTags`.
 - [ ] Filtre de statut dans Messages depuis un compteur, dès que Web Admin accepte
   `?status=` (WA-01), et champ *Connector* à jour (WA-15) ; ouverture d'un onglet, d'une destination ou d'une étape précis
   de l'éditeur (WA-02).

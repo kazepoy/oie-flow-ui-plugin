@@ -75,9 +75,9 @@ function connectorOf(status, lifetime, fallbackName, details) {
  * and `chainsKnown` is false.
  * @param {any} status dashboard status of the channel
  * @param {{ lifetime?: boolean, waits?: Map<number, boolean>, links?: { outgoing: Map<string, Map<number, string>>, incoming: Map<string, any[]> },
- *          details?: Map<number, { transport: string, endpoint: string }> }} [options]
+ *          details?: Map<number, { transport: string, endpoint: string }>, tags?: { id: string, name: string, color: string | null }[] }} [options]
  */
-export function channelLane(status, { lifetime = false, waits, links = { outgoing: new Map(), incoming: new Map() }, details } = {}) {
+export function channelLane(status, { lifetime = false, waits, links = { outgoing: new Map(), incoming: new Map() }, details, tags = [] } = {}) {
   const children = asList(status.childStatuses, "dashboardStatus");
   const sourceStatus = children.find(child => child.statusType === "SOURCE_CONNECTOR" || Number(child.metaDataId) === 0);
   const destinations = children.filter(child => child !== sourceStatus)
@@ -91,6 +91,7 @@ export function channelLane(status, { lifetime = false, waits, links = { outgoin
     id: String(status.channelId),
     name: status.name || String(status.channelId),
     state: status.state,
+    tags,
     chainsKnown,
     stats: statsOf(status, lifetime),
     source: connectorOf(sourceStatus, lifetime, "Source", details),
@@ -109,13 +110,16 @@ const byName = (a, b) => String(a.name).localeCompare(String(b.name));
  * under the default group. Empty groups are left out.
  * @param {any[]} statuses
  * @param {any[]} groups channel groups ({ id, name, channels })
- * @param {{ filter?: string, lifetime?: boolean, waits?: Map<string, Map<number, boolean>>, links?: any, details?: Map<string, any>, defaultGroupName: string }} options
+ * @param {{ filter?: string, lifetime?: boolean, waits?: Map<string, Map<number, boolean>>, links?: any, details?: Map<string, any>, tags?: Map<string, any[]>, defaultGroupName: string }} options
  */
-export function groupLanes(statuses, groups, { filter = "", lifetime = false, waits = new Map(), links, details = new Map(), defaultGroupName }) {
+export function groupLanes(statuses, groups, { filter = "", lifetime = false, waits = new Map(), links, details = new Map(), tags = new Map(), defaultGroupName }) {
   const needle = filter.trim().toLowerCase();
   const lanes = statuses
-    .map(status => channelLane(status, { lifetime, waits: waits.get(String(status.channelId)), links, details: details.get(String(status.channelId)) }))
-    .filter(lane => !needle || lane.name.toLowerCase().includes(needle))
+    .map(status => {
+      const id = String(status.channelId);
+      return channelLane(status, { lifetime, waits: waits.get(id), links, details: details.get(id), tags: tags.get(id) ?? [] });
+    })
+    .filter(lane => !needle || lane.name.toLowerCase().includes(needle) || lane.tags.some(tag => tag.name.toLowerCase().includes(needle)))
     .sort(byName);
   const laneById = new Map(lanes.map(lane => [lane.id, lane]));
   const grouped = new Set();

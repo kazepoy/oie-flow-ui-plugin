@@ -342,6 +342,51 @@ export const GROUPS = [
   { name: "Simulators", description: "Simulated external systems used by the demo.", channels: simulators }
 ];
 
+const [simLis, simRis, simEhr, simPharmacy] = simulators;
+
+export const TAGS = [
+  {
+    name: "HL7v2",
+    color: { red: 37, green: 99, blue: 235 },
+    channels: [adtInbound, adtBroadcast, adtMerge, labOrders, labResults, labCritical, radOrders, radReports, pharmPrescriptions, opsLegacy, simLis, simRis, simPharmacy]
+  },
+  {
+    name: "JSON",
+    color: { red: 2, green: 132, blue: 199 },
+    channels: [billClaims, hieApi]
+  },
+  {
+    name: "CSV",
+    color: { red: 217, green: 119, blue: 6 },
+    channels: [billCharges]
+  },
+  {
+    name: "MLLP",
+    color: { red: 79, green: 70, blue: 229 },
+    channels: [adtInbound, adtMerge, labOrders, labResults, radOrders, pharmPrescriptions, opsLegacy, simLis, simRis, simPharmacy]
+  },
+  {
+    name: "HTTP",
+    color: { red: 8, green: 145, blue: 178 },
+    channels: [radReports, billClaims, hieApi, simEhr]
+  },
+  {
+    name: "critical",
+    color: { red: 190, green: 24, blue: 93 },
+    channels: [adtInbound, labCritical, pharmPrescriptions]
+  },
+  {
+    name: "simulator",
+    color: { red: 71, green: 85, blue: 105 },
+    channels: simulators
+  },
+  {
+    name: "legacy",
+    color: { red: 180, green: 83, blue: 9 },
+    channels: [opsLegacy]
+  }
+];
+
 /** RBAC roles. `groups` restricts the role to the channels of those groups (RB-06). */
 export const ROLES = [
   {
@@ -353,12 +398,12 @@ export const ROLES = [
   {
     name: "Operations",
     description: "Monitors every channel, reads messages, starts and stops channels.",
-    permissions: ["viewDashboard", "viewMessages", "viewChannels", "viewChannelGroups", "startStopChannels", "viewEvents", "viewAlerts"]
+    permissions: ["viewDashboard", "viewMessages", "viewChannels", "viewChannelGroups", "viewTags", "startStopChannels", "viewEvents", "viewAlerts"]
   },
   {
     name: "Integrator",
     description: "Designs and deploys channels.",
-    permissions: ["viewDashboard", "viewMessages", "viewChannels", "viewChannelGroups", "manageChannels", "deployUndeployChannels",
+    permissions: ["viewDashboard", "viewMessages", "viewChannels", "viewChannelGroups", "viewTags", "manageChannels", "deployUndeployChannels",
       "startStopChannels", "viewCodeTemplates", "viewGlobalScripts", "viewEvents"]
   },
   {

@@ -80,10 +80,11 @@ export default {
     title: "Flows Monitoring",
     totalsLabel: "Totals of the channels shown",
     filter: "Filter channels",
+    filterWithTags: "Filter channels & tags",
     lifetime: "Lifetime",
     lifetimeTitle: "Counters since the channels were created, instead of since their statistics were last reset",
     details: "Details",
-    detailsTitle: "Show each connector's type and address",
+    detailsTitle: "Show each connector's type and address, and channel tags",
     links: "Links",
     linksTitle: "Show which channels send to which (Channel Writer → Channel Reader)",
     control: {
@@ -225,7 +226,13 @@ export default {
     loadFailed: "The channel could not be loaded",
     picker: {
       intro: "Choose a channel to see how a message moves through it.",
-      filter: "Find a channel",
+      filter: "Filter channels & tags…",
+      filterNameOnly: "Find a channel",
+      tag: "Tag",
+      allTags: "All tags",
+      clearFilters: "Clear filters",
+      count: { one: "{count} channel", other: "{count} channels" },
+      filteredCount: "{shown} of {total}",
       failed: "The channels could not be loaded",
       noMatch: "No channel matches",
       none: "No channels"

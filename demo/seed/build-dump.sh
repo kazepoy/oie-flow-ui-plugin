@@ -71,6 +71,9 @@ call POST "/channelgroups/_bulkUpdate?override=true" \
   --form "channelGroups=@$GENERATED/groups.json;type=application/json" \
   --form "removedChannelGroupIds=@$EMPTY_DB/removed.json;type=application/json"
 
+echo "=== Tags"
+call PUT /server/channelTags --header 'Content-Type: application/json' --data-binary "@$GENERATED/tags.json"
+
 echo "=== Deployment"
 for file in "$GENERATED"/channels/*.json; do
   id=$(sed -n 's/^    "id": "\(.*\)",$/\1/p' "$file" | head -n 1)

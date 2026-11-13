@@ -11,7 +11,7 @@ import { createHash } from "node:crypto";
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { loadWebAdmin } from "./webadmin/load.mjs";
 import { merge } from "./merge.mjs";
-import { DEPLOY_ORDER, GROUPS, ROLES, USERS } from "../channels.mjs";
+import { DEPLOY_ORDER, GROUPS, ROLES, TAGS, USERS } from "../channels.mjs";
 
 const VERSION = "4.7.0";
 const OUT = new URL("../generated/", import.meta.url);
@@ -166,6 +166,18 @@ await write("groups.json", engineJson({
   }
 }));
 
+await write("tags.json", engineJson({
+  set: {
+    channelTag: TAGS.map(tag => ({
+      "@version": VERSION,
+      id: nameUuid(`tag:${tag.name}`),
+      name: tag.name,
+      channelIds: { string: tag.channels.map(c => c.id) },
+      backgroundColor: { ...tag.color, alpha: 255 }
+    }))
+  }
+}));
+
 for (const [index, role] of ROLES.entries()) await write(`roles/${number(index)}-${slug(role.name)}.xml`, roleXml(role));
 
 // Plain text lists for the shell script, one record per line, fields separated by "|".
@@ -177,4 +189,4 @@ await write("messages.txt", DEPLOY_ORDER.flatMap(c => (c.seed ?? [])
   .map(([file, times]) => [c.id, file, times, enabledDestinations(c), c.name].join("|"))).join("\n"));
 await write("states.txt", DEPLOY_ORDER.filter(c => c.state).map(c => [c.id, c.state, c.name].join("|")).join("\n"));
 
-console.log(`${DEPLOY_ORDER.length} channels, ${GROUPS.length} groups, ${ROLES.length} roles, ${USERS.length} users → ${OUT.pathname}`);
+console.log(`${DEPLOY_ORDER.length} channels, ${GROUPS.length} groups, ${TAGS.length} tags, ${ROLES.length} roles, ${USERS.length} users → ${OUT.pathname}`);

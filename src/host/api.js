@@ -15,6 +15,12 @@ export const channelStatuses = () => api().status.list();
  */
 export const channelGroups = () => api().channelGroups.list().catch(() => null);
 
+/**
+ * Channel tags ({ id, name, channelIds, backgroundColor }), or [] when tags
+ * cannot be read (e.g. missing RBAC viewTags permission).
+ */
+export const channelTags = () => api().server?.channelTags?.().catch(() => []) ?? Promise.resolve([]);
+
 /** Full configurations of the given channels. */
 export const channelConfigurations = async channelIds =>
   channelIds.length ? asList(await api().channels.list(channelIds), "channel") : [];

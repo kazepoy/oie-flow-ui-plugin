@@ -3,23 +3,28 @@
 // is visible; groups and chains (heavier: full channel configurations) only on
 // load and on Refresh.
 import { useCallback, useEffect, useState } from "../host/react.js";
-import { channelConfigurations, channelGroups, channelStatuses } from "../host/api.js";
+import { channelConfigurations, channelGroups, channelStatuses, channelTags } from "../host/api.js";
+import { tagsByChannel } from "../shared/model/tags.js";
 import { asList } from "../shared/model/xstream.js";
 import { channelLinks, connectorDetails, waitsOf } from "./model.js";
 
 /**
  * @param {number} refreshSeconds 0 = only on demand
  * @returns {{ statuses: any[] | null, groups: any[], groupsReadable: boolean, waits: Map<string, Map<number, boolean>>, links: any, details: Map<string, any>,
- *             error: string, updated: Date | null, refresh: () => void, reloadCounters: () => Promise<void> }}
+ *             tags: Map<string, any[]>, error: string, updated: Date | null, refresh: () => void, reloadCounters: () => Promise<void> }}
  */
 export function useStatuses(refreshSeconds) {
-  const [data, setData] = useState({ statuses: null, groups: [], groupsReadable: true, waits: new Map(), links: channelLinks([]), details: new Map() });
+  const [data, setData] = useState({ statuses: null, groups: [], groupsReadable: true, waits: new Map(), links: channelLinks([]), details: new Map(), tags: new Map() });
   const [error, setError] = useState("");
   const [updated, setUpdated] = useState(null);
 
   const load = useCallback(async (withStructure) => {
     try {
-      const [statuses, groups] = await Promise.all([channelStatuses(), withStructure ? channelGroups() : null]);
+      const [statuses, groups, rawTags] = await Promise.all([
+        channelStatuses(),
+        withStructure ? channelGroups() : null,
+        withStructure ? channelTags() : null
+      ]);
       const list = asList(statuses, "dashboardStatus");
       let waits = null;
       let links = null;
@@ -37,7 +42,8 @@ export function useStatuses(refreshSeconds) {
         groupsReadable: withStructure ? groups !== null : previous.groupsReadable,
         waits: waits ?? previous.waits,
         links: links ?? previous.links,
-        details: details ?? previous.details
+        details: details ?? previous.details,
+        tags: withStructure ? tagsByChannel(rawTags) : previous.tags
       }));
       setError("");
       setUpdated(new Date());
