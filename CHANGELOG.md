@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.2 (2026-11-13)
+
+- **Channel Flow**: minimap in the bottom-right corner when a diagram overflows
+  the viewport, with click/drag navigation, close button and a *Minimap* setting
+  to reopen or disable it.
+- **Flows Monitoring**: all groups open by default and *Details* unchecked by
+  default.
+- Documentation: [platform-limits.md](doc/platform-limits.md) translated into
+  English.
+
 ## 0.8.1 (2026-11-11)
 
 - **Channel Flow**: a click on a script (Deploy, Undeploy, Preprocessor,

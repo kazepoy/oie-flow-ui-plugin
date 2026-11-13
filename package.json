@@ -1,6 +1,6 @@
 {
   "name": "oie-flow-ui",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Flows Monitoring and Channel Flow for the Open Integration Engine web administrator.",
   "license": "MPL-2.0",
   "private": true,

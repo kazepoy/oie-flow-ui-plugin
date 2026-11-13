@@ -103,7 +103,7 @@ npm run check       # type check of the JavaScript
 npm run test:e2e    # end-to-end tests against the running demo
 ```
 
-> **Status: 0.8.1.** See the [project plan](doc/plan.md)
+> **Status: 0.8.2.** See the [project plan](doc/plan.md)
 > and the [TODO list](doc/TODO.md).
 
 ## Documentation
