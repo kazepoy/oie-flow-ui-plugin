@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.8.4 (2026-11-14)
+
+- **Settings**: added server-wide defaults under **Manage › Settings › Flow UI**
+  stored in OIE extension properties (`extensions/Flow UI/properties`) with
+  *Refresh*, *Save* and *Restore Defaults* actions and native *Backup Config* /
+  *Restore Config* synchronization, layered under sparse per-user overrides
+  (`flowui.settings`). Serialized all server defaults so *Restore Config*
+  restores default values as well.
+- **Demo**: replaced the pre-built PostgreSQL dump and `seed/` generator with
+  REST API initialization (`demo/oie-init/init-channels.sh` and native XML/text
+  files under `demo/oie-init/data/`) creating users first, simplified to 12
+  step-rich channels in 4 groups with per-step timing traces and automatic
+  continuous `traffic` once initialization completes.
+- **Documentation**: updated [plan.md](doc/plan.md),
+  [platform-limits.md](doc/platform-limits.md), [TODO.md](doc/TODO.md),
+  [demo/README.md](demo/README.md) and [README.md](README.md).
+
 ## 0.8.3 (2026-11-13)
 
 - **Channel Flow**: channel picker redesigned with channel cards grouped by
