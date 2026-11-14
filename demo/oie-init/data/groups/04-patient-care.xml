@@ -1,0 +1,29 @@
+<channelGroup version="4.7.0">
+    <id>87882922-57db-472c-a53f-894e4ef81cfa</id>
+    <name>Patient Care</name>
+    <revision>1</revision>
+    <lastModified>
+      <time>1794657978376</time>
+      <timezone>Europe/Paris</timezone>
+    </lastModified>
+    <description>Admissions, radiology orders and pharmacy prescriptions.</description>
+    <channels>
+      <channel version="4.7.0">
+        <id>6d1d3f7e-d707-4a17-9a35-f3af99961456</id>
+        <revision>0</revision>
+      </channel>
+      <channel version="4.7.0">
+        <id>8ec16e83-2f62-4278-9362-78518e5f1527</id>
+        <revision>0</revision>
+      </channel>
+      <channel version="4.7.0">
+        <id>00a5626d-4dc6-4d37-ad45-193566bc8691</id>
+        <revision>0</revision>
+      </channel>
+      <channel version="4.7.0">
+        <id>abbe5ca0-c796-4e1d-976f-b53e6ad91eeb</id>
+        <revision>0</revision>
+      </channel>
+    </channels>
+  </channelGroup>
+  

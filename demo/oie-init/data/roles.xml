@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rbacRoles formatVersion="1" rbacVersion="1.3.0" engineVersion="4.7.0">
+  <role>
+    <name>Laboratory viewer</name>
+    <description>Monitors the laboratory channels and reads their messages.</description>
+    <permissions>
+      <permission>viewChannelGroups</permission>
+      <permission>viewDashboard</permission>
+      <permission>viewMessages</permission>
+    </permissions>
+    <channels restricted="true">
+      <channel id="e46636e7-66aa-4d0c-9699-772cce29088e" name="LAB · Critical values"/>
+      <channel id="5a4aa0ff-b675-4e44-930a-2e23cffd6eb1" name="LAB · Orders to LIS (ORM)"/>
+      <channel id="07516747-4e3e-4cee-80cf-6a9aaf05412e" name="LAB · Results from LIS (ORU)"/>
+    </channels>
+  </role>
+  <role>
+    <name>Operations</name>
+    <description>Monitors every channel, reads messages, starts and stops channels.</description>
+    <permissions>
+      <permission>startStopChannels</permission>
+      <permission>viewAlerts</permission>
+      <permission>viewChannelGroups</permission>
+      <permission>viewChannels</permission>
+      <permission>viewDashboard</permission>
+      <permission>viewEvents</permission>
+      <permission>viewMessages</permission>
+      <permission>viewTags</permission>
+    </permissions>
+    <channels restricted="false"/>
+  </role>
+  <role>
+    <name>Integrator</name>
+    <description>Designs and deploys channels.</description>
+    <permissions>
+      <permission>deployUndeployChannels</permission>
+      <permission>manageChannels</permission>
+      <permission>startStopChannels</permission>
+      <permission>viewChannelGroups</permission>
+      <permission>viewChannels</permission>
+      <permission>viewCodeTemplates</permission>
+      <permission>viewDashboard</permission>
+      <permission>viewEvents</permission>
+      <permission>viewGlobalScripts</permission>
+      <permission>viewMessages</permission>
+      <permission>viewTags</permission>
+    </permissions>
+    <channels restricted="false"/>
+  </role>
+  <role>
+    <name>Auditor</name>
+    <description>Sees the activity of the channels, not the messages.</description>
+    <permissions>
+      <permission>viewChannelGroups</permission>
+      <permission>viewDashboard</permission>
+    </permissions>
+    <channels restricted="false"/>
+  </role>
+</rbacRoles>

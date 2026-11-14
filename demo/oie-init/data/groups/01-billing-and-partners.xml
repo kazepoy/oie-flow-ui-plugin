@@ -1,0 +1,21 @@
+<channelGroup version="4.7.0">
+    <id>885d33ca-2f07-49d2-a32b-ceb3595d4d2e</id>
+    <name>Billing &amp; Partners</name>
+    <revision>1</revision>
+    <lastModified>
+      <time>1794657978374</time>
+      <timezone>Europe/Paris</timezone>
+    </lastModified>
+    <description>Insurance claims and regional health information exchange.</description>
+    <channels>
+      <channel version="4.7.0">
+        <id>8a212f36-06f2-483c-b48d-678a0fa682f4</id>
+        <revision>0</revision>
+      </channel>
+      <channel version="4.7.0">
+        <id>703cfc96-a148-4fde-908d-1353330b5dde</id>
+        <revision>0</revision>
+      </channel>
+    </channels>
+  </channelGroup>
+  

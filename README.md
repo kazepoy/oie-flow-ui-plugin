@@ -30,12 +30,12 @@ open <https://localhost:8444/oie-webadmin/> (self-signed certificate) and sign i
 | `lab-viewer` | `demo-oie-password` | The *Laboratory* group only, without channel configurations |
 | `auditor` | `demo-oie-password` | Counters only, without messages |
 
-The demo is the integration platform of a hospital: 19 channels in 8 groups,
-messages already processed, a queue, errors, a paused and a stopped channel.
+The demo is the integration platform of a hospital: 12 channels in 4 groups,
+messages already processed, a queue and errors.
 
 ```sh
-docker compose --profile traffic up -d   # keep messages coming
-./reset.sh                               # back to the initial state
+docker compose stop traffic              # pause continuous message traffic
+docker compose up -d oie-init            # restore initial configuration and states
 ```
 
 More in the [demo guide](demo/README.md) (in French).

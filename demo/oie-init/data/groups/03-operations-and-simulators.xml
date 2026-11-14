@@ -1,0 +1,25 @@
+<channelGroup version="4.7.0">
+    <id>af1a3839-e2a7-4af9-a61b-6eb726714c63</id>
+    <name>Operations &amp; Simulators</name>
+    <revision>1</revision>
+    <lastModified>
+      <time>1794657978374</time>
+      <timezone>Europe/Paris</timezone>
+    </lastModified>
+    <description>Supervision heartbeat and simulated external systems.</description>
+    <channels>
+      <channel version="4.7.0">
+        <id>375b787f-7de8-460c-ae99-40303f2cd2d8</id>
+        <revision>0</revision>
+      </channel>
+      <channel version="4.7.0">
+        <id>5e1fd032-c661-49f2-badb-56767c21ea3b</id>
+        <revision>0</revision>
+      </channel>
+      <channel version="4.7.0">
+        <id>470a3eec-9e3b-4385-bf16-b8d354f5d060</id>
+        <revision>0</revision>
+      </channel>
+    </channels>
+  </channelGroup>
+  

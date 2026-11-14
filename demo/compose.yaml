@@ -9,25 +9,23 @@ x-logging: &logging
 volumes:
   pgdata:
   appdata:
+  logs:
 
 services:
   # Build only: the official Dockerfile compiles OIE 4.7.0 (long, done once).
-  # To reuse an engine image you already have, set OIE_ENGINE_CONTEXT in .env,
-  # for example docker-image://fhir-profile-mapper-demo-engine:4.7.0
   oie-engine:
     build:
       context: https://github.com/OpenIntegrationEngine/engine.git#v4.7.0
       target: jre-run
       args:
-        GRADLE_BUILD_ARGS: -PdisableSigning=true
+        GRADLE_BUILD_ARGS: ${OIE_GRADLE_BUILD_ARGS:--PdisableSigning=true}
     image: oie-flow-ui-demo-engine:4.7.0
     profiles: [build]
 
-  # Starts from the demo database in db/ (loaded only when the volume is created):
-  # `docker compose down -v && docker compose up -d` resets the demo.
   oie-db:
     image: postgres:18.3-alpine
     restart: unless-stopped
+    command: ["postgres", "-c", "idle_in_transaction_session_timeout=15000"]
     environment:
       POSTGRES_DB: oie
       POSTGRES_USER: oie
@@ -35,12 +33,11 @@ services:
       TZ: ${TZ:-Europe/Paris}
     volumes:
       - pgdata:/var/lib/postgresql
-      - ${OIE_DEMO_DB_DIR:-./db}:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U oie -d oie"]
       interval: 5s
       timeout: 5s
-      retries: 30
+      retries: 20
     logging: *logging
 
   oie-app:
@@ -48,7 +45,7 @@ services:
       context: ..
       dockerfile: demo/Dockerfile
       additional_contexts:
-        oie-engine: ${OIE_ENGINE_CONTEXT:-service:oie-engine}
+        oie-engine: service:oie-engine
     image: oie-flow-ui-demo-oie:4.7.0
     restart: unless-stopped
     init: true
@@ -59,17 +56,21 @@ services:
       DATABASE_USERNAME: oie
       DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-demo-flow-ui-db}
       _MP_HTTPS_PORT: "8443"
-      # Message statistics are stored per server: the demo database needs this id.
-      SERVER_ID: 3f1c2b9e-6a4d-4e8b-9c1f-0d2e5a7b8c61
+      SERVER_ID: ${OIE_SERVER_ID:-3f1c2b9e-6a4d-4e8b-9c1f-0d2e5a7b8c61}
       KEYSTORE_STOREPASS: ${OIE_KEYSTORE_STOREPASS:-demo-flow-ui-store}
       KEYSTORE_KEYPASS: ${OIE_KEYSTORE_KEYPASS:-demo-flow-ui-key}
       _MP_SERVER_INITIALADMINPASSWORD: ${OIE_PASSWORD:-demo-oie-password}
       TZ: ${TZ:-Europe/Paris}
+    configs:
+      - source: oie-jvm-options
+        target: /opt/engine/conf/custom.vmoptions
     ports:
       - "${OIE_BIND_ADDRESS:-127.0.0.1}:${OIE_HTTPS_PORT:-8444}:8443"
       - "${OIE_BIND_ADDRESS:-127.0.0.1}:${OIE_CHANNEL_PORTS:-8181-8199}:8181-8199"
     volumes:
       - appdata:/opt/engine/appdata
+      - logs:/opt/engine/logs
+      - ./custom-extensions:/opt/engine/custom-extensions
     depends_on:
       oie-db:
         condition: service_healthy
@@ -81,19 +82,44 @@ services:
       start_period: 120s
     logging: *logging
 
-  # Optional: messages without end, to see the counters move.
-  #   docker compose --profile traffic up -d
-  traffic:
+  # Initializes OIE via its REST API (configuration, channels, groups, tags, RBAC, users and seed messages).
+  oie-init:
     image: curlimages/curl:8.21.0
-    profiles: [traffic]
-    restart: unless-stopped
-    entrypoint: ["/bin/sh", "/seed/traffic.sh"]
+    restart: "no"
+    entrypoint: ["/bin/sh", "/oie-init/init-channels.sh"]
     environment:
-      OIE_URL: https://oie-app:8443/api
-      TRAFFIC_INTERVAL: ${TRAFFIC_INTERVAL:-3}
+      OIE_URL: https://oie-app:8443
+      OIE_USER: admin
+      OIE_PASSWORD: ${OIE_PASSWORD:-demo-oie-password}
+      OIE_DEMO_USER_PASSWORD: ${OIE_DEMO_USER_PASSWORD:-demo-oie-password}
+      OIE_SKIP_FIRST_LOGIN: ${OIE_SKIP_FIRST_LOGIN:-true}
     volumes:
-      - ./seed:/seed:ro
+      - ./oie-init:/oie-init:ro
     depends_on:
       oie-app:
         condition: service_healthy
     logging: *logging
+
+  # Continuous demo messages (starts automatically once oie-init completes).
+  traffic:
+    image: curlimages/curl:8.21.0
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "/examples/traffic.sh"]
+    environment:
+      OIE_URL: https://oie-app:8443/api
+      OIE_PASSWORD: ${OIE_PASSWORD:-demo-oie-password}
+      TRAFFIC_INTERVAL: ${TRAFFIC_INTERVAL:-0.2}
+    volumes:
+      - ./examples:/examples:ro
+      - ./oie-init/data:/oie-init/data:ro
+    depends_on:
+      oie-app:
+        condition: service_healthy
+      oie-init:
+        condition: service_completed_successfully
+    logging: *logging
+
+configs:
+  oie-jvm-options:
+    content: |
+      -Xmx${OIE_JAVA_MAX_HEAP:-1g}

@@ -31,7 +31,7 @@ describe("as admin", () => {
     await openNav(page, "flow-ui-flows");
     await page.locator(".ofu-group").first().waitFor();
     const groups = await page.locator(".ofu-group__name").allInnerTexts();
-    assert.deepEqual(groups.map(name => name.toLowerCase()), ["billing", "external partners", "laboratory", "operations", "patient administration", "pharmacy", "radiology", "simulators"]);
+    assert.deepEqual(groups.map(name => name.toLowerCase()), ["billing & partners", "laboratory", "operations & simulators", "patient care"]);
     assert.equal(await page.locator(".ofu-group__head[aria-expanded=true]").count(), groups.length);
     assert.match(await page.locator(".ofu-toolbar .ofu-totals").innerText(), /[1-9][\d,]*\s+received/);
     assert.equal(await page.locator(".ofu-detail").count(), 0, "connector details hidden by default");
@@ -235,7 +235,7 @@ describe("as admin", () => {
       await page.evaluate(() => sessionStorage.clear());
       await openNav(page, "flow-ui-flows");
       await page.locator(".ofu-group").first().waitFor();
-      await page.waitForFunction(() => document.querySelectorAll(".ofu-group__head[aria-expanded='true']").length === 8);
+      await page.waitForFunction(() => document.querySelectorAll(".ofu-group__head[aria-expanded='true']").length === 4);
 
       // Restoring the custom backup applies immediately to both views without F5 or Settings › Flow UI.
       await openNav(page, "settings");
@@ -245,7 +245,7 @@ describe("as admin", () => {
       await openNav(page, "flow-ui-flows");
       await page.locator(".ofu-group").first().waitFor();
       await page.waitForFunction(() => document.querySelectorAll(".ofu-group__head[aria-expanded='true']").length === 1);
-      assert.equal(await page.locator(".ofu-group__head").count(), 8);
+      assert.equal(await page.locator(".ofu-group__head").count(), 4);
 
       await openNav(page, "flow-ui-channel-flow");
       await page.getByRole("button", { name: "LAB · Orders to LIS (ORM)" }).click();

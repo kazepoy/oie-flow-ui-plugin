@@ -1,24 +1,21 @@
 # Démo OIE Flow UI
 
-OIE 4.7.0 avec Web Support 1.3.0, Role Based Access Control 1.3.0 et Flow UI, sur
-une base déjà remplie : la plateforme d'intégration d'un hôpital, 19 canaux en
-8 groupes, des messages traités et des comptes de démonstration.
+OIE 4.7.0 avec Web Support 1.3.0, Role Based Access Control 1.3.0 et Flow UI,
+initialisé au démarrage avec la plateforme d'intégration d'un hôpital : 12 canaux
+en 4 groupes, des messages traités et des comptes de démonstration.
 
 ## Lancer
 
+Docker avec Compose **2.23.1 ou ultérieur** est nécessaire (`configs.content`).
+
 ```sh
 cd demo
-cp .env.example .env    # facultatif
 docker compose up -d --build
+docker compose logs -f oie-init
 ```
 
 Le premier lancement compile le moteur OIE 4.7.0 depuis ses sources (plusieurs
-minutes). Pour réutiliser une image déjà construite, celle de la démo du FHIR
-Profile Mapper par exemple, indiquer dans `.env` :
-
-```sh
-OIE_ENGINE_CONTEXT=docker-image://fhir-profile-mapper-demo-engine:4.7.0
-```
+minutes).
 
 Administration : <https://localhost:8444/oie-webadmin/> (certificat autosigné).
 
@@ -33,16 +30,24 @@ Administration : <https://localhost:8444/oie-webadmin/> (certificat autosigné).
 ## Revenir à l'état initial
 
 ```sh
-./reset.sh      # docker compose down -v, puis up : la base est rechargée
+docker compose up -d oie-init
+# ou, en repartant de volumes vides :
+docker compose down -v && docker compose up -d
 ```
 
-La base vient de `db/oie-demo.sql.gz`, chargée par PostgreSQL à la création de son
-volume. Tout ce qui a été modifié depuis est perdu.
+Au démarrage, le service `oie-init` appelle l'API REST d'OIE ([oie-init/init-channels.sh](oie-init/init-channels.sh))
+pour restaurer la configuration de base, importer les 12 canaux, groupes, tags,
+rôles RBAC et comptes, déployer et rejouer les messages initiaux. Les extensions
+éventuelles placées dans `custom-extensions/` sont montées dans `/opt/engine/custom-extensions`.
 
 ## Faire bouger les compteurs
 
+Le service `traffic` démarre automatiquement dès la fin de `oie-init` et envoie
+un trafic pondéré en continu (~0,2 s entre messages, `TRAFFIC_INTERVAL`).
+
 ```sh
-docker compose --profile traffic up -d     # un message toutes les 3 s (TRAFFIC_INTERVAL)
+docker compose stop traffic                  # suspendre le trafic continu
+docker compose up -d traffic                 # le relancer
 ./examples/send.sh adt                     # admission par le listener MLLP 8181
 ./examples/send.sh result                  # résultat de laboratoire (MLLP 8184)
 ./examples/send.sh critical                # résultat critique : bip du biologiste
@@ -52,8 +57,8 @@ docker compose --profile traffic up -d     # un message toutes les 3 s (TRAFFIC_
 ```
 
 Avec le compte `ops` ou `admin`, Flows Monitoring démarre, met en pause et arrête
-les canaux et leurs connecteurs depuis leurs cartes ; `./reset.sh` remet tout en
-place.
+les canaux et leurs connecteurs depuis leurs cartes ; `docker compose up -d oie-init`
+remet la configuration et les états initiaux en place.
 
 [`examples/demo.http`](examples/demo.http) regroupe des appels REST commentés.
 
@@ -61,22 +66,17 @@ place.
 
 | Groupe | Canal | Ce qu'il montre |
 |---|---|---|
-| Patient Administration | ADT · HIS inbound | Listener MLLP 8181, filtre des messages de test (*Filtered*), deux chaînes |
-| | ADT · Broadcast to departments | Appelé par le précédent ; 7 destinations, une désactivée : vue Bands |
-| | ADT · Patient merge (A40) | Destinations chaînées (*waits for*) |
+| Billing & Partners | BILL · Claims to insurer | Hôte injoignable : messages en file d'attente (*Queued*) |
+| | HIE · Regional exchange API | Réponse de la destination 2 renvoyée à l'appelant (flèche violette) |
 | Laboratory | LAB · Orders to LIS (ORM) | Vue Line, transformer de réponse |
 | | LAB · Results from LIS (ORU) | Chaîne validate → store → notify ; résultats incomplets en erreur (*Errored*) |
 | | LAB · Critical values | Filtre de 9 règles (*+4 more*) ; presque tout est filtré |
-| Radiology | RAD · Orders to RIS | Trois chaînes parallèles : vue Columns |
-| | RAD · Reports to EHR (MDM) | Pièce jointe (tuile *Attachments*) |
-| Pharmacy | PHARM · Prescriptions (RDE) | Transformer de 12 étapes de types variés, *Destination Set Filter* |
-| Billing | BILL · Daily charges | Source fichier interrogée (*Polled*), CSV |
-| | BILL · Claims to insurer | Hôte injoignable : messages en file d'attente (*Queued*) |
-| External Partners | HIE · Regional exchange API | Réponse de la destination 2 renvoyée à l'appelant (flèche violette) |
-| | GP · Discharge letters | En pause, erreurs SMTP |
-| Operations | OPS · Heartbeat | Source JavaScript interrogée chaque minute, scripts deploy/undeploy |
-| | OPS · Legacy interface | Arrêté |
-| Simulators | SIM · LIS, RIS, EHR, Pharmacy | Systèmes externes simulés (accusés de réception) |
+| Operations & Simulators | OPS · Heartbeat | Source JavaScript interrogée chaque minute, scripts deploy/undeploy |
+| | SIM · MLLP, EHR | Systèmes externes simulés (MLLP 7101, HTTP 7103) |
+| Patient Care | ADT · HIS inbound | Listener MLLP 8181, filtre des messages de test (*Filtered*), deux chaînes |
+| | ADT · Broadcast to departments | Appelé par le précédent ; 7 destinations, une désactivée : vue Bands |
+| | RAD · Orders to RIS | Trois chaînes parallèles : vue Columns |
+| | PHARM · Prescriptions (RDE) | Transformer de 12 étapes de types variés, *Destination Set Filter* |
 
 ## Ports
 
@@ -90,5 +90,7 @@ tournent côte à côte.
 
 ## Modifier la démo
 
-Les canaux, groupes, rôles, comptes et messages se décrivent dans
-[`seed/`](seed/README.md), qui régénère la base.
+La configuration serveur, les canaux, groupes, tags, rôles RBAC, comptes, états
+initiaux et messages exemples sont directement dans [`oie-init/data/`](oie-init/data/)
+au format XML / REST natif d'OIE. Les modifier puis relancer
+`docker compose up -d oie-init` applique les changements.

@@ -1,0 +1,25 @@
+<channelGroup version="4.7.0">
+    <id>5857304c-f181-4d51-a6b3-32a892a1bdd1</id>
+    <name>Laboratory</name>
+    <revision>1</revision>
+    <lastModified>
+      <time>1794657978380</time>
+      <timezone>Europe/Paris</timezone>
+    </lastModified>
+    <description>Laboratory orders and results.</description>
+    <channels>
+      <channel version="4.7.0">
+        <id>5a4aa0ff-b675-4e44-930a-2e23cffd6eb1</id>
+        <revision>0</revision>
+      </channel>
+      <channel version="4.7.0">
+        <id>07516747-4e3e-4cee-80cf-6a9aaf05412e</id>
+        <revision>0</revision>
+      </channel>
+      <channel version="4.7.0">
+        <id>e46636e7-66aa-4d0c-9699-772cce29088e</id>
+        <revision>0</revision>
+      </channel>
+    </channels>
+  </channelGroup>
+  

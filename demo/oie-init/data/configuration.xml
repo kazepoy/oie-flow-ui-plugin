@@ -1,0 +1,232 @@
+<serverConfiguration version="4.7.0">
+  <channelGroups /><channels /><channelTags>
+    <channelTag>
+      <id>794bc212-88fd-438f-a2f2-3818ebfd71e2</id>
+      <name>simulator</name>
+      <channelIds>
+        <string>5e1fd032-c661-49f2-badb-56767c21ea3b</string>
+        <string>470a3eec-9e3b-4385-bf16-b8d354f5d060</string>
+      </channelIds>
+      <backgroundColor>
+        <red>71</red>
+        <green>85</green>
+        <blue>105</blue>
+        <alpha>255</alpha>
+      </backgroundColor>
+    </channelTag>
+    <channelTag>
+      <id>22081a51-16b8-4e84-acab-6bc674073758</id>
+      <name>JSON</name>
+      <channelIds>
+        <string>703cfc96-a148-4fde-908d-1353330b5dde</string>
+        <string>8a212f36-06f2-483c-b48d-678a0fa682f4</string>
+      </channelIds>
+      <backgroundColor>
+        <red>2</red>
+        <green>132</green>
+        <blue>199</blue>
+        <alpha>255</alpha>
+      </backgroundColor>
+    </channelTag>
+    <channelTag>
+      <id>ed2ed352-cfb2-4d54-aa8a-f4b1324d6190</id>
+      <name>HL7v2</name>
+      <channelIds>
+        <string>e46636e7-66aa-4d0c-9699-772cce29088e</string>
+        <string>07516747-4e3e-4cee-80cf-6a9aaf05412e</string>
+        <string>6d1d3f7e-d707-4a17-9a35-f3af99961456</string>
+        <string>00a5626d-4dc6-4d37-ad45-193566bc8691</string>
+        <string>abbe5ca0-c796-4e1d-976f-b53e6ad91eeb</string>
+        <string>5a4aa0ff-b675-4e44-930a-2e23cffd6eb1</string>
+        <string>8ec16e83-2f62-4278-9362-78518e5f1527</string>
+        <string>5e1fd032-c661-49f2-badb-56767c21ea3b</string>
+      </channelIds>
+      <backgroundColor>
+        <red>37</red>
+        <green>99</green>
+        <blue>235</blue>
+        <alpha>255</alpha>
+      </backgroundColor>
+    </channelTag>
+    <channelTag>
+      <id>51b9bd7d-2e25-48a5-a576-a623bed3ec10</id>
+      <name>critical</name>
+      <channelIds>
+        <string>e46636e7-66aa-4d0c-9699-772cce29088e</string>
+        <string>6d1d3f7e-d707-4a17-9a35-f3af99961456</string>
+        <string>abbe5ca0-c796-4e1d-976f-b53e6ad91eeb</string>
+      </channelIds>
+      <backgroundColor>
+        <red>190</red>
+        <green>24</green>
+        <blue>93</blue>
+        <alpha>255</alpha>
+      </backgroundColor>
+    </channelTag>
+    <channelTag>
+      <id>bbc30f43-6792-4076-af1c-bfbd36466eca</id>
+      <name>MLLP</name>
+      <channelIds>
+        <string>5a4aa0ff-b675-4e44-930a-2e23cffd6eb1</string>
+        <string>07516747-4e3e-4cee-80cf-6a9aaf05412e</string>
+        <string>6d1d3f7e-d707-4a17-9a35-f3af99961456</string>
+        <string>00a5626d-4dc6-4d37-ad45-193566bc8691</string>
+        <string>5e1fd032-c661-49f2-badb-56767c21ea3b</string>
+        <string>abbe5ca0-c796-4e1d-976f-b53e6ad91eeb</string>
+      </channelIds>
+      <backgroundColor>
+        <red>79</red>
+        <green>70</green>
+        <blue>229</blue>
+        <alpha>255</alpha>
+      </backgroundColor>
+    </channelTag>
+    <channelTag>
+      <id>80d9e967-cb20-40fc-a8dc-3cf7ffcf6c5e</id>
+      <name>HTTP</name>
+      <channelIds>
+        <string>703cfc96-a148-4fde-908d-1353330b5dde</string>
+        <string>8a212f36-06f2-483c-b48d-678a0fa682f4</string>
+        <string>470a3eec-9e3b-4385-bf16-b8d354f5d060</string>
+      </channelIds>
+      <backgroundColor>
+        <red>8</red>
+        <green>145</green>
+        <blue>178</blue>
+        <alpha>255</alpha>
+      </backgroundColor>
+    </channelTag>
+  </channelTags>
+  <alerts /><codeTemplateLibraries /><serverSettings>
+    <clearGlobalMap>true</clearGlobalMap>
+    <queueBufferSize>1000</queueBufferSize>
+    <defaultMetaDataColumns>
+      <metaDataColumn>
+        <name>SOURCE</name>
+        <type>STRING</type>
+        <mappingName>mirth_source</mappingName>
+      </metaDataColumn>
+      <metaDataColumn>
+        <name>TYPE</name>
+        <type>STRING</type>
+        <mappingName>mirth_type</mappingName>
+      </metaDataColumn>
+    </defaultMetaDataColumns>
+    <defaultAdministratorBackgroundColor>
+      <red>42</red>
+      <green>117</green>
+      <blue>178</blue>
+      <alpha>255</alpha>
+    </defaultAdministratorBackgroundColor>
+    <smtpTimeout>5000</smtpTimeout>
+    <smtpSecure>0</smtpSecure>
+    <smtpAuth>false</smtpAuth>
+    <loginNotificationEnabled>false</loginNotificationEnabled>
+    <loginNotificationMessage />
+    <administratorAutoLogoutIntervalEnabled>false</administratorAutoLogoutIntervalEnabled>
+    <administratorAutoLogoutIntervalField>5</administratorAutoLogoutIntervalField>
+  </serverSettings>
+  <updateSettings version="4.7.0">
+    <statsEnabled>true</statsEnabled>
+  </updateSettings>
+  <globalScripts>
+    <entry>
+      <string>Undeploy</string>
+      <string>// This script executes once for each deploy, undeploy, or redeploy task
+// if at least one channel was undeployed
+// You only have access to the globalMap here to persist data
+return;</string>
+    </entry>
+    <entry>
+      <string>Postprocessor</string>
+      <string>// This script executes once after a message has been processed
+// This script applies across all channels
+// Responses returned from here will be stored as "Postprocessor" in the response map
+// You have access to "response", if returned from the channel postprocessor
+return;</string>
+    </entry>
+    <entry>
+      <string>Deploy</string>
+      <string>// This script executes once for each deploy or redeploy task
+// You only have access to the globalMap here to persist data
+return;</string>
+    </entry>
+    <entry>
+      <string>Preprocessor</string>
+      <string>// Modify the message variable below to pre process data
+// This script applies across all channels
+return message;</string>
+    </entry>
+  </globalScripts>
+  <pluginProperties>
+    <entry>
+      <string>Flow UI</string>
+      <properties><property name="defaultLayout">auto</property><property name="expandedGroups">all</property><property name="minimap">auto</property><property name="refreshSeconds">5</property><property name="visibleSteps">5</property></properties></entry>
+    <entry>
+      <string>Role-Based Access Control</string>
+      <properties>
+        <property name="schema_version">4</property>
+      </properties>
+    </entry>
+    <entry>
+      <string>Data Pruner</string>
+      <properties>
+        <property name="archiveEnabled">&lt;boolean&gt;false&lt;/boolean&gt;</property>
+        <property name="archiverBlockSize">50</property>
+        <property name="archiverOptions">&lt;com.mirth.connect.util.messagewriter.MessageWriterOptions&gt;
+  &lt;destinationContent&gt;false&lt;/destinationContent&gt;
+  &lt;encrypt&gt;false&lt;/encrypt&gt;
+  &lt;includeAttachments&gt;false&lt;/includeAttachments&gt;
+  &lt;passwordEnabled&gt;false&lt;/passwordEnabled&gt;
+&lt;/com.mirth.connect.util.messagewriter.MessageWriterOptions&gt;</property>
+        <property name="enabled">false</property>
+        <property name="includeAttachments">&lt;boolean&gt;false&lt;/boolean&gt;</property>
+        <property name="maxEventAge" />
+        <property name="pollingProperties">&lt;com.mirth.connect.donkey.model.channel.PollConnectorProperties version="4.7.0"&gt;
+  &lt;pollingType&gt;INTERVAL&lt;/pollingType&gt;
+  &lt;pollOnStart&gt;false&lt;/pollOnStart&gt;
+  &lt;pollingFrequency&gt;3600000&lt;/pollingFrequency&gt;
+  &lt;pollingHour&gt;0&lt;/pollingHour&gt;
+  &lt;pollingMinute&gt;0&lt;/pollingMinute&gt;
+  &lt;cronJobs/&gt;
+  &lt;pollConnectorPropertiesAdvanced&gt;
+    &lt;weekly&gt;true&lt;/weekly&gt;
+    &lt;inactiveDays&gt;
+      &lt;boolean&gt;false&lt;/boolean&gt;
+      &lt;boolean&gt;false&lt;/boolean&gt;
+      &lt;boolean&gt;false&lt;/boolean&gt;
+      &lt;boolean&gt;false&lt;/boolean&gt;
+      &lt;boolean&gt;false&lt;/boolean&gt;
+      &lt;boolean&gt;false&lt;/boolean&gt;
+      &lt;boolean&gt;false&lt;/boolean&gt;
+      &lt;boolean&gt;false&lt;/boolean&gt;
+    &lt;/inactiveDays&gt;
+    &lt;dayOfMonth&gt;1&lt;/dayOfMonth&gt;
+    &lt;allDay&gt;true&lt;/allDay&gt;
+    &lt;startingHour&gt;8&lt;/startingHour&gt;
+    &lt;startingMinute&gt;0&lt;/startingMinute&gt;
+    &lt;endingHour&gt;17&lt;/endingHour&gt;
+    &lt;endingMinute&gt;0&lt;/endingMinute&gt;
+  &lt;/pollConnectorPropertiesAdvanced&gt;
+&lt;/com.mirth.connect.donkey.model.channel.PollConnectorProperties&gt;</property>
+        <property name="pruneEvents">false</property>
+        <property name="pruningBlockSize">1000</property>
+      </properties>
+    </entry>
+  </pluginProperties>
+  <resourceProperties>
+    <list>
+      <com.mirth.connect.plugins.directoryresource.DirectoryResourceProperties version="4.7.0">
+  <pluginPointName>Directory Resource</pluginPointName>
+        <type>Directory</type>
+        <id>Default Resource</id>
+        <name>[Default Resource]</name>
+        <description>Loads libraries from the custom-lib folder in the Open Integration Engine home directory.</description>
+        <includeWithGlobalScripts>true</includeWithGlobalScripts>
+        <loadParentFirst>false</loadParentFirst>
+        <directory>custom-lib</directory>
+        <directoryRecursion>true</directoryRecursion>
+      </com.mirth.connect.plugins.directoryresource.DirectoryResourceProperties>
+    </list>
+  </resourceProperties>
+  <channelDependencies /><configurationMap /></serverConfiguration>

@@ -11,7 +11,7 @@
 #
 # Needs nc (MLLP) and curl (HTTP). DEMO_HOST defaults to localhost.
 set -eu
-cd "$(dirname "$0")/../seed/messages"
+cd "$(dirname "$0")/../oie-init/data/messages"
 HOST="${DEMO_HOST:-localhost}"
 n=$(date +%H%M%S)
 stamp=$(date +%Y%m%d%H%M%S)

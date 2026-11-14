@@ -1,0 +1,12 @@
+6d1d3f7e-d707-4a17-9a35-f3af99961456|adt-a01.hl7|12|1,2|ADT · HIS inbound
+6d1d3f7e-d707-4a17-9a35-f3af99961456|adt-a08.hl7|5|1,2|ADT · HIS inbound
+6d1d3f7e-d707-4a17-9a35-f3af99961456|adt-a01-test.hl7|2|1,2|ADT · HIS inbound
+5a4aa0ff-b675-4e44-930a-2e23cffd6eb1|orm-o01.hl7|10|1|LAB · Orders to LIS (ORM)
+07516747-4e3e-4cee-80cf-6a9aaf05412e|oru-r01.hl7|12|1,2,3,4|LAB · Results from LIS (ORU)
+07516747-4e3e-4cee-80cf-6a9aaf05412e|oru-r01-critical.hl7|2|1,2,3,4|LAB · Results from LIS (ORU)
+07516747-4e3e-4cee-80cf-6a9aaf05412e|oru-r01-incomplete.hl7|1|1,2,3,4|LAB · Results from LIS (ORU)
+00a5626d-4dc6-4d37-ad45-193566bc8691|rad-orm-o01.hl7|7|1,2,3|RAD · Orders to RIS
+abbe5ca0-c796-4e1d-976f-b53e6ad91eeb|rde-o11.hl7|8|1,2|PHARM · Prescriptions (RDE)
+abbe5ca0-c796-4e1d-976f-b53e6ad91eeb|rde-o11-controlled.hl7|2|1,2|PHARM · Prescriptions (RDE)
+8a212f36-06f2-483c-b48d-678a0fa682f4|claim.json|3|1|BILL · Claims to insurer
+703cfc96-a148-4fde-908d-1353330b5dde|hie-request.json|6|1,2|HIE · Regional exchange API
