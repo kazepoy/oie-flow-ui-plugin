@@ -83,13 +83,11 @@ export function parsePluginProperties(raw) {
   return result;
 }
 
-/** Serializes server-wide plugin settings (excluding defaults and per-user hiddenHints) for OIE. */
+/** Serializes all server-wide plugin settings (excluding per-user hiddenHints) for OIE. */
 export function serializePluginProperties(value) {
   const clean = sanitize(value);
-  const changes = changedSettings(clean);
-  delete changes.hiddenHints;
   return {
-    property: Object.entries(changes).map(([name, item]) => ({ "@name": name, $: String(item) }))
+    property: Object.keys(SETTING_CHOICES).map(name => ({ "@name": name, $: String(clean[name]) }))
   };
 }
 
@@ -121,6 +119,8 @@ const listeners = new Set();
 
 const canReadPluginSettings = () =>
   canTask("view", "doShowExtensions") || canTask("view", "doShowSettings");
+
+const canonicalServerOverrides = parsed => changedSettings({ ...defaultSettings(), ...parsed, hiddenHints: [] });
 
 const notify = () => {
   settings = sanitize({ ...defaultSettings(), ...serverOverrides, ...userOverrides });
@@ -172,7 +172,12 @@ export async function loadSettings() {
     const generation = ++serverGeneration;
     try {
       const raw = await pluginProperties();
-      if (generation === serverGeneration) serverOverrides = parsePluginProperties(raw);
+      const parsed = parsePluginProperties(raw);
+      if (generation === serverGeneration) serverOverrides = canonicalServerOverrides(parsed);
+      // Seed defaults once on a fresh server so OIE Backup Config includes Flow UI before the first Settings save.
+      if (Object.keys(parsed).length === 0 && canTask("settings_Flow UI", "doSave")) {
+        setPluginProperties(serializePluginProperties(defaultSettings())).catch(() => {});
+      }
     } catch { /* keep defaults or newer server overrides */ }
   }
   notify();
@@ -183,7 +188,7 @@ export async function reloadPluginSettings() {
   const generation = ++serverGeneration;
   const raw = await pluginProperties();
   if (generation === serverGeneration) {
-    serverOverrides = parsePluginProperties(raw);
+    serverOverrides = canonicalServerOverrides(parsePluginProperties(raw));
     notify();
   }
   return getPluginSettings();
@@ -197,7 +202,7 @@ export function refreshPluginSettings() {
   refreshInFlight = pluginProperties()
     .then(raw => {
       if (generation !== serverGeneration) return getPluginSettings();
-      const next = parsePluginProperties(raw);
+      const next = canonicalServerOverrides(parsePluginProperties(raw));
       if (JSON.stringify(next) !== JSON.stringify(serverOverrides)) {
         serverOverrides = next;
         notify();

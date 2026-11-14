@@ -97,6 +97,9 @@ test("plugin properties serialize and parse OIE XStream shapes cleanly", () => {
   }), {
     property: [
       { "@name": "defaultLayout", $: "columns" },
+      { "@name": "visibleSteps", $: "5" },
+      { "@name": "minimap", $: "auto" },
+      { "@name": "expandedGroups", $: "all" },
       { "@name": "refreshSeconds", $: "60" }
     ]
   });
@@ -197,5 +200,9 @@ test("server plugin settings compose with sparse per-user overrides and reset cl
   serverProps = null;
   await refreshPluginSettings();
   assert.equal(getSettings().defaultLayout, "auto");
+
+  // loadSettings() seeds defaults on a clean server when saving is permitted, so Backup Config includes Flow UI.
+  await loadSettings();
+  assert.deepEqual(serverProps, serializePluginProperties(defaultSettings()));
   unsub();
 });

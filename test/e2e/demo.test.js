@@ -184,8 +184,37 @@ describe("as admin", () => {
 
   test("Manage > Settings > Flow UI saves server defaults, survives Backup/Restore Config, and refreshes views live without reload", async () => {
     const { page } = session;
+    const backupConfig = () => page.evaluate(async () => {
+      const res = await fetch("/api/server/configuration", {
+        headers: { Accept: "application/xml", "X-Requested-With": "OpenIntegrationEngine-WebAdmin" },
+        credentials: "same-origin"
+      });
+      if (!res.ok) throw new Error(`Backup failed: ${res.status}`);
+      return res.text();
+    });
+    const restoreConfig = xml => page.evaluate(async content => {
+      const res = await fetch("/api/server/configuration?deploy=true&overwriteConfigMap=false", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/xml",
+          Accept: "application/json",
+          "X-Requested-With": "OpenIntegrationEngine-WebAdmin"
+        },
+        credentials: "same-origin",
+        body: content
+      });
+      if (!res.ok) throw new Error(`Restore failed: ${res.status}`);
+    }, xml);
     try {
       await page.goto(url("settings"));
+      await page.waitForLoadState("networkidle");
+
+      // Even before changing any Flow UI setting, Backup Config includes Flow UI defaults.
+      const defaultBackupXml = await backupConfig();
+      assert.match(defaultBackupXml, /<string>Flow UI<\/string>/);
+      assert.match(defaultBackupXml, /<property name="expandedGroups">all<\/property>/);
+      assert.match(defaultBackupXml, /<property name="defaultLayout">auto<\/property>/);
+
       await page.getByRole("tab", { name: /^Flow UI/ }).click();
       await page.locator("#ofu-setting-expandedGroups").waitFor();
 
@@ -195,44 +224,23 @@ describe("as admin", () => {
       await page.getByRole("button", { name: "Save", exact: true }).click();
       await page.getByRole("tab", { name: /^Flow UI$/ }).waitFor();
 
-      // Backup Config (native OIE Server configuration XML) includes Flow UI properties.
-      const backupXml = await page.evaluate(async () => {
-        const res = await fetch("/api/server/configuration", {
-          headers: { Accept: "application/xml", "X-Requested-With": "OpenIntegrationEngine-WebAdmin" },
-          credentials: "same-origin"
-        });
-        if (!res.ok) throw new Error(`Backup failed: ${res.status}`);
-        return res.text();
-      });
-      assert.match(backupXml, /<string>Flow UI<\/string>/);
-      assert.match(backupXml, /<property name="expandedGroups">first<\/property>/);
-      assert.match(backupXml, /<property name="defaultLayout">bands<\/property>/);
+      const customBackupXml = await backupConfig();
+      assert.match(customBackupXml, /<string>Flow UI<\/string>/);
+      assert.match(customBackupXml, /<property name="expandedGroups">first<\/property>/);
+      assert.match(customBackupXml, /<property name="defaultLayout">bands<\/property>/);
 
-      // Reset Flow UI back to defaults via the taskbar.
-      await page.getByRole("button", { name: "Restore Defaults", exact: true }).click();
-      assert.equal(await page.locator("#ofu-setting-expandedGroups").inputValue(), "all");
-      assert.equal(await page.locator("#ofu-setting-defaultLayout").inputValue(), "auto");
-      await page.getByRole("tab", { name: /Flow UI.*●/ }).waitFor();
-      await page.getByRole("button", { name: "Save", exact: true }).click();
-      await page.getByRole("tab", { name: /^Flow UI$/ }).waitFor();
-
-      // Restore Config via native PUT /api/server/configuration while still on Settings › Server (same SPA session).
+      // Restoring the default backup overwrites custom server settings back to defaults.
       await page.getByRole("tab", { name: /^Server/ }).click();
-      await page.evaluate(async xml => {
-        const res = await fetch("/api/server/configuration?deploy=true&overwriteConfigMap=false", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/xml",
-            Accept: "application/json",
-            "X-Requested-With": "OpenIntegrationEngine-WebAdmin"
-          },
-          credentials: "same-origin",
-          body: xml
-        });
-        if (!res.ok) throw new Error(`Restore failed: ${res.status}`);
-      }, backupXml);
+      await restoreConfig(defaultBackupXml);
+      await page.evaluate(() => sessionStorage.clear());
+      await openNav(page, "flow-ui-flows");
+      await page.locator(".ofu-group").first().waitFor();
+      await page.waitForFunction(() => document.querySelectorAll(".ofu-group__head[aria-expanded='true']").length === 8);
 
-      // Navigate directly to Flows Monitoring and Channel Flow without F5 or Settings › Flow UI.
+      // Restoring the custom backup applies immediately to both views without F5 or Settings › Flow UI.
+      await openNav(page, "settings");
+      await page.getByRole("tab", { name: /^Server/ }).waitFor();
+      await restoreConfig(customBackupXml);
       await page.evaluate(() => sessionStorage.clear());
       await openNav(page, "flow-ui-flows");
       await page.locator(".ofu-group").first().waitFor();
