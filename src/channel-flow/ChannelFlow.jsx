@@ -27,7 +27,7 @@ const LAYOUT_CHOICES = ["auto", "line", "columns", "bands"];
  * @param {{ channel: any, mode: "saved" | "draft", onChange?: () => void }} props
  */
 export function ChannelFlow({ channel, mode, onChange }) {
-  const [settings, updateSettings] = useSettings();
+  const [settings, updateSettings] = useSettings({ sync: true });
   const layoutKey = `channel-flow.layout.${channel.id}`;
   const [choice, setChoice] = useState(() => readSession(layoutKey, { value: null }).value);
   const [popover, setPopover] = useState(null);

@@ -25,7 +25,7 @@ const SESSION_KEY = "flows";
 const SCROLL_KEY = "flows.scroll";
 
 export function FlowsMonitoringView() {
-  const [settings] = useSettings();
+  const [settings] = useSettings({ sync: true });
   const { statuses, groups, groupsReadable, waits, links, details, tags, error, updated, refresh, reloadCounters } = useStatuses(settings.refreshSeconds);
   const [view, setView] = useState(() => readSession(SESSION_KEY, { filter: "", lifetime: false, toggled: {}, links: true, details: false }));
   const body = useRef(null);

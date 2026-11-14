@@ -181,6 +181,78 @@ describe("as admin", () => {
     await page.waitForURL(/\/transformer\/0$/);
     assert.deepEqual(pluginErrors(session.errors), []);
   });
+
+  test("Manage > Settings > Flow UI saves server defaults, survives Backup/Restore Config, and refreshes views live without reload", async () => {
+    const { page } = session;
+    try {
+      await page.goto(url("settings"));
+      await page.getByRole("tab", { name: /^Flow UI/ }).click();
+      await page.locator("#ofu-setting-expandedGroups").waitFor();
+
+      await page.locator("#ofu-setting-expandedGroups").selectOption("first");
+      await page.locator("#ofu-setting-defaultLayout").selectOption("bands");
+      await page.getByRole("tab", { name: /Flow UI.*●/ }).waitFor();
+      await page.getByRole("button", { name: "Save", exact: true }).click();
+      await page.getByRole("tab", { name: /^Flow UI$/ }).waitFor();
+
+      // Backup Config (native OIE Server configuration XML) includes Flow UI properties.
+      const backupXml = await page.evaluate(async () => {
+        const res = await fetch("/api/server/configuration", {
+          headers: { Accept: "application/xml", "X-Requested-With": "OpenIntegrationEngine-WebAdmin" },
+          credentials: "same-origin"
+        });
+        if (!res.ok) throw new Error(`Backup failed: ${res.status}`);
+        return res.text();
+      });
+      assert.match(backupXml, /<string>Flow UI<\/string>/);
+      assert.match(backupXml, /<property name="expandedGroups">first<\/property>/);
+      assert.match(backupXml, /<property name="defaultLayout">bands<\/property>/);
+
+      // Reset Flow UI back to defaults via the taskbar.
+      await page.getByRole("button", { name: "Restore Defaults", exact: true }).click();
+      assert.equal(await page.locator("#ofu-setting-expandedGroups").inputValue(), "all");
+      assert.equal(await page.locator("#ofu-setting-defaultLayout").inputValue(), "auto");
+      await page.getByRole("tab", { name: /Flow UI.*●/ }).waitFor();
+      await page.getByRole("button", { name: "Save", exact: true }).click();
+      await page.getByRole("tab", { name: /^Flow UI$/ }).waitFor();
+
+      // Restore Config via native PUT /api/server/configuration while still on Settings › Server (same SPA session).
+      await page.getByRole("tab", { name: /^Server/ }).click();
+      await page.evaluate(async xml => {
+        const res = await fetch("/api/server/configuration?deploy=true&overwriteConfigMap=false", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/xml",
+            Accept: "application/json",
+            "X-Requested-With": "OpenIntegrationEngine-WebAdmin"
+          },
+          credentials: "same-origin",
+          body: xml
+        });
+        if (!res.ok) throw new Error(`Restore failed: ${res.status}`);
+      }, backupXml);
+
+      // Navigate directly to Flows Monitoring and Channel Flow without F5 or Settings › Flow UI.
+      await page.evaluate(() => sessionStorage.clear());
+      await openNav(page, "flow-ui-flows");
+      await page.locator(".ofu-group").first().waitFor();
+      await page.waitForFunction(() => document.querySelectorAll(".ofu-group__head[aria-expanded='true']").length === 1);
+      assert.equal(await page.locator(".ofu-group__head").count(), 8);
+
+      await openNav(page, "flow-ui-channel-flow");
+      await page.getByRole("button", { name: "LAB · Orders to LIS (ORM)" }).click();
+      await page.locator(".ofu-block").first().waitFor();
+      await page.waitForFunction(() => document.querySelector('.ofu-segmented button[aria-pressed="true"]')?.textContent === "Bands");
+      assert.deepEqual(pluginErrors(session.errors), []);
+    } finally {
+      await openNav(page, "settings");
+      await page.getByRole("tab", { name: /^Flow UI/ }).click();
+      await page.locator("#ofu-setting-expandedGroups").waitFor();
+      await page.getByRole("button", { name: "Restore Defaults", exact: true }).click();
+      await page.getByRole("button", { name: "Save", exact: true }).click();
+      await page.getByRole("tab", { name: /^Flow UI$/ }).waitFor();
+    }
+  });
 });
 
 describe("with RBAC roles", () => {

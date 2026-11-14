@@ -3,6 +3,12 @@
 A plugin for the [Open Integration Engine](https://github.com/OpenIntegrationEngine/engine)
 web administrator that shows how messages move through channels.
 
+> **Pre-1.0 note:** Because Web Admin's plugin API still lacks a few interaction
+> hooks, Flow UI currently relies on minor DOM workarounds (documented in
+> [platform limits](doc/platform-limits.md)). Pull requests to the upstream
+> projects are underway or planned so everything uses clean, supported APIs
+> before v1.0.
+
 ## Try the demo
 
 You need Docker with Compose.
@@ -57,21 +63,6 @@ step.
 - Settings follow the user from one browser to another (gear button, or
   Manage › Settings › Flow UI).
 - English interface, ready for translation.
-
-## Goal
-
-The ultimate goal is for these features to become **native in OIE Web Admin**.
-
-The plugin is a place to build and validate them first. It therefore uses only
-the public plugin API of Web Admin, without workarounds, so that the code can be
-moved into Web Admin later. When that API falls short, the plugin offers a
-simpler behaviour and the gap is recorded as a request for Web Admin
-([platform limits](doc/platform-limits.md)).
-
-One exception: Web Admin cannot open a tab, a script, a destination or a step of
-the channel editor, so Channel Flow selects them through the controls the editor
-renders. This code is kept in one file (`src/host/editor-dom.js`) and, if a
-control is missing, a message says where to click.
 
 ## Origin
 

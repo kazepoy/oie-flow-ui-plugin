@@ -84,7 +84,8 @@ et le déplacement par une transformation CSS, une fois par image, sans rendu Re
 
 | Quoi | Où | Durée |
 |---|---|---|
-| Réglages (groupes ouverts, rafraîchissement, vue par défaut, étapes par tuile, indices masqués) | Préférence OIE `flowui.settings` de l'utilisateur, seuls les changements ; repli `localStorage` | Permanents, sur tous ses navigateurs |
+| Réglages globaux du plugin (groupes ouverts, rafraîchissement, vue par défaut, étapes par tuile, mini-carte) | Propriétés d'extension OIE `Flow UI` (`configuration`, `extensions/Flow UI/properties`) | Permanents, inclus dans *Backup/Restore Config* |
+| Surcharges personnelles (bouton ⚙, mini-carte masquée, indices masqués) | Préférence OIE `flowui.settings` de l'utilisateur, seuls les écarts ; repli `localStorage` | Permanents pour l'utilisateur, sur tous ses navigateurs |
 | Vue, zoom et position par canal ; filtre, groupes, *Lifetime*, *Links* et défilement de Flows Monitoring | `sessionStorage`, clés `oie.flow-ui.*` | L'onglet du navigateur |
 
 ## Tests

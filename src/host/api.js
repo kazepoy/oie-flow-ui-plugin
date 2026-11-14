@@ -60,3 +60,15 @@ export async function userPreference(userId, name) {
 }
 
 export const setUserPreference = (userId, name, value) => api().users.setPreference(userId, name, value);
+
+/** Server-wide plugin name (matches <name> in extension/plugin.xml). */
+export const PLUGIN_NAME = "Flow UI";
+
+/** Server-wide plugin properties stored by OIE (included in native Backup/Restore Config). */
+export const pluginProperties = (name = PLUGIN_NAME) =>
+  api().extensions?.properties ? api().extensions.properties(name) : Promise.resolve(null);
+
+export const setPluginProperties = (properties, name = PLUGIN_NAME) => {
+  if (!api().extensions?.setProperties) return Promise.reject(new Error("Extensions API unavailable"));
+  return api().extensions.setProperties(name, properties);
+};

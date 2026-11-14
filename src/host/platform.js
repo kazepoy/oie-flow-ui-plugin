@@ -33,3 +33,18 @@ export function confirm(title, message, options) {
 export function toast(message, type = "info") {
   current?.ui?.toast?.(message, type);
 }
+
+/** Task button for Web Admin's left sidebar taskbar (null when unauthorized or unavailable). */
+export function taskButton(label, iconName, onClick, opts) {
+  return current?.ui?.taskButton?.(label, iconName, onClick, opts) ?? null;
+}
+
+/** Evaluates an RBAC task pair; returns true when no authorization controller restricts it. */
+export function canTask(group, task) {
+  return current?.checkTask?.(group, task) ?? true;
+}
+
+/** Subscribes to a Web Admin store event key and returns an unsubscribe function. */
+export function subscribeStore(key, listener) {
+  return current?.store?.subscribe?.(key, listener) ?? (() => {});
+}

@@ -123,9 +123,14 @@ message indique l'onglet à ouvrir.
 
 ## Réglages
 
-Le bouton ⚙ de chaque écran montre les réglages de cet écran ; **Manage › Settings ›
-Flow UI** les montre tous. Les réglages appartiennent à l'utilisateur, le suivent
-d'un navigateur à l'autre et s'appliquent aussitôt :
+**Manage › Settings › Flow UI** définit les réglages par défaut du plugin au
+niveau du serveur (*Refresh*, *Save* et *Restore Defaults* dans le panneau gauche
+*Flow UI Tasks*). Ces propriétés sont incluses dans les sauvegardes et
+restaurations natives d'OIE (**Manage › Settings › Server › Backup Config /
+Restore Config**).
+
+Le bouton ⚙ de chaque écran permet à chaque utilisateur d'ajuster ses propres
+préférences locales en surcharge des réglages serveur (appliquées aussitôt) :
 
 | Écran | Réglage |
 |---|---|

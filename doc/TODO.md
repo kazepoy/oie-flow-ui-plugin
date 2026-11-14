@@ -26,6 +26,11 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
   ou tag dans le sélecteur de Channel Flow ; pastilles de tags colorées sous
   *Details* et filtre par nom ou tag dans Flows Monitoring ; jeu de tags de démo
   et permission RBAC `viewTags`.
+- [x] **Réglages intégrés à OIE (Save classique + Backup/Restore Config)** (fait le
+  2026-11-14) : réglages globaux dans *Manage › Settings › Flow UI* stockés via
+  `extensions/Flow UI/properties` (inclus dans le *Backup Config* / *Restore Config*
+  natif), avec *Refresh* / *Save* / *Restore Defaults* dans le bandeau gauche et
+  garde de navigation ; surcharges personnelles conservées sous le bouton ⚙.
 - [ ] Filtre de statut dans Messages depuis un compteur, dès que Web Admin accepte
   `?status=` (WA-01), et champ *Connector* à jour (WA-15) ; ouverture d'un onglet, d'une destination ou d'une étape précis
   de l'éditeur (WA-02).

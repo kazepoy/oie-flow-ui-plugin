@@ -4,7 +4,24 @@ import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { catalogs, resolveLocale, t } from "../../src/i18n/index.js";
-import { changedSettings, defaultSettings, sanitize } from "../../src/host/preferences.js";
+import { bindPlatform } from "../../src/host/platform.js";
+import {
+  changedSettings,
+  defaultSettings,
+  getPluginSettings,
+  getSettings,
+  hasUserChoiceOverrides,
+  loadSettings,
+  parsePluginProperties,
+  refreshPluginSettings,
+  reloadPluginSettings,
+  resetUserChoiceOverrides,
+  sanitize,
+  savePluginSettings,
+  serializePluginProperties,
+  subscribeSettings,
+  updateSettings
+} from "../../src/host/preferences.js";
 import { placeUnder } from "../../src/shared/ui/place.js";
 
 test("texts take parameters and plural forms; an unknown key shows itself", () => {
@@ -54,4 +71,131 @@ test("a popover opens under its button, or above it near the bottom of the windo
   const window = { width: 1000, height: 800 };
   assert.deepEqual(placeUnder({ left: 100, top: 50, bottom: 80 }, { width: 200, height: 100 }, window), { left: 100, top: 86 });
   assert.deepEqual(placeUnder({ left: 950, top: 700, bottom: 730 }, { width: 200, height: 100 }, window), { left: 792, top: 594 });
+});
+
+test("plugin properties serialize and parse OIE XStream shapes cleanly", () => {
+  assert.deepEqual(parsePluginProperties(null), {});
+  assert.deepEqual(parsePluginProperties({
+    property: [
+      { "@name": "defaultLayout", $: "bands" },
+      { "@name": "refreshSeconds", $: "30" },
+      { "@name": "visibleSteps", $: "0" },
+      { "@name": "unknown", $: "ignored" },
+      { "@name": "minimap", $: "invalid" }
+    ]
+  }), { defaultLayout: "bands", refreshSeconds: 30, visibleSteps: 0 });
+  // Single XStream property arrives as an object instead of an array.
+  assert.deepEqual(parsePluginProperties({
+    property: { "@name": "expandedGroups", $: "first" }
+  }), { expandedGroups: "first" });
+
+  assert.deepEqual(serializePluginProperties({
+    ...defaultSettings(),
+    defaultLayout: "columns",
+    refreshSeconds: 60,
+    hiddenHints: ["zoom"]
+  }), {
+    property: [
+      { "@name": "defaultLayout", $: "columns" },
+      { "@name": "refreshSeconds", $: "60" }
+    ]
+  });
+});
+
+test("server plugin settings compose with sparse per-user overrides and reset cleanly", async () => {
+  let serverProps = { property: [{ "@name": "defaultLayout", $: "bands" }] };
+  let userPref = JSON.stringify({ minimap: "off" });
+  bindPlatform({
+    store: { getState: key => key === "user" ? { id: 1, username: "admin" } : null },
+    checkTask: () => true,
+    ui: { toast: () => {} },
+    api: {
+      extensions: {
+        properties: async () => serverProps,
+        setProperties: async (_name, props) => { serverProps = props; }
+      },
+      users: {
+        getPreference: async () => userPref,
+        setPreference: async (_id, _key, value) => { userPref = value; }
+      }
+    }
+  });
+
+  await loadSettings();
+  assert.equal(getPluginSettings().defaultLayout, "bands");
+  assert.equal(getSettings().defaultLayout, "bands");
+  assert.equal(getSettings().minimap, "off");
+  assert.equal(hasUserChoiceOverrides(), true);
+
+  await savePluginSettings({ ...defaultSettings(), expandedGroups: "first", refreshSeconds: 30 });
+  assert.equal(getPluginSettings().expandedGroups, "first");
+  assert.equal(getSettings().expandedGroups, "first");
+  assert.equal(getSettings().minimap, "off");
+
+  // Setting a choice back to the server value removes the personal override.
+  await updateSettings({ minimap: "auto" });
+  assert.equal(hasUserChoiceOverrides(), false);
+
+  await updateSettings({ refreshSeconds: 0, hiddenHints: ["hint1"] });
+  assert.equal(getSettings().refreshSeconds, 0);
+  await resetUserChoiceOverrides();
+  assert.equal(hasUserChoiceOverrides(), false);
+  assert.equal(getSettings().refreshSeconds, 30);
+  assert.deepEqual(getSettings().hiddenHints, ["hint1"]);
+
+  // Reloading picks up external changes (such as OIE Restore Config).
+  serverProps = { property: [{ "@name": "visibleSteps", $: "8" }] };
+  await reloadPluginSettings();
+  assert.equal(getSettings().visibleSteps, 8);
+  assert.equal(getSettings().expandedGroups, "all");
+
+  // Silent view-mount refresh deduplicates calls, notifies only on change, and ignores errors / missing permission.
+  let reads = 0;
+  let notifications = 0;
+  let allowRead = true;
+  let shouldFail = false;
+  const unsub = subscribeSettings(() => { notifications++; });
+  bindPlatform({
+    store: { getState: key => key === "user" ? { id: 1, username: "admin" } : null },
+    checkTask: () => allowRead,
+    ui: { toast: () => {} },
+    api: {
+      extensions: {
+        properties: async () => {
+          reads++;
+          if (shouldFail) throw new Error("boom");
+          return serverProps;
+        },
+        setProperties: async (_name, props) => { serverProps = props; }
+      },
+      users: {
+        getPreference: async () => userPref,
+        setPreference: async (_id, _key, value) => { userPref = value; }
+      }
+    }
+  });
+  serverProps = { property: [{ "@name": "defaultLayout", $: "columns" }] };
+  await Promise.all([refreshPluginSettings(), refreshPluginSettings()]);
+  assert.equal(reads, 1);
+  assert.equal(notifications, 1);
+  assert.equal(getSettings().defaultLayout, "columns");
+  // Same value again: reads once, does not notify listeners needlessly.
+  await refreshPluginSettings();
+  assert.equal(notifications, 1);
+  // Error or missing permission does not throw or wipe current server overrides.
+  shouldFail = true;
+  await refreshPluginSettings();
+  assert.equal(getSettings().defaultLayout, "columns");
+  shouldFail = false;
+  allowRead = false;
+  serverProps = { property: [{ "@name": "defaultLayout", $: "line" }] };
+  await refreshPluginSettings();
+  assert.equal(reads, 3);
+  assert.equal(getSettings().defaultLayout, "columns");
+  // Empty server payload resets server overrides cleanly when permitted.
+  allowRead = true;
+  serverProps = null;
+  await refreshPluginSettings();
+  assert.equal(getSettings().defaultLayout, "auto");
+  unsub();
 });

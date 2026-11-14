@@ -2,3 +2,4 @@
 /dist/
 /demo/.env
 /test/e2e/output/
+.DS_Store
