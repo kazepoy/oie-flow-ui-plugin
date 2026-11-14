@@ -60,8 +60,9 @@ step.
   move, Ctrl/⌘ + wheel to zoom) and the keyboard; each view keeps its zoom and
   position for the session.
 - Works with the Role Based Access Control plugin: only what the user's role allows.
-- Settings follow the user from one browser to another (gear button, or
-  Manage › Settings › Flow UI).
+- Server-wide defaults under Manage › Settings › Flow UI (included in
+  Backup/Restore Config) with per-user overrides from each screen's gear button,
+  saved across browsers.
 - English interface, ready for translation.
 
 ## Origin

@@ -72,7 +72,8 @@ remet la configuration et les états initiaux en place.
 | | LAB · Results from LIS (ORU) | Chaîne validate → store → notify ; résultats incomplets en erreur (*Errored*) |
 | | LAB · Critical values | Filtre de 9 règles (*+4 more*) ; presque tout est filtré |
 | Operations & Simulators | OPS · Heartbeat | Source JavaScript interrogée chaque minute, scripts deploy/undeploy |
-| | SIM · MLLP, EHR | Systèmes externes simulés (MLLP 7101, HTTP 7103) |
+| | SIM · MLLP | Systèmes externes simulés (MLLP, port 7101) |
+| | SIM · EHR | Dossier patient informatisé simulé (HTTP, port 7103) |
 | Patient Care | ADT · HIS inbound | Listener MLLP 8181, filtre des messages de test (*Filtered*), deux chaînes |
 | | ADT · Broadcast to departments | Appelé par le précédent ; 7 destinations, une désactivée : vue Bands |
 | | RAD · Orders to RIS | Trois chaînes parallèles : vue Columns |

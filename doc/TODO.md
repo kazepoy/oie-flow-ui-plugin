@@ -44,13 +44,13 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
   contraste des deux thèmes.
 - [ ] ESLint (`react/jsx-no-literals`) et Stylelint (couleurs hors `tokens.css`),
   prévus au plan.
-- [ ] Performances avec 200 canaux (second dump `oie-scale.sql.gz`).
-- [ x] Faire tourner la CI (`.github/workflows/build.yml`) une fois le dépôt publié.
+- [ ] Performances avec 200 canaux (jeu de test à 200 canaux).
+- [x] Faire tourner la CI (`.github/workflows/build.yml`) une fois le dépôt publié.
 
 ## Projet
 
-- [ x] Retirer Flow et Flows du FHIR Profile Mapper (phase 8 du plan).
-- [ x] Signaler RB-07 (préférences d'autres utilisateurs modifiables) aux
+- [x] Retirer Flow et Flows du FHIR Profile Mapper (phase 8 du plan).
+- [x] Signaler RB-07 (préférences d'autres utilisateurs modifiables) aux
   projets RBAC et OIE.
 - [ ] Proposer à Web Admin les demandes du §10 du plan (`?status=`, paramètres
   d'URL de l'éditeur, onglet par défaut, i18n).

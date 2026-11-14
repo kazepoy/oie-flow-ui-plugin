@@ -472,7 +472,7 @@ entry remains, with the version that fixes it.
 - **Finding.** `GET /channels/{id}` for a missing channel: HTTP 204 with empty body.
   `POST /channels/{id}/_deploy?returnErrors=true`: empty body on success. Some refusals
   respond HTTP 200 with `<boolean>false</boolean>`.
-- **Evidence.** `demo/oie-init/init-channels.sh` in the mapper.
+- **Evidence.** `demo/oie-init/init-channels.sh`.
 - **Workaround.** Init helper functions handle all three cases.
 
 ### OIE-07
@@ -517,7 +517,7 @@ entry remains, with the version that fixes it.
   *Transformed* in the source; with `?destinationMetaDataId=1`, the message arrives in
   the destination queue.
 - **Workaround.** The demo script passes the list of active destinations of each
-  channel (`seed/generated/messages.txt`).
+  channel (`demo/oie-init/data/messages.txt`).
 - **Upstream request.** Document this behaviour, or send to all destinations by default
   like the administrator's *Send Message* dialog.
 
