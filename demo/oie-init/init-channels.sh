@@ -9,7 +9,7 @@ set -eu
 
 OIE_URL="${OIE_URL:-https://oie-app:8443}"
 OIE_USER="${OIE_USER:-admin}"
-OIE_PASSWORD="${OIE_PASSWORD:-demo-oie-password}"
+OIE_PASSWORD="${OIE_PASSWORD:-admin}"
 USER_PASSWORD="${OIE_DEMO_USER_PASSWORD:-$OIE_PASSWORD}"
 OIE_SKIP_FIRST_LOGIN="${OIE_SKIP_FIRST_LOGIN:-true}"
 INIT_DIR="${OIE_INIT_DIR:-/oie-init}"

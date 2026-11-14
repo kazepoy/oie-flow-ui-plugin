@@ -59,7 +59,8 @@ services:
       SERVER_ID: ${OIE_SERVER_ID:-3f1c2b9e-6a4d-4e8b-9c1f-0d2e5a7b8c61}
       KEYSTORE_STOREPASS: ${OIE_KEYSTORE_STOREPASS:-demo-flow-ui-store}
       KEYSTORE_KEYPASS: ${OIE_KEYSTORE_KEYPASS:-demo-flow-ui-key}
-      _MP_SERVER_INITIALADMINPASSWORD: ${OIE_PASSWORD:-demo-oie-password}
+      _MP_PASSWORD_MINLENGTH: "0"
+      _MP_SERVER_INITIALADMINPASSWORD: ${OIE_PASSWORD:-admin}
       TZ: ${TZ:-Europe/Paris}
     configs:
       - source: oie-jvm-options
@@ -90,8 +91,8 @@ services:
     environment:
       OIE_URL: https://oie-app:8443
       OIE_USER: admin
-      OIE_PASSWORD: ${OIE_PASSWORD:-demo-oie-password}
-      OIE_DEMO_USER_PASSWORD: ${OIE_DEMO_USER_PASSWORD:-demo-oie-password}
+      OIE_PASSWORD: ${OIE_PASSWORD:-admin}
+      OIE_DEMO_USER_PASSWORD: ${OIE_DEMO_USER_PASSWORD:-admin}
       OIE_SKIP_FIRST_LOGIN: ${OIE_SKIP_FIRST_LOGIN:-true}
     volumes:
       - ./oie-init:/oie-init:ro
@@ -107,7 +108,7 @@ services:
     entrypoint: ["/bin/sh", "/examples/traffic.sh"]
     environment:
       OIE_URL: https://oie-app:8443/api
-      OIE_PASSWORD: ${OIE_PASSWORD:-demo-oie-password}
+      OIE_PASSWORD: ${OIE_PASSWORD:-admin}
       TRAFFIC_INTERVAL: ${TRAFFIC_INTERVAL:-0.2}
     volumes:
       - ./examples:/examples:ro

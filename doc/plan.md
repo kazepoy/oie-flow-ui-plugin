@@ -449,7 +449,7 @@ JavaScript ; HL7v2, JSON, XML, Raw).
 
 ### 7.5 Comptes de démo
 
-Mot de passe : `demo-oie-password` par défaut pour tous les comptes. Chaque compte
+Mot de passe : `admin` par défaut pour tous les comptes. Chaque compte
 illustre une situation RBAC.
 
 | Compte | Rôle | Ce qu'il voit |

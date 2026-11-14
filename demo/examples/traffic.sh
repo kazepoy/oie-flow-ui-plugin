@@ -27,7 +27,7 @@ while true; do
       query=$(echo "$destinations" | sed 's/^/destinationMetaDataId=/; s/,/\&destinationMetaDataId=/g')
       sed -e "s/{{n}}/T$(printf '%05d' "$n")/g" -e "s/{{ts}}/$(date +%Y%m%d%H%M%S)/g" "$DATA_DIR/messages/$file" > "$BODY"
       curl --insecure --noproxy '*' --silent --output /dev/null --max-time 60 \
-        --user "admin:${OIE_PASSWORD:-demo-oie-password}" \
+        --user "admin:${OIE_PASSWORD:-admin}" \
         --header 'X-Requested-With: OpenAPI' --header 'Content-Type: text/plain; charset=UTF-8' \
         --data-binary "@$BODY" "$API/channels/$id/messages?$query" || echo "not sent: $name"
       n=$((n + 1))

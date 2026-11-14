@@ -24,11 +24,11 @@ open <https://localhost:8444/oie-webadmin/> (self-signed certificate) and sign i
 
 | Account | Password | What it shows |
 |---|---|---|
-| `admin` | `demo-oie-password` | Everything |
-| `integrator` | `demo-oie-password` | Design and Monitor: Channel Flow, channel editor, `+` to add a step |
-| `ops` | `demo-oie-password` | Monitoring of every channel, messages, Channel Flow, start, pause and stop |
-| `lab-viewer` | `demo-oie-password` | The *Laboratory* group only, without channel configurations |
-| `auditor` | `demo-oie-password` | Counters only, without messages |
+| `admin` | `admin` | Everything |
+| `integrator` | `admin` | Design and Monitor: Channel Flow, channel editor, `+` to add a step |
+| `ops` | `admin` | Monitoring of every channel, messages, Channel Flow, start, pause and stop |
+| `lab-viewer` | `admin` | The *Laboratory* group only, without channel configurations |
+| `auditor` | `admin` | Counters only, without messages |
 
 The demo is the integration platform of a hospital: 12 channels in 4 groups,
 messages already processed, a queue and errors.
