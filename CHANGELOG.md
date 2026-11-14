@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.5 (2026-11-14)
+
+- **Demo**: relaxed OIE password minimum length in `demo/compose.yaml`
+  (`_MP_PASSWORD_MINLENGTH: "0"`) and switched the default password for all
+  demo accounts (`admin`, `lab-viewer`, `ops`, `integrator`, `auditor`), REST
+  init, traffic, examples, E2E tests and documentation to `admin`.
+
 ## 0.8.4 (2026-11-14)
 
 - **Settings**: added server-wide defaults under **Manage › Settings › Flow UI**
