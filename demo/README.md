@@ -42,12 +42,12 @@ rôles RBAC et comptes, déployer et rejouer les messages initiaux. Les extensio
 
 ## Faire bouger les compteurs
 
-Le service `traffic` démarre automatiquement dès la fin de `oie-init` et envoie
+Le service `message-gun` démarre automatiquement dès la fin de `oie-init` et envoie
 un trafic pondéré en continu (~0,2 s entre messages, `TRAFFIC_INTERVAL`).
 
 ```sh
-docker compose stop traffic                  # suspendre le trafic continu
-docker compose up -d traffic                 # le relancer
+docker compose stop message-gun              # suspendre l'envoi continu
+docker compose up -d message-gun             # le relancer
 ./examples/send.sh adt                     # admission par le listener MLLP 8181
 ./examples/send.sh result                  # résultat de laboratoire (MLLP 8184)
 ./examples/send.sh critical                # résultat critique : bip du biologiste

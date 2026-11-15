@@ -14,7 +14,7 @@ if [ -f "$DATA_DIR/states.txt" ]; then
 else
   : > /tmp/skip
 fi
-echo "Traffic: weighted round-robin every ${INTERVAL}s to $API"
+echo "message-gun: weighted round-robin every ${INTERVAL}s to $API"
 n=1
 while true; do
   r=1

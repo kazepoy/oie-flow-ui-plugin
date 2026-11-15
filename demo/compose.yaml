@@ -102,10 +102,10 @@ services:
     logging: *logging
 
   # Continuous demo messages (starts automatically once oie-init completes).
-  traffic:
+  message-gun:
     image: curlimages/curl:8.21.0
     restart: unless-stopped
-    entrypoint: ["/bin/sh", "/examples/traffic.sh"]
+    entrypoint: ["/bin/sh", "/examples/message-gun.sh"]
     environment:
       OIE_URL: https://oie-app:8443/api
       OIE_PASSWORD: ${OIE_PASSWORD:-admin}
