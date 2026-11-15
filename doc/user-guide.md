@@ -136,6 +136,7 @@ préférences locales en surcharge des réglages serveur (appliquées aussitôt)
 |---|---|
 | Flows Monitoring | Groupes ouverts par défaut (tous, le premier, aucun) ; rafraîchissement des compteurs |
 | Channel Flow | Vue par défaut ; étapes affichées par tuile (3, 5, 8 ou toutes, puis « +N more ») ; mini-carte (quand nécessaire ou désactivée) |
+| Interface *(ce navigateur)* | Langue (*Browser language*, *English*, *Français*) : appliquée aussitôt dans le navigateur, exclue des réglages serveur ; également accessible lorsque les réglages serveur ne sont pas lisibles |
 
 Un lien permet de réafficher les indices masqués.
 

@@ -18,7 +18,7 @@ Cible : OIE 4.7.0, Web Support 1.3.0 (Web Admin 1.3.0, API plugin 4.10), RBAC 1.
 | Phase | État |
 |---|---|
 | 0. Socle et vérifications | Fait : build esbuild, ZIP sans Java accepté (WS-01), menus et droits vérifiés |
-| 1. Démo | Fait : initialisation REST `oie-init/` (12 canaux en 4 groupes), trafic continu automatique `traffic`, `examples/send.sh` |
+| 1. Démo | Fait : initialisation REST `oie-init/` (12 canaux en 4 groupes), générateur continu automatique `message-gun`, `examples/send.sh` |
 | 2. Fondations partagées | Fait : `host/`, i18n, jetons, contrôles, réglages, état de session |
 | 3. Flows Monitoring | Fait, vérifié dans la démo avec les comptes RBAC ; ajouts : liens entre canaux (*Links*), tags colorés, démarrer / pause / arrêt des canaux et connecteurs |
 | 4. Channel Flow, schéma | Fait : trois vues calculées, sélecteur avec groupes et tags, action *Show flow* |
@@ -123,11 +123,11 @@ oie-flow-ui-plugin/
       session.js            état des vues pour la session (sessionStorage)
       styles.js             injection unique des feuilles
     i18n/
-      index.js              t(key, params), pluriels, nombres, heures
-      locales/en.js         catalogue anglais (référence)
+      index.js              t(key, params), pluriels, nombres, heures, préférence de langue
+      locales/en.js, fr.js  catalogues anglais (référence) et français
     shared/
       model/                xstream.js, chains.js, stats.js, endpoint.js, tags.js
-      ui/                   Button, Icon, Popover (+ place.js), Hint, EmptyState, Tag, useSettings
+      ui/                   Button, Icon, Popover (+ place.js), Hint, EmptyState, Tag, useLocale, useSettings
       styles/               tokens.css (couleurs), controls.css (contrôles communs)
     settings/
       SettingsButton.jsx    engrenage de chaque écran et panneau Manage › Settings › Flow UI
@@ -192,13 +192,16 @@ oie-flow-ui-plugin/
 
 ### 3.4 Internationalisation
 
-- UI en anglais ; toute chaîne visible passe par `t("flows.counter.errored")`.
-  Clés hiérarchiques par écran, paramètres nommés (`{count}`, `{name}`), pluriels par
-  `Intl.PluralRules`, nombres et heures par `Intl`.
-- Langue : préférence du plugin si définie, sinon `navigator.languages`, sinon `en`.
-  Repli clé par clé sur l'anglais.
-- Tests : catalogue complet par rapport à `en`, clés inutilisées, paramètres cohérents.
-  Ajouter une langue = ajouter `locales/<code>.js` (documenté dans `doc/i18n.md`).
+- UI en anglais et en français ; toute chaîne visible passe par
+  `t("flows.counter.errored")`. Clés hiérarchiques par écran, paramètres nommés
+  (`{count}`, `{name}`), pluriels par `Intl.PluralRules`, nombres et heures par `Intl`.
+- Langue : choix utilisateur dans **Manage › Settings › Flow UI** (*Interface ›
+  Language*) ou depuis le bouton ⚙ (*Browser language*, *English*, *Français*),
+  mémorisé dans le navigateur (`localStorage`) et appliqué aussitôt ; à défaut
+  (`auto`), `navigator.languages`, sinon `en`. Repli clé par clé sur l'anglais.
+- Tests : parité des clés et paramètres entre catalogues par rapport à `en`, clés
+  utilisées présentes dans `en`, persistance `localStorage`. Ajouter une langue =
+  ajouter `locales/<code>.js` (documenté dans `doc/i18n.md`).
 
 ### 3.5 Droits (RBAC)
 
@@ -392,7 +395,7 @@ puis rejouer les messages initiaux (`messages.txt`).
 | `oie-db` | PostgreSQL 18 (`postgres:18.3-alpine`) |
 | `oie-app` | OIE 4.7.0 + Web Support 1.3.0 + RBAC 1.3.0 (archives vérifiées par SHA-256) + Flow UI construit dans un étage Node ; `SERVER_ID` fixe |
 | `oie-init` | Image curl : exécute `oie-init/init-channels.sh` une fois `oie-app` sain |
-| `traffic` | Démarre automatiquement dès la fin de `oie-init` : image curl, boucle pondérée (`examples/traffic.sh`, 0,2 s par défaut) qui alimente les compteurs |
+| `message-gun` | Démarre automatiquement dès la fin de `oie-init` : image curl, boucle pondérée (`examples/message-gun.sh`, 0,2 s par défaut) qui alimente les compteurs |
 
 Port d'administration par défaut **8444** et ports d'exemple **8181-8199** (le mapper
 utilise 8443 et 8081-8099), tous réglables dans `.env`. Projet compose
@@ -415,7 +418,7 @@ demo/
       messages.txt          plan des messages initiaux et du trafic continu
       messages/             messages joués ({{n}} : numéro, {{ts}} : horodatage)
   examples/
-    traffic.sh              trafic continu automatique après oie-init
+    message-gun.sh          envoi continu automatique après oie-init
     send.sh                 envoie un message vers un listener (MLLP par nc, HTTP par curl)
     demo.http               appels REST commentés
 ```
@@ -494,7 +497,7 @@ Chaque phase se termine par une vérification visuelle dans la démo.
 | Phase | Contenu | Terminé quand |
 |---|---|---|
 | **0. Socle et vérifications** | Squelette du dépôt, build esbuild, ZIP sans Java, injection CSS, i18n minimal, deux vues « hello » (Monitor et Design) | Le ZIP s'installe dans OIE 4.7.0 ; les vues apparaissent et respectent RBAC ; les points marqués « à confirmer » sont tranchés (§1) |
-| **1. Démo** | compose, Dockerfile, initialisation REST `oie-init/`, trafic automatique `traffic`, `examples/send.sh` | `docker compose up` donne des compteurs variés et les cinq comptes ; `oie-init` réinitialise l'état |
+| **1. Démo** | compose, Dockerfile, initialisation REST `oie-init/`, générateur automatique `message-gun`, `examples/send.sh` | `docker compose up` donne des compteurs variés et les cinq comptes ; `oie-init` réinitialise l'état |
 | **2. Fondations partagées** | Jetons et contrôles UI, `host/`, `model/chains`, `stats`, permissions, aides (`HelpPopover`, `Tooltip`) | Composants communs testés et utilisés par les deux écrans |
 | **3. Flows Monitoring** | Vue complète (§4) | Parité avec Flows du mapper, sans hack, liens Flow et droits |
 | **4. Channel Flow — schéma** | Modèle, mise en page calculée des trois vues, rendu, vue Design, sélecteur, action Channels | Les canaux d'exemple se lisent correctement dans les trois vues |
@@ -548,6 +551,7 @@ existent.
 | 15 | Forme du chargement | Fichiers XML/texte versionnés dans `demo/oie-init/data/` et importés par API REST (`oie-init/init-channels.sh`) au démarrage, remplaçant l'ancien dump `seed/` + `pg_dump` (§7.1, §7.3) |
 | 16 | Scénario de démo | Plateforme d'intégration hospitalière : 4 groupes, 12 canaux prioritaires avec étapes variées, systèmes externes simulés (§7.4) |
 | 17 | Comptes de démo | `admin`, `lab-viewer`, `ops`, `integrator`, `auditor` (§7.5) |
+| 18 | Choix de la langue | Catalogues `en` et `fr` embarqués ; sélecteur dans **Manage › Settings › Flow UI** et le bouton ⚙ (`auto`, `en`, `fr`), mémorisé dans le navigateur (`localStorage`) sans modifier les réglages serveur (§3.4) |
 
 Le chargement REST exécute les vrais déploiements et envois de messages dans OIE :
 le moteur crée lui-même ses tables de messages et les compteurs pointent vers des

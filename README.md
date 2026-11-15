@@ -3,6 +3,8 @@
 A plugin for the [Open Integration Engine](https://github.com/OpenIntegrationEngine/engine)
 web administrator that shows how messages move through channels.
 
+> **Status: In development (pre-1.0).**
+>
 > **Pre-1.0 note:** Because Web Admin's plugin API still lacks a few interaction
 > hooks, Flow UI currently relies on minor DOM workarounds (documented in
 > [platform limits](doc/platform-limits.md)). Pull requests to the upstream
@@ -34,7 +36,7 @@ The demo is the integration platform of a hospital: 12 channels in 4 groups,
 messages already processed, a queue and errors.
 
 ```sh
-docker compose stop traffic              # pause continuous message traffic
+docker compose stop message-gun          # pause continuous message traffic
 docker compose up -d oie-init            # restore initial configuration and states
 ```
 

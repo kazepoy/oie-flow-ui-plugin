@@ -184,7 +184,10 @@ entry remains, with the version that fixes it.
 - **Finding.** Web Admin is entirely in English, with no catalog or language setting.
 - **Evidence.** No trace of i18n in the main bundle (only `Intl` is used for formatting).
 - **Impact.** Each plugin picks its language alone; risk of a mixed-language UI.
-- **Workaround.** Plugin-owned i18n (`src/i18n/`), browser language, English fallback.
+- **Workaround.** Plugin-owned i18n (`src/i18n/`) with bundled English and French
+  catalogs, browser language auto-detection, English key fallback, and an
+  in-browser language selector (`auto` / `en` / `fr`) in **Settings › Flow UI**
+  and the toolbar gear menu.
 - **Upstream request.** User language and loading of plugin catalogs.
 
 ### WA-08
