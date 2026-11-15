@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.8.6 (2026-11-15)
+
+- **Internationalization**: added the bundled French translation catalog
+  (`src/i18n/locales/fr.js`) and a live language selector (**Browser language** /
+  **English** / **Français**) under **Manage › Settings › Flow UI** (*Interface ›
+  Language*) and each screen's ⚙ menu, persisted per browser in `localStorage`
+  without marking server defaults dirty.
+- **Demo**: renamed the `traffic` service and script (`demo/examples/traffic.sh`)
+  to `message-gun` (`demo/examples/message-gun.sh`).
+- **Documentation & tests**: noted in `README.md` that the plugin is in
+  development (pre-1.0); refreshed all documentation screenshots at 100% zoom
+  with expanded groups and updated *Settings* / *Channel Flow* captures; sped up
+  `npm run test:e2e` by sharing one browser instance across isolated sessions
+  and replacing fixed viewport sleeps with explicit DOM waits.
+
 ## 0.8.5 (2026-11-14)
 
 - **Demo**: relaxed OIE password minimum length in `demo/compose.yaml`
