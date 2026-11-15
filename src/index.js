@@ -6,7 +6,7 @@ import { bindReact } from "./host/react.js";
 import { installStyles } from "./host/styles.js";
 import { loadSettings } from "./host/preferences.js";
 import { CHANNEL_FLOW_PATH, channelFlowPath, FLOWS_PATH, navigate } from "./host/routes.js";
-import { setLocale, t } from "./i18n/index.js";
+import { initLocale, t } from "./i18n/index.js";
 import { iconPath } from "./shared/ui/Icon.jsx";
 import { STYLE_SHEETS } from "./styles.js";
 import { FlowsMonitoringView } from "./flows-monitoring/FlowsMonitoringView.jsx";
@@ -16,7 +16,7 @@ import { SettingsPanel } from "./settings/SettingsButton.jsx";
 export function register(platform) {
   bindPlatform(platform);
   bindReact(platform.React);
-  setLocale(navigator.languages ?? [navigator.language]);
+  initLocale();
   installStyles(STYLE_SHEETS);
   loadSettings();
 

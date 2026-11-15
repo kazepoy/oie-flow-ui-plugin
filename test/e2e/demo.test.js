@@ -5,7 +5,7 @@
 import { after, before, describe, test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
-import { DEMO_URL, openNav, signIn } from "./session.js";
+import { DEMO_URL, launchBrowser, openNav, signIn } from "./session.js";
 
 const USER_PASSWORD = process.env.OIE_DEMO_USER_PASSWORD || "admin";
 const OUTPUT = new URL("./output/", import.meta.url).pathname;
@@ -19,11 +19,16 @@ const url = path => new URL(path.replace(/^\//, ""), DEMO_URL).href;
 const shot = (page, name) => page.screenshot({ path: `${OUTPUT}${name}.png` });
 const pluginErrors = errors => errors.filter(error => !/401|404|Failed to load resource/.test(error));
 
-before(() => mkdir(OUTPUT, { recursive: true }));
+let browser;
+before(async () => {
+  await mkdir(OUTPUT, { recursive: true });
+  browser = await launchBrowser();
+});
+after(() => browser?.close());
 
 describe("as admin", () => {
   let session;
-  before(async () => { session = await signIn({ viewport: { width: 1600, height: 1000 } }); });
+  before(async () => { session = await signIn({ instance: browser, viewport: { width: 1600, height: 1000 } }); });
   after(() => session.close());
 
   test("Flows Monitoring shows all groups open, details off by default, with counters", async () => {
@@ -83,14 +88,17 @@ describe("as admin", () => {
     const stage = page.locator(".ofu-flow__stage");
     const before = await stage.evaluate(element => element.style.transform);
     await page.mouse.wheel(0, 100);
-    await page.waitForTimeout(300);
+    await page.waitForFunction(prev => document.querySelector(".ofu-flow__stage")?.style.transform !== prev, before);
     assert.equal(await level(), "100%", "the wheel alone does not zoom");
     assert.notEqual(await stage.evaluate(element => element.style.transform), before, "the wheel moves the diagram");
     await page.keyboard.down("Control");
     await page.mouse.wheel(0, 100);
     await page.mouse.wheel(0, 100);
     await page.keyboard.up("Control");
-    await page.waitForTimeout(300);
+    await page.waitForFunction(() => [...Array(sessionStorage.length)].some((_, i) => {
+      try { const v = JSON.parse(sessionStorage.getItem(sessionStorage.key(i))); return v && typeof v.s === "number" && v.s !== 1; }
+      catch { return false; }
+    }));
     const zoomed = await level();
     assert.notEqual(zoomed, "100%");
     await openNav(page, "flow-ui-flows");
@@ -100,7 +108,7 @@ describe("as admin", () => {
     assert.equal(await level(), zoomed);
     await page.locator(".ofu-flow__viewport").focus();
     await page.keyboard.press("1");
-    await page.waitForTimeout(300);
+    await page.waitForFunction(() => document.querySelector(".ofu-zoom__level")?.textContent === "100%");
     assert.equal(await level(), "100%");
   });
 
@@ -113,7 +121,7 @@ describe("as admin", () => {
     const before = await stage.evaluate(element => element.style.transform);
     const box = await canvas.boundingBox();
     await page.mouse.click(box.x + box.width / 2, box.y + box.height * 0.85);
-    await page.waitForTimeout(100);
+    await page.waitForFunction(prev => document.querySelector(".ofu-flow__stage")?.style.transform !== prev, before);
     assert.notEqual(await stage.evaluate(element => element.style.transform), before);
     await page.getByRole("button", { name: "Hide minimap" }).click();
     assert.equal(await minimap.count(), 0);
@@ -123,10 +131,10 @@ describe("as admin", () => {
     await canvas.waitFor({ state: "visible" });
     await page.locator(".ofu-flow__viewport").focus();
     await page.keyboard.press("0");
-    await page.waitForTimeout(300);
+    await minimap.waitFor({ state: "hidden" });
     assert.equal(await minimap.isVisible(), false);
     await page.keyboard.press("1");
-    await page.waitForTimeout(300);
+    await minimap.waitFor({ state: "visible" });
     assert.equal(await minimap.isVisible(), true);
   });
 
@@ -207,7 +215,7 @@ describe("as admin", () => {
     }, xml);
     try {
       await page.goto(url("settings"));
-      await page.waitForLoadState("networkidle");
+      await page.getByRole("tab", { name: /^Flow UI/ }).waitFor();
 
       // Even before changing any Flow UI setting, Backup Config includes Flow UI defaults.
       const defaultBackupXml = await backupConfig();
@@ -265,7 +273,7 @@ describe("as admin", () => {
 
 describe("with RBAC roles", () => {
   test("lab-viewer sees the laboratory only, and no Channel Flow", async () => {
-    const session = await signIn({ user: "lab-viewer", password: USER_PASSWORD });
+    const session = await signIn({ instance: browser, user: "lab-viewer", password: USER_PASSWORD });
     try {
       const { page } = session;
       assert.equal(await page.locator('[data-nav-item="flow-ui-channel-flow"]').count(), 0);
@@ -282,7 +290,7 @@ describe("with RBAC roles", () => {
   });
 
   test("ops pauses, resumes, stops and starts a channel from Flows Monitoring", async () => {
-    const session = await signIn({ user: "ops", password: USER_PASSWORD });
+    const session = await signIn({ instance: browser, user: "ops", password: USER_PASSWORD });
     try {
       const { page } = session;
       await openNav(page, "flow-ui-flows");
@@ -307,7 +315,7 @@ describe("with RBAC roles", () => {
   });
 
   test("ops stops and starts connectors; a destination without queue has no stop button", async () => {
-    const session = await signIn({ user: "ops", password: USER_PASSWORD });
+    const session = await signIn({ instance: browser, user: "ops", password: USER_PASSWORD });
     try {
       const { page } = session;
       await openNav(page, "flow-ui-flows");
@@ -334,7 +342,7 @@ describe("with RBAC roles", () => {
   });
 
   test("auditor sees the counters, which open nothing", async () => {
-    const session = await signIn({ user: "auditor", password: USER_PASSWORD });
+    const session = await signIn({ instance: browser, user: "auditor", password: USER_PASSWORD });
     try {
       const { page } = session;
       await openNav(page, "flow-ui-flows");
@@ -348,13 +356,77 @@ describe("with RBAC roles", () => {
   });
 
   test("integrator can edit, and sees Channel Flow", async () => {
-    const session = await signIn({ user: "integrator", password: USER_PASSWORD });
+    const session = await signIn({ instance: browser, user: "integrator", password: USER_PASSWORD });
     try {
       const { page } = session;
       await openNav(page, "flow-ui-channel-flow");
       await page.locator(".ofu-picker__group").first().waitFor();
       await page.getByRole("button", { name: "LAB · Results from LIS (ORU)" }).click();
       await page.getByRole("button", { name: "Edit channel" }).waitFor();
+    } finally {
+      await session.close();
+    }
+  });
+});
+
+describe("internationalization", () => {
+  test("Settings and toolbar gear switch language live in this browser without dirtying server defaults", async () => {
+    const session = await signIn({ instance: browser, viewport: { width: 1600, height: 1000 } });
+    try {
+      const { page } = session;
+      await openNav(page, "settings");
+      await page.getByRole("tab", { name: /^Flow UI/ }).click();
+      const langSelect = page.locator("#ofu-setting-language");
+      await langSelect.waitFor();
+      assert.equal(await langSelect.inputValue(), "auto");
+
+      await langSelect.selectOption("en");
+      await page.getByRole("tab", { name: /^Flow UI$/ }).waitFor();
+      assert.equal(await langSelect.inputValue(), "en");
+
+      await langSelect.selectOption("fr");
+      // Browser preference applies immediately without marking server settings dirty.
+      await page.getByRole("tab", { name: /^Flow UI$/ }).waitFor();
+      await page.getByRole("button", { name: "Enregistrer", exact: true }).waitFor();
+      await page.getByText("Appliquée immédiatement dans ce navigateur").waitFor();
+
+      await openNav(page, "flow-ui-flows");
+      await page.getByPlaceholder("Filtrer canaux et tags").waitFor();
+      await page.reload({ waitUntil: "domcontentloaded" });
+      await openNav(page, "flow-ui-flows");
+      await page.getByPlaceholder("Filtrer canaux et tags").waitFor();
+
+      await page.getByRole("button", { name: "Réglages · Suivi des flux" }).click();
+      const popoverLang = page.locator("#ofu-popover-language-flows");
+      await popoverLang.waitFor();
+      assert.equal(await popoverLang.inputValue(), "fr");
+      await popoverLang.selectOption("auto");
+      await page.getByPlaceholder("Filter channels & tags").waitFor();
+      assert.deepEqual(pluginErrors(session.errors), []);
+    } finally {
+      await session.close();
+    }
+  });
+
+  test("a French browser session starts in French automatically", async () => {
+    const session = await signIn({ instance: browser, locale: "fr-FR", viewport: { width: 1600, height: 1000 } });
+    try {
+      const { page } = session;
+      await openNav(page, "flow-ui-flows");
+      await page.locator(".ofu-group").first().waitFor();
+      await page.getByLabel("Détails").waitFor();
+      await page.getByRole("button", { name: "Tout déplier" }).waitFor();
+
+      await openNav(page, "flow-ui-channel-flow");
+      await page.locator(".ofu-picker__group").first().waitFor();
+
+      await openNav(page, "settings");
+      await page.getByRole("tab", { name: /^Flow UI/ }).click();
+      const langSelect = page.locator("#ofu-setting-language");
+      await langSelect.waitFor();
+      assert.equal(await langSelect.inputValue(), "auto");
+      await page.getByRole("button", { name: "Enregistrer", exact: true }).waitFor();
+      assert.deepEqual(pluginErrors(session.errors), []);
     } finally {
       await session.close();
     }

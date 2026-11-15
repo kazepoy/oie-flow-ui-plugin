@@ -88,6 +88,16 @@ export default {
       label: "Minimap",
       auto: "When needed",
       off: "Off"
+    },
+    interface: {
+      title: "Interface"
+    },
+    language: {
+      label: "Language",
+      auto: "Browser language",
+      en: "English",
+      fr: "Français",
+      note: "Applied immediately in this browser; not included in server defaults."
     }
   },
 

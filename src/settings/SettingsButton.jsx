@@ -7,7 +7,7 @@
 //   - Each screen's gear button (SettingsButton) stores sparse per-user
 //     overrides on top of the server defaults.
 import { useCallback, useEffect, useRef, useState } from "../host/react.js";
-import { t } from "../i18n/index.js";
+import { LOCALE_CHOICES, localePreference, setLocalePreference, t } from "../i18n/index.js";
 import { canTask, confirm, subscribeStore, taskButton, toast } from "../host/platform.js";
 import {
   defaultSettings,
@@ -21,6 +21,7 @@ import {
 } from "../host/preferences.js";
 import { EmptyState } from "../shared/ui/EmptyState.jsx";
 import { PopoverButton } from "../shared/ui/Popover.jsx";
+import { useLocale } from "../shared/ui/useLocale.js";
 import { useSettings } from "../shared/ui/useSettings.js";
 
 const TASK_GROUP = "settings_Flow UI";
@@ -59,6 +60,36 @@ function ScreenSettings({ screen, settings, onChange, disabled = false }) {
   ));
 }
 
+/** Browser-local language selector: takes effect immediately without changing server defaults. */
+function LanguageChoice({ id = "ofu-setting-language" }) {
+  const preference = localePreference();
+  return (
+    <div className="ofu-setting">
+      <label htmlFor={id}>{t("settings.language.label")}</label>
+      <select id={id} value={preference} onChange={event => {
+        event.nativeEvent?.stopPropagation?.();
+        setLocalePreference(event.target.value);
+      }}>
+        {LOCALE_CHOICES.map(choice => (
+          <option key={choice} value={choice}>{t(`settings.language.${choice}`)}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
+function LanguageCard() {
+  return (
+    <div className="panel">
+      <div className="panel-header">{t("settings.interface.title")}</div>
+      <div className="panel-body">
+        <LanguageChoice />
+        <p className="ofu-muted">{t("settings.language.note")}</p>
+      </div>
+    </div>
+  );
+}
+
 function ShowHints({ settings, update }) {
   if (!settings.hiddenHints.length) return null;
   return (
@@ -91,6 +122,7 @@ export function SettingsButton({ screen }) {
         <div className="ofu-settings">
           <h3>{t("settings.titleOf", { screen: t(SCREENS[screen].title) })}</h3>
           <ScreenSettings screen={screen} settings={settings} onChange={handleChange} />
+          <LanguageChoice id={`ofu-popover-language-${screen}`} />
           <ShowHints settings={settings} update={update} />
           <ResetPersonalOverrides show={hasUserChoiceOverrides()} />
           <p className="ofu-muted">{t("settings.alsoInSettings")}</p>
@@ -106,6 +138,8 @@ export function SettingsButton({ screen }) {
  * @param {{ setTasks?: Function, setSave?: Function, markDirty?: Function, markClean?: Function }} [props]
  */
 export function SettingsPanel({ setTasks, setSave, markDirty, markClean } = {}) {
+  const locale = useLocale();
+  const preference = localePreference();
   const [userSettings, updateUser] = useSettings();
   const [phase, setPhase] = useState("loading");
   const [errorMessage, setErrorMessage] = useState("");
@@ -210,15 +244,19 @@ export function SettingsPanel({ setTasks, setSave, markDirty, markClean } = {}) 
   }, []);
 
   useEffect(() => {
-    if (phase !== "ready") return;
+    if (phase !== "ready") {
+      dirtyRef.current = false;
+      markClean?.();
+      return;
+    }
     const isDirty = snapshot(draft) !== snapshot(savedRef.current);
     dirtyRef.current = isDirty;
     if (isDirty) markDirty?.();
     else markClean?.();
-  }, [phase, draft, markDirty, markClean]);
+  }, [phase, draft, markDirty, markClean, locale, preference]);
 
   useEffect(() => {
-    setSave?.(() => saveRef.current());
+    setSave?.(phase === "ready" && canSave ? () => saveRef.current() : null);
     setTasks?.(t("settings.tasksTitle"), [
       taskButton(t("settings.task.refresh"), "refresh", () => loadRef.current(true), {
         group: TASK_GROUP, task: "doRefresh", disabled: busy
@@ -231,7 +269,7 @@ export function SettingsPanel({ setTasks, setSave, markDirty, markClean } = {}) 
         title: t("settings.task.restoreDefaultsTitle")
       })
     ].filter(Boolean));
-  }, [setSave, setTasks, busy, phase, permissionsRevision, canRefresh, canSave]);
+  }, [setSave, setTasks, busy, phase, permissionsRevision, canRefresh, canSave, locale]);
 
   if (phase === "loading") {
     return (
@@ -244,6 +282,7 @@ export function SettingsPanel({ setTasks, setSave, markDirty, markClean } = {}) 
     return (
       <div className="ofu ofu-settings ofu-settings-panel">
         <EmptyState title={t("settings.loadTitle")}>{errorMessage}</EmptyState>
+        <LanguageCard />
       </div>
     );
   }
@@ -261,6 +300,7 @@ export function SettingsPanel({ setTasks, setSave, markDirty, markClean } = {}) 
           </div>
         </div>
       ))}
+      <LanguageCard />
       <ShowHints settings={userSettings} update={updateUser} />
       <ResetPersonalOverrides show={hasUserChoiceOverrides()} />
     </div>

@@ -11,6 +11,7 @@ import { Button } from "../shared/ui/Button.jsx";
 import { EmptyState } from "../shared/ui/EmptyState.jsx";
 import { Icon } from "../shared/ui/Icon.jsx";
 import { TagList } from "../shared/ui/Tag.jsx";
+import { useLocale } from "../shared/ui/useLocale.js";
 import { availablePickerTags, pickerGroups } from "./model/picker.js";
 
 const SESSION_KEY = "channel-flow.picker";
@@ -25,6 +26,7 @@ function ChannelCard({ channel }) {
 }
 
 export function ChannelPicker() {
+  useLocale();
   const [data, setData] = useState(null);
   const [error, setError] = useState("");
   const [view, setView] = useState(() => readSession(SESSION_KEY, { filter: "", tagId: "", toggled: {} }));

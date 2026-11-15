@@ -3,7 +3,17 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { catalogs, resolveLocale, t } from "../../src/i18n/index.js";
+import {
+  catalogs,
+  currentLocale,
+  initLocale,
+  localePreference,
+  resolveLocale,
+  setLocale,
+  setLocalePreference,
+  subscribeLocale,
+  t
+} from "../../src/i18n/index.js";
 import { bindPlatform } from "../../src/host/platform.js";
 import {
   changedSettings,
@@ -29,8 +39,95 @@ test("texts take parameters and plural forms; an unknown key shows itself", () =
   assert.equal(t("flows.group.channels", { count: 1 }), "1 channel");
   assert.equal(t("flows.group.channels", { count: 1200 }), "1,200 channels");
   assert.equal(t("no.such.key"), "no.such.key");
-  assert.equal(resolveLocale(["fr-FR", "en-GB"]), "en");
+  assert.equal(resolveLocale(["fr-FR", "en-GB"]), "fr");
+  assert.equal(resolveLocale(["es-ES", "fr-CA"]), "fr");
+  assert.equal(resolveLocale(["en-AU", "fr"]), "en");
+  assert.equal(resolveLocale(["FR_fr"]), "fr");
+  assert.equal(resolveLocale(["constructor", "zh-CN"]), "en");
   assert.equal(resolveLocale([]), "en");
+});
+
+function leafKeys(tree, prefix = "") {
+  return Object.entries(tree).flatMap(([key, value]) => {
+    const path = prefix ? `${prefix}.${key}` : key;
+    if (value && typeof value === "object" && !("one" in value && "other" in value)) {
+      return leafKeys(value, path);
+    }
+    return [path];
+  });
+}
+
+function placeholders(entry) {
+  const texts = typeof entry === "object" ? Object.values(entry) : [String(entry)];
+  return [...new Set(texts.flatMap(text => [...text.matchAll(/\{(\w+)\}/g)].map(match => match[1])))].sort();
+}
+
+test("all locale catalogs match English keys and placeholders", () => {
+  const { en, ...others } = catalogs();
+  const enKeys = leafKeys(en).sort();
+  const lookup = (catalog, path) => path.split(".").reduce((value, part) => value?.[part], catalog);
+  for (const [code, catalog] of Object.entries(others)) {
+    assert.deepEqual(leafKeys(catalog).sort(), enKeys, `${code} keys match en`);
+    for (const path of enKeys) {
+      const enEntry = lookup(en, path);
+      const otherEntry = lookup(catalog, path);
+      assert.equal(typeof otherEntry, typeof enEntry, `${code}.${path} matches type`);
+      assert.deepEqual(placeholders(otherEntry), placeholders(enEntry), `${code}.${path} placeholders match`);
+    }
+  }
+});
+
+test("locale preference persists in localStorage, falls back to browser languages, and notifies subscribers", () => {
+  const originalWindow = globalThis.window;
+  const originalNavigator = Object.getOwnPropertyDescriptor(globalThis, "navigator");
+  const store = new Map();
+  let preferred = ["fr-FR", "en-US"];
+  globalThis.window = /** @type {any} */ ({
+    localStorage: {
+      getItem: key => store.get(key) ?? null,
+      setItem: (key, value) => store.set(key, value),
+      removeItem: key => store.delete(key)
+    }
+  });
+  Object.defineProperty(globalThis, "navigator", {
+    configurable: true,
+    value: { get languages() { return preferred; } }
+  });
+  const seen = [];
+  const unsub = subscribeLocale(next => seen.push(next));
+  try {
+    assert.equal(initLocale(), "fr");
+    assert.equal(localePreference(), "auto");
+
+    assert.equal(setLocalePreference("en"), "en");
+    assert.equal(localePreference(), "en");
+    assert.equal(store.get("oie.flow-ui.locale"), "en");
+    assert.equal(t("flows.title"), "Flows Monitoring");
+
+    assert.equal(setLocalePreference("fr"), "fr");
+    assert.equal(currentLocale(), "fr");
+    assert.equal(t("flows.title"), "Suivi des flux");
+    assert.equal(t("flows.group.channels", { count: 1 }), "1 canal");
+    assert.equal(t("flows.group.channels", { count: 1200 }), `${new Intl.NumberFormat("fr").format(1200)} canaux`);
+
+    preferred = ["en-US"];
+    assert.equal(setLocalePreference("auto"), "en");
+    assert.equal(localePreference(), "auto");
+    assert.equal(store.has("oie.flow-ui.locale"), false);
+    assert.equal(t("flows.title"), "Flows Monitoring");
+
+    store.set("oie.flow-ui.locale", "fr");
+    assert.equal(initLocale(), "fr");
+    assert.equal(localePreference(), "fr");
+
+    assert.deepEqual(seen, ["en", "fr", "en"]);
+  } finally {
+    unsub();
+    setLocale(["en"]);
+    if (originalWindow === undefined) delete globalThis.window;
+    else globalThis.window = originalWindow;
+    if (originalNavigator) Object.defineProperty(globalThis, "navigator", originalNavigator);
+  }
 });
 
 async function sources(dir) {

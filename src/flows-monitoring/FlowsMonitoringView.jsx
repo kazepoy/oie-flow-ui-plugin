@@ -13,6 +13,7 @@ import { formatTime, t } from "../i18n/index.js";
 import { addStats, emptyStats } from "../shared/model/stats.js";
 import { Button } from "../shared/ui/Button.jsx";
 import { EmptyState } from "../shared/ui/EmptyState.jsx";
+import { useLocale } from "../shared/ui/useLocale.js";
 import { useSettings } from "../shared/ui/useSettings.js";
 import { SettingsButton } from "../settings/SettingsButton.jsx";
 import { FlowsHelp } from "./FlowsHelp.jsx";
@@ -25,6 +26,7 @@ const SESSION_KEY = "flows";
 const SCROLL_KEY = "flows.scroll";
 
 export function FlowsMonitoringView() {
+  const locale = useLocale();
   const [settings] = useSettings({ sync: true });
   const { statuses, groups, groupsReadable, waits, links, details, tags, error, updated, refresh, reloadCounters } = useStatuses(settings.refreshSeconds);
   const [view, setView] = useState(() => readSession(SESSION_KEY, { filter: "", lifetime: false, toggled: {}, links: true, details: false }));
@@ -42,7 +44,7 @@ export function FlowsMonitoringView() {
       filter: view.filter, lifetime: view.lifetime, waits, links, details, tags,
       defaultGroupName: t(groupsReadable ? "flows.group.default" : "flows.group.all")
     })
-    : [], [statuses, groups, groupsReadable, waits, links, details, tags, view.filter, view.lifetime]);
+    : [], [statuses, groups, groupsReadable, waits, links, details, tags, view.filter, view.lifetime, locale]);
   const names = useMemo(() => new Map((statuses ?? []).map(status => [String(status.channelId), status.name])), [statuses]);
   const open = openGroups(grouped, view.toggled, settings.expandedGroups, view.filter.trim() !== "");
   const totals = grouped.reduce((sum, group) => addStats(sum, group.stats), emptyStats());

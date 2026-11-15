@@ -7,33 +7,98 @@
 //
 // Adding a language: see doc/i18n.md.
 import en from "./locales/en.js";
+import fr from "./locales/fr.js";
 
 /** @type {Record<string, Record<string, any>>} */
-const CATALOGS = { en };
+const CATALOGS = { en, fr };
 const FALLBACK = "en";
+const STORAGE_KEY = "oie.flow-ui.locale";
+export const LOCALE_CHOICES = ["auto", ...Object.keys(CATALOGS)];
 
-let locale = FALLBACK;
+const listeners = new Set();
 
-/** Picks the first supported language among the preferred ones (BCP 47 tags). */
+const browserLanguages = () => globalThis.navigator?.languages ?? [globalThis.navigator?.language];
+
+const normalizeTag = tag => String(tag || "").toLowerCase().split(/[-_]/)[0];
+
+function storedPreference() {
+  if (typeof window === "undefined") return "auto";
+  try {
+    const saved = window.localStorage?.getItem(STORAGE_KEY) || "";
+    return Object.hasOwn(CATALOGS, saved) ? saved : "auto";
+  } catch {
+    return "auto";
+  }
+}
+
+/**
+ * Picks the first supported language among the preferred ones (BCP 47 tags).
+ * @param {readonly (string | null | undefined)[]} [preferred]
+ */
 export function resolveLocale(preferred = []) {
   for (const tag of preferred) {
     if (!tag) continue;
-    if (CATALOGS[tag]) return tag;
-    const base = tag.split("-")[0];
-    if (CATALOGS[base]) return base;
+    const raw = String(tag);
+    if (Object.hasOwn(CATALOGS, raw)) return raw;
+    const base = normalizeTag(raw);
+    if (Object.hasOwn(CATALOGS, base)) return base;
   }
   return FALLBACK;
 }
 
+const effectiveLocale = pref => pref === "auto" ? resolveLocale(browserLanguages()) : pref;
+
+let preference = storedPreference();
+let locale = effectiveLocale(preference);
+
+const notify = () => {
+  listeners.forEach(listener => listener(locale));
+};
+
+/** Recomputes locale from stored preference and browser languages at plugin load. */
+export function initLocale() {
+  preference = storedPreference();
+  locale = effectiveLocale(preference);
+  return locale;
+}
+
 export function setLocale(preferred) {
+  preference = "auto";
   locale = resolveLocale(preferred);
+  notify();
 }
 
 export const currentLocale = () => locale;
+export const localePreference = () => preference;
+
+/** Stores the user's browser language preference ("auto", "en", "fr") and applies it immediately. */
+export function setLocalePreference(next) {
+  const normalized = normalizeTag(next);
+  preference = Object.hasOwn(CATALOGS, normalized) ? normalized : "auto";
+  if (typeof window !== "undefined") {
+    try {
+      if (preference === "auto") window.localStorage?.removeItem(STORAGE_KEY);
+      else window.localStorage?.setItem(STORAGE_KEY, preference);
+    } catch {
+      // localStorage may be disabled in restricted browsing contexts
+    }
+  }
+  locale = effectiveLocale(preference);
+  notify();
+  return locale;
+}
+
+export function subscribeLocale(listener) {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
 
 function lookup(catalog, key) {
   let value = catalog;
-  for (const part of key.split(".")) value = value?.[part];
+  for (const part of key.split(".")) {
+    if (!value || typeof value !== "object" || !Object.hasOwn(value, part)) return undefined;
+    value = value[part];
+  }
   return value;
 }
 

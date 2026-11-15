@@ -8,6 +8,7 @@ import { can } from "../host/permissions.js";
 import { channelEditorPath, channelFlowPath, FLOWS_PATH, messagesPath, navigate } from "../host/routes.js";
 import { t } from "../i18n/index.js";
 import { EmptyState } from "../shared/ui/EmptyState.jsx";
+import { useLocale } from "../shared/ui/useLocale.js";
 import { ChannelFlow } from "./ChannelFlow.jsx";
 import { ChannelPicker } from "./ChannelPicker.jsx";
 
@@ -46,6 +47,7 @@ function SavedChannel({ channelId }) {
 
 /** @param {{ params: { channelId?: string } }} props given by the Web Admin router */
 export function ChannelFlowView({ params }) {
+  useLocale();
   const channelId = params?.channelId;
   return (
     <div className="ofu ofu-screen ofu-channel-flow">

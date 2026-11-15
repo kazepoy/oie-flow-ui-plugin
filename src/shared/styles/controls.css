@@ -343,8 +343,12 @@
   border-bottom: 1px solid var(--ofu-line);
 }
 
-.ofu-setting:last-child {
+.ofu-setting:last-of-type {
   border-bottom: 0;
+}
+
+.ofu-settings-panel .panel-body > .ofu-muted {
+  margin: 8px 0 0;
 }
 
 .ofu-setting label {
