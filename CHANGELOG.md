@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.9.0 (2026-11-16)
+
+- **Flows Monitoring — Links map**: added the cross-channel *Links map* view
+  (`Channel Writer → Channel Reader` across group frames, cycle routing with
+  dashed back-edges, focus chain isolation, *Show in Rows* navigation, *Details*
+  mode with source connector & tag display, dedicated help popup, and minimap
+  setting).
+- **Flows Monitoring — Rows**: redesigned channel cards (status pip, counters
+  under the title, top-right Flow icon), refined connector cards (status pips on
+  connectors with independent state, no duplicate `SOURCE Source` name, disabled
+  destinations shown in-chain under *Details*), and added a *Paused / stopped*
+  filter pill.
+- **Settings**: moved the language selector exclusively to *Manage › Settings ›
+  Flow UI* (first panel), added per-view *Links map* settings, and added *Reset
+  defaults* / *Reset browser* actions in the left sidebar tasks menu.
+- **Demo**: added a 6-channel cyclic lab/ADT/HIE topology, `oie-community-store`
+  (`0.8.2`), and a stopped queued destination example (`BILL · Claims to
+  insurer · Clearinghouse backup`).
+
 ## 0.8.6 (2026-11-15)
 
 - **Internationalization**: added the bundled French translation catalog
