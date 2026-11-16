@@ -804,23 +804,25 @@ button.ofu-counter:hover {
   position: absolute;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  padding: 10px 12px;
-  border: 1px solid var(--ofu-line-strong);
+  gap: 6px;
+  padding: 8px 10px 8px 13px;
+  border: 1px solid color-mix(in srgb, var(--ofu-channel) 35%, var(--ofu-line));
   border-radius: var(--ofu-radius);
-  background: var(--ofu-surface);
-  box-shadow: var(--ofu-shadow);
+  background: color-mix(in srgb, var(--ofu-channel) 6%, var(--ofu-surface));
+  box-shadow: inset 4px 0 0 var(--ofu-channel);
   cursor: pointer;
   transition: opacity 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
 }
 
 .ofu-links-node:hover {
-  border-color: var(--ofu-accent);
+  border-color: var(--ofu-channel);
 }
 
 .ofu-links-node--hidden {
   border-style: dashed;
+  border-color: var(--ofu-line-strong);
   background: var(--ofu-sunken);
+  box-shadow: none;
   color: var(--ofu-dim);
 }
 
@@ -829,7 +831,7 @@ button.ofu-counter:hover {
   border-width: 1.5px;
   border-color: var(--ofu-alert);
   background: color-mix(in srgb, var(--ofu-alert) 7%, var(--ofu-surface));
-  box-shadow: inset 3px 0 0 var(--ofu-alert), var(--ofu-shadow);
+  box-shadow: inset 4px 0 0 var(--ofu-alert);
 }
 
 .ofu-links-node--focused {
@@ -838,7 +840,7 @@ button.ofu-counter:hover {
 
 .ofu-links-node--selected {
   border-color: var(--ofu-accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ofu-accent) 32%, transparent), var(--ofu-shadow);
+  box-shadow: inset 4px 0 0 var(--ofu-accent), 0 0 0 3px color-mix(in srgb, var(--ofu-accent) 32%, transparent);
 }
 
 .ofu-links-node--dimmed {
@@ -856,13 +858,13 @@ button.ofu-counter:hover {
 .ofu-links-node__name {
   flex: 1;
   min-width: 0;
-  font-size: 13.5px;
+  font-size: 14px;
   line-height: 1.25;
 }
 
 .ofu-links-node__name .ofu-pip {
-  align-self: flex-start;
-  margin-top: 4px;
+  align-self: center;
+  margin-top: 0;
 }
 
 .ofu-links-node__title {
@@ -877,7 +879,7 @@ button.ofu-counter:hover {
   flex: none;
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .ofu-links-node__focus,
@@ -886,71 +888,33 @@ button.ofu-counter:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   padding: 0;
   border: 1px solid var(--ofu-line);
-  border-radius: 6px;
+  border-radius: 5px;
   background: var(--ofu-surface);
   color: var(--ofu-dim);
   cursor: pointer;
 }
 
+.ofu-links-node__focus .ofu-icon,
+.ofu-links-node__rows .ofu-icon {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.2;
+}
+
 .ofu-links-node__focus:hover,
 .ofu-links-node__focus--active,
 .ofu-links-node__rows:hover {
-  border-color: var(--ofu-accent);
-  background: color-mix(in srgb, var(--ofu-accent) 14%, var(--ofu-surface));
-  color: var(--ofu-accent);
-}
-
-.ofu-links-node__bar {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-  margin-top: auto;
-}
-
-.ofu-links-node__state {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 2px 8px 2px 6px;
-  border: 1px solid var(--ofu-line);
-  border-radius: 10px;
-  background: var(--ofu-sunken);
-  color: var(--ofu-dim);
-  font-size: 11px;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.ofu-links-node__state .ofu-pip {
-  width: 7px;
-  height: 7px;
-}
-
-.ofu-links-node__state--ok {
-  border-color: color-mix(in srgb, var(--ofu-ok) 40%, var(--ofu-line));
-  background: color-mix(in srgb, var(--ofu-ok) 12%, var(--ofu-surface));
-  color: var(--ofu-ok);
-}
-
-.ofu-links-node__state--warn {
-  border-color: color-mix(in srgb, var(--ofu-queued) 45%, var(--ofu-line));
-  background: color-mix(in srgb, var(--ofu-queued) 14%, var(--ofu-surface));
-  color: var(--ofu-queued);
-}
-
-.ofu-links-node__state--error {
-  border-color: color-mix(in srgb, var(--ofu-error) 40%, var(--ofu-line));
-  background: color-mix(in srgb, var(--ofu-error) 12%, var(--ofu-surface));
-  color: var(--ofu-error);
+  border-color: var(--ofu-channel);
+  background: color-mix(in srgb, var(--ofu-channel) 14%, var(--ofu-surface));
+  color: var(--ofu-channel);
 }
 
 .ofu-links-node__tagcount {
+  align-self: flex-start;
   flex: none;
   display: inline-flex;
   align-items: center;
@@ -958,7 +922,7 @@ button.ofu-counter:hover {
   padding: 2px 7px;
   border: 1px solid var(--ofu-line);
   border-radius: 10px;
-  background: var(--ofu-sunken);
+  background: var(--ofu-surface);
   color: var(--ofu-dim);
   font-size: 10.5px;
   font-weight: 600;

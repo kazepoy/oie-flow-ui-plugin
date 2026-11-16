@@ -70,7 +70,7 @@ function LinksHelp() {
         <dt><LegendArrow back /></dt><dd>{t("flows.linksGraph.help.backEdge")}</dd>
         <dt><span className="ofu-links-edge-label ofu-sample-pill" aria-hidden="true">D1</span></dt>
         <dd>{t("flows.linksGraph.help.edgeLabel")}</dd>
-        <dt className="ofu-legend__icons"><Icon name="rows" /><Icon name="flow" /></dt>
+        <dt className="ofu-legend__icons"><Icon name="rows" /><Icon name="focus" /></dt>
         <dd>{t("flows.linksGraph.help.cardActions")}</dd>
         <dt><span className="ofu-detail" aria-hidden="true">·</span></dt>
         <dd>{t("flows.linksGraph.help.details")}</dd>

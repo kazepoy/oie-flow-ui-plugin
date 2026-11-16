@@ -59,3 +59,5 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
 
 
 ## vrac
+
+ajouter page de stats (nb msg entrant sortant filtré) par flux/dest , par periode, graphique barre avec granularité differente

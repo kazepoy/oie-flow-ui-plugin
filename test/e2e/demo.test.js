@@ -87,7 +87,7 @@ describe("as admin", () => {
 
     // Clicking the card focuses its upstream + downstream causal chain without panning away.
     const labCritical = page.locator(".ofu-links-node", { hasText: "LAB · Critical values" });
-    await labCritical.locator(".ofu-links-node__state").click();
+    await labCritical.click({ position: { x: 296, y: 60 } });
     assert.equal(await page.locator(".ofu-links-node--selected").count(), 1);
     assert.equal(await page.locator(".ofu-links-node--focused").count(), 4);
     assert.equal(await page.locator(".ofu-links-node--dimmed").count(), 2);

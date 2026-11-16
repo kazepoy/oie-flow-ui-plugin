@@ -12,7 +12,7 @@ import { EmptyState } from "../shared/ui/EmptyState.jsx";
 import { Icon } from "../shared/ui/Icon.jsx";
 import { TagList } from "../shared/ui/Tag.jsx";
 import { ZoomControls } from "../shared/ui/ZoomControls.jsx";
-import { ConnectorDetail } from "./ConnectorCard.jsx";
+import { ConnectorDetail, StatusPip } from "./ConnectorCard.jsx";
 import { ConnectorCounters } from "./Counters.jsx";
 import { FlowsToolbar } from "./FlowsToolbar.jsx";
 import { buildLinksGraph, connectedSubgraph } from "./links-graph.js";
@@ -20,16 +20,15 @@ import { layoutLinksGraph } from "./links-layout.js";
 
 const STATE_TONE = { STARTED: "ok", PAUSED: "warn", STOPPED: "error" };
 
-function LinkNode({ node, selected, focused, dimmed, showDetails, onShowDetails, onToggleFocus, actions }) {
+function LinkNode({ node, selected, focused, dimmed, showDetails, onToggleFocus, actions }) {
   const tone = !node.hidden && (node.stats.ERROR > 0 ? "ofu-card--error" : node.stats.QUEUED > 0 ? "ofu-card--queued" : "");
   const stopped = !node.hidden && node.state && node.state !== "STARTED";
   const label = (
     <>
-      {node.hidden && <span className={cx("ofu-pip", STATE_TONE[node.state] && `ofu-pip--${STATE_TONE[node.state]}`)} aria-hidden="true" />}
+      {(!node.hidden || node.state) && <StatusPip state={node.state} />}
       <span className="ofu-links-node__title">{node.name}</span>
     </>
   );
-  const stateTone = STATE_TONE[node.state];
   const hasDetails = showDetails && (node.source?.transport || node.tags.length > 0);
   return (
     <article
@@ -51,6 +50,13 @@ function LinkNode({ node, selected, focused, dimmed, showDetails, onShowDetails,
               onClick={event => { event.stopPropagation(); actions.openMessages(node.id); }}>{label}</button>
           : <span className="ofu-channel__name ofu-links-node__name" title={node.name}>{label}</span>}
         <div className="ofu-links-node__actions">
+          {!node.hidden && actions.canViewFlow && (
+            <button type="button" className="ofu-control ofu-control--flow"
+              title={t("flows.channel.flowTitle")} aria-label={t("flows.channel.flowTitle")}
+              onClick={event => { event.stopPropagation(); actions.openFlow(node.id); }}>
+              <Icon name="flow" />
+            </button>
+          )}
           {!node.hidden && (
             <button type="button" className="ofu-links-node__rows"
               aria-label={t("flows.linksGraph.showInRowsTitle", { name: node.name })}
@@ -63,7 +69,7 @@ function LinkNode({ node, selected, focused, dimmed, showDetails, onShowDetails,
             aria-pressed={selected} aria-label={t("flows.linksGraph.focusChain")}
             title={t("flows.linksGraph.focusChain")}
             onClick={event => { event.stopPropagation(); onToggleFocus(node.id); }}>
-            <Icon name="flow" />
+            <Icon name="focus" />
           </button>
         </div>
       </div>
@@ -74,37 +80,6 @@ function LinkNode({ node, selected, focused, dimmed, showDetails, onShowDetails,
           <div className="ofu-links-node__counters" onClick={event => event.stopPropagation()}>
             <ConnectorCounters stats={node.stats} keys={SOURCE_COUNTERS} where={node.name}
               onOpen={actions.canOpenMessages ? () => actions.openMessages(node.id) : undefined} />
-          </div>
-          <div className="ofu-links-node__bar">
-            <span className={cx("ofu-links-node__state", stateTone && `ofu-links-node__state--${stateTone}`)}>
-              <span className={cx("ofu-pip", stateTone && `ofu-pip--${stateTone}`)} aria-hidden="true" />
-              {t(`state.${node.state}`)}
-            </span>
-            {!showDetails && node.tags.length > 0 && (
-              <button type="button" className="ofu-links-node__tagcount"
-                title={t("flows.linksGraph.tagsHint", { tags: node.tags.map(tag => tag.name).join(", ") })}
-                onClick={event => { event.stopPropagation(); onShowDetails(); }}>
-                <span className="ofu-links-node__swatches" aria-hidden="true">
-                  {node.tags.slice(0, 3).map(tag => (
-                    <span key={tag.id} className="ofu-links-node__swatch"
-                      style={tag.color ? { backgroundColor: tag.color } : undefined} />
-                  ))}
-                </span>
-                <span>{t("flows.linksGraph.tagsCount", { count: node.tags.length })}</span>
-              </button>
-            )}
-            {(actions.canViewFlow || actions.canEdit) && (
-              <div className="ofu-links-node__links">
-                {actions.canViewFlow && (
-                  <button type="button" className="ofu-button ofu-button--link" title={t("flows.channel.flowTitle")}
-                    onClick={event => { event.stopPropagation(); actions.openFlow(node.id); }}>{t("flows.channel.flow")}</button>
-                )}
-                {actions.canEdit && (
-                  <button type="button" className="ofu-button ofu-button--link" title={t("flows.channel.editTitle")}
-                    onClick={event => { event.stopPropagation(); actions.openEditor(node.id); }}>{t("flows.channel.edit")}</button>
-                )}
-              </div>
-            )}
           </div>
           {hasDetails && (
             <div className="ofu-links-node__details">
@@ -235,7 +210,6 @@ export function FlowsLinksGraph({
                     focused={Boolean(subgraph?.nodeIds.has(node.id))}
                     dimmed={Boolean(subgraph && !subgraph.nodeIds.has(node.id))}
                     showDetails={view.details}
-                    onShowDetails={() => update({ details: true })}
                     onToggleFocus={toggleFocus} actions={actions} />
                 ))}
                 <svg className="ofu-flow__edges" width={scene.width} height={scene.height} aria-hidden="true">

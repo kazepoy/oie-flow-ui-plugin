@@ -7,8 +7,8 @@ import { DEFAULT_GROUP_ID } from "./model.js";
 
 export const LINKS_SIZE = {
   nodeWidth: 304,
-  nodeHeight: 152,
-  nodeHeightDetails: 216,
+  nodeHeight: 102,
+  nodeHeightDetails: 172,
   groupPadX: 24,
   groupPadTop: 64,
   groupPadBottom: 24,
@@ -161,7 +161,7 @@ function portOffsets(edges, nodeBoxes, nodeHeight) {
   }
   const spread = (list, peerBoxOf) => {
     list.sort((a, b) => (peerBoxOf(a).cy - peerBoxOf(b).cy) || (Number(a.metaDataId) - Number(b.metaDataId)));
-    const pad = 26;
+    const pad = Math.min(24, Math.floor(nodeHeight / 5));
     const span = nodeHeight - pad * 2;
     const result = new Map();
     list.forEach((edge, idx) => {
