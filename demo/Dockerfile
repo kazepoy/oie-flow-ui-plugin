@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.7
-# OIE 4.7.0 with Web Support, Role Based Access Control and Flow UI.
+# OIE 4.7.0 with Web Support, Role Based Access Control, Community Store and Flow UI.
 # The engine comes from the build context "oie-engine" (see compose.yaml).
 ARG BUSYBOX_IMAGE=busybox:1.37.0-glibc@sha256:42a9ff19af33811ee466b24c66384461d37c32dcc28d1d27d49b8aca816bd5ee
 ARG NODE_IMAGE=node:22.12.0-alpine
@@ -17,6 +17,11 @@ RUN curl --fail --silent --show-error --location --max-time 300 \
       https://github.com/diridium-com/role-based-access-control/releases/download/v1.3.0/rbac-1.3.0.zip \
       --output /tmp/rbac.zip \
     && echo 'f540cc77ebfadda88147f07fce412caff41abf30ad302ddca61f0b3f422d0cfd  /tmp/rbac.zip' | sha256sum -c -
+# Community Store 0.8.2 (gibson9583), for OIE 4.7.0.
+RUN curl --fail --silent --show-error --location --max-time 300 \
+      https://github.com/gibson9583/oie-community-store/releases/download/v0.8.2/communitystore-0.8.2.zip \
+      --output /tmp/communitystore.zip \
+    && echo '3fd4ce3a8ac954e57a941fd30b49e57e6eb91f83f4bdd37a5de5848c8477ad9e  /tmp/communitystore.zip' | sha256sum -c -
 
 FROM ${BUSYBOX_IMAGE} AS plugins
 COPY --from=downloads /tmp/*.zip /downloads/
@@ -37,4 +42,4 @@ RUN node build.mjs
 FROM oie-engine
 COPY --from=plugins --chown=engine:engine /extensions/ /opt/engine/extensions/
 COPY --from=flow-ui --chown=engine:engine /build/dist/flow-ui/ /opt/engine/extensions/flow-ui/
-LABEL org.opencontainers.image.title="OIE 4.7.0, Web Support, RBAC and Flow UI (demo)"
+LABEL org.opencontainers.image.title="OIE 4.7.0, Web Support, RBAC, Community Store and Flow UI (demo)"

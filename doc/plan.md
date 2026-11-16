@@ -20,7 +20,7 @@ Cible : OIE 4.7.0, Web Support 1.3.0 (Web Admin 1.3.0, API plugin 4.10), RBAC 1.
 | 0. Socle et vérifications | Fait : build esbuild, ZIP sans Java accepté (WS-01), menus et droits vérifiés |
 | 1. Démo | Fait : initialisation REST `oie-init/` (12 canaux en 4 groupes), générateur continu automatique `message-gun`, `examples/send.sh` |
 | 2. Fondations partagées | Fait : `host/`, i18n, jetons, contrôles, réglages, état de session |
-| 3. Flows Monitoring | Fait, vérifié dans la démo avec les comptes RBAC ; ajouts : liens entre canaux (*Links*), tags colorés, démarrer / pause / arrêt des canaux et connecteurs |
+| 3. Flows Monitoring | Fait, vérifié dans la démo avec les comptes RBAC ; ajouts : liens entre canaux (*Links* en ligne et vue graphe *Links map*), tags colorés, démarrer / pause / arrêt des canaux et connecteurs |
 | 4. Channel Flow, schéma | Fait : trois vues calculées, sélecteur avec groupes et tags, action *Show flow* |
 | 5. Channel Flow, interaction | Fait : zoom et déplacement (molette standard), mini-carte, onglet Flow, `+`, étapes visibles réglables. À vérifier sur un vrai pavé tactile et dans Safari |
 | 6. Aides et finitions | Fait en partie : aides `?`, indice, états vides, réglages serveur dans Manage › Settings › Flow UI (*Backup/Restore Config*) et surcharges par utilisateur. Revue d'accessibilité à faire |
@@ -127,14 +127,14 @@ oie-flow-ui-plugin/
       locales/en.js, fr.js  catalogues anglais (référence) et français
     shared/
       model/                xstream.js, chains.js, stats.js, endpoint.js, tags.js
-      ui/                   Button, Icon, Popover (+ place.js), Hint, EmptyState, Tag, useLocale, useSettings
+      ui/                   Button, Icon, Popover (+ place.js), Hint, EmptyState, Tag, ZoomControls, useLocale, useSettings
       styles/               tokens.css (couleurs), controls.css (contrôles communs)
     settings/
       SettingsButton.jsx    engrenage de chaque écran et panneau Manage › Settings › Flow UI
     flows-monitoring/
-      FlowsMonitoringView.jsx, GroupSection.jsx, ChannelRow.jsx, ConnectorCard.jsx,
-      Counters.jsx, ControlButtons.jsx, FlowsHelp.jsx
-      model.js              groupes → lignes → chaînes → compteurs ; liens entre canaux
+      FlowsMonitoringView.jsx, FlowsToolbar.jsx, FlowsLinksGraph.jsx, GroupSection.jsx,
+      ChannelRow.jsx, ConnectorCard.jsx, Counters.jsx, ControlButtons.jsx, FlowsHelp.jsx
+      model.js, links-graph.js, links-layout.js  groupes → lignes / graphe des liens → compteurs ; mise en page composée
       controls.js           commandes permises selon l'état (démarrer, pause, arrêt)
       useStatuses.js        chargement et rafraîchissement
       flows-monitoring.css
@@ -257,6 +257,7 @@ Reprise fonctionnelle de la vue Flows du mapper.
   position de défilement sont retrouvés en revenant sur la page (§5.6).
 - Aides : légende des couleurs et des bordures (bouton `?`), info-bulle par compteur
   (« Errored: messages that failed in this connector »), états vides explicites.
+- **Vue dédiée des liens entre canaux** (*Links map* / *Carte des liens*) : graphe zoomable des liens *Channel Writer → Channel Reader* regroupé par cadres de groupe, filtré par défaut sur les canaux liés (*Linked only*) avec mise en évidence transitive amont / aval au clic, zoom / mini-carte partagés (§5.4) et état vide explicite sans `viewChannels`.
 - Nom dans le menu : **Flows Monitoring**.
 
 ## 5. Channel Flow (Design)
@@ -560,8 +561,4 @@ messages existants dans Messages.
 ## 12. Idées pour plus tard
 
 - **Mini-carte** pour les très grands canaux, dans Channel Flow : fait (v0.8.2).
-- **Vue dédiée des liens entre canaux** (Channel Writer → Channel Reader). Les
-  mentions *Sends to* / *Called by* de l'option *Links* sont faites. Le
-  visuel reste à trouver, surtout quand les deux canaux sont dans des groupes
-  différents. Piste : une vue dédiée de ces liens (graphe des canaux, groupes en
-  cadres), ouverte depuis la barre de Flows Monitoring.
+- **Vue dédiée des liens entre canaux** (Channel Writer → Channel Reader) : fait (*Links map* dans Flows Monitoring).

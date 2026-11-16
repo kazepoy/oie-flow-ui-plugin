@@ -25,6 +25,7 @@ import {
   parsePluginProperties,
   refreshPluginSettings,
   reloadPluginSettings,
+  resetAllUserOverrides,
   resetUserChoiceOverrides,
   sanitize,
   savePluginSettings,
@@ -242,6 +243,9 @@ test("server plugin settings compose with sparse per-user overrides and reset cl
   assert.equal(hasUserChoiceOverrides(), false);
   assert.equal(getSettings().refreshSeconds, 30);
   assert.deepEqual(getSettings().hiddenHints, ["hint1"]);
+
+  await resetAllUserOverrides();
+  assert.deepEqual(getSettings().hiddenHints, []);
 
   // Reloading picks up external changes (such as OIE Restore Config).
   serverProps = { property: [{ "@name": "visibleSteps", $: "8" }] };

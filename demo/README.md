@@ -1,6 +1,6 @@
 # Démo OIE Flow UI
 
-OIE 4.7.0 avec Web Support 1.3.0, Role Based Access Control 1.3.0 et Flow UI,
+OIE 4.7.0 avec Web Support 1.3.0, Role Based Access Control 1.3.0, Community Store 0.8.2 et Flow UI,
 initialisé au démarrage avec la plateforme d'intégration d'un hôpital : 12 canaux
 en 4 groupes, des messages traités et des comptes de démonstration.
 

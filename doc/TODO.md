@@ -13,10 +13,11 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
   Corrigé ensuite : destinations sans file (OIE-12), source arrêtée qui met le
   canal en pause. Reste à envisager : l'arrêt forcé (*Halt*) et des commandes
   groupées par groupe.
-- [ ] **Vue des liens entre canaux.** Les mentions *Sends to* / *Called by* sont
-  faites (option *Links*). Reste une vue dédiée qui dessine ces liens (graphe des
-  canaux, groupes en cadres), utile quand les canaux liés sont dans des groupes
-  différents.
+- [x] **Vue des liens entre canaux** (fait le 2026-11-15) : mode *Links map* /
+  *Carte des liens* dans Flows Monitoring affichant les canaux dans des cadres de
+  groupe et les flèches *Channel Writer → Channel Reader* avec étiquettes
+  cliquables vers Messages, option *Linked only*, zoom / déplacement /
+  mini-carte et mise en évidence de la chaîne amont + aval au clic.
 - [x] **Mini-carte** pour les très grands canaux, dans Channel Flow (fait le
   2026-11-12) : aperçu SVG en bas à droite dès que le schéma dépasse la fenêtre,
   navigation par clic ou glisser de la fenêtre visible, fermable et réouvrable
@@ -54,3 +55,7 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
   projets RBAC et OIE.
 - [ ] Proposer à Web Admin les demandes du §10 du plan (`?status=`, paramètres
   d'URL de l'éditeur, onglet par défaut, i18n).
+
+
+
+## vrac

@@ -57,15 +57,18 @@ export function Minimap({ scene, viewport, onClose }) {
           <svg className="ofu-minimap__svg" viewBox={`0 0 ${scene.width} ${scene.height}`}
             width={map.width} height={map.height} aria-hidden="true">
             {scene.bands.map(band => (
-              <rect key={band.key} className={`ofu-minimap__band ofu-minimap__band--${band.key}`}
+              <rect key={band.id ?? band.key}
+                className={cx("ofu-minimap__band", `ofu-minimap__band--${band.kind ?? band.key}`)}
                 x={band.box.x} y={band.box.y} width={band.box.width} height={band.box.height} rx={24} />
             ))}
             {scene.edges.map((edge, index) => (
               <polyline key={index} className={`ofu-minimap__edge ofu-minimap__edge--${edge.kind}`}
                 points={edge.points.map(point => point.join(",")).join(" ")} />
             ))}
-            <rect className="ofu-minimap__emitter"
-              x={scene.emitter.x} y={scene.emitter.y} width={scene.emitter.width} height={scene.emitter.height} rx={14} />
+            {scene.emitter && (
+              <rect className="ofu-minimap__emitter"
+                x={scene.emitter.x} y={scene.emitter.y} width={scene.emitter.width} height={scene.emitter.height} rx={14} />
+            )}
             {scene.blocks.map(({ block, box }) => (
               <rect key={block.id}
                 className={cx("ofu-minimap__block", `ofu-minimap__block--${block.kind}`, block.off && "ofu-minimap__block--off")}

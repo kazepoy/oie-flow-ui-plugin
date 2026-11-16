@@ -46,10 +46,13 @@ More in the [demo guide](demo/README.md) (in French).
 
 **Flows Monitoring** (Monitor menu): deployed channels by group, one row per
 channel, with message counters for each connector. A counter opens Messages on
-that connector. *Links* shows which channels send to which. Channels and
-connectors start, pause and stop from their cards.
+that connector. *Links* shows which channels send to which, and *Links map*
+draws them as a zoomable graph framed by group. Channels and connectors start,
+pause and stop from their cards.
 
 ![Flows Monitoring](doc/images/flows-monitoring.png)
+
+![Channel links map](doc/images/flows-links-map.png)
 
 **Channel Flow** (Design menu, *Show flow* in the channel list, *Flow* tab of the
 channel editor): a zoomable diagram of a channel, from the sender to the response,

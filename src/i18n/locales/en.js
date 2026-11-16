@@ -50,11 +50,15 @@ export default {
     refreshConfirm: "Reload settings from the server and discard your unsaved changes?",
     showHints: "Show the hints again",
     resetOverrides: "Reset personal overrides to server defaults",
+    resetBrowser: "Reset browser settings",
+    resetBrowserTitle: "Clear browser language, personal overrides, dismissed hints, and view filters",
+    resetBrowserDone: "Browser settings reset",
     task: {
       refresh: "Refresh",
       save: "Save",
-      restoreDefaults: "Restore Defaults",
-      restoreDefaultsTitle: "Reset form values to plugin defaults (click Save to apply)"
+      restoreDefaults: "Reset defaults",
+      restoreDefaultsTitle: "Reset form values to plugin defaults (click Save to apply)",
+      resetBrowser: "Reset browser"
     },
     expandedGroups: {
       label: "Open groups",
@@ -103,6 +107,13 @@ export default {
 
   flows: {
     title: "Flows Monitoring",
+    mode: {
+      label: "View",
+      rows: "Rows",
+      rowsTitle: "Channels and their connectors, one row per channel",
+      links: "Links map",
+      linksTitle: "Graph of Channel Writer → Channel Reader links across groups"
+    },
     totalsLabel: "Totals of the channels shown",
     filter: "Filter channels",
     filterWithTags: "Filter channels & tags",
@@ -197,6 +208,8 @@ export default {
       then: "The next destination waits for the previous one (same chain).",
       parallel: "Chains receive the message in parallel.",
       links: "With Links: the channel a Channel Writer sends to (→), or the channels that call this one (←). A click shows that channel.",
+      linksMap: "Links map",
+      linksMapBody: "Draws the cross-group graph of Channel Writer → Channel Reader links. Click a card to highlight its upstream and downstream chain; hover or click arrows and cards to inspect statuses and messages.",
       details: "With Details: the connector's type and address.",
       counters: "Counters",
       status: {
@@ -212,6 +225,39 @@ export default {
       clicks: "Clicks",
       clickCounter: "A card or a counter opens Messages on that connector. The channel name opens Messages for the whole channel.",
       noStatusFilter: "Messages opens filtered on the connector (see \"Current Search\": the Connector field still says Any). It cannot be opened on one status yet: choose it in its Status filter."
+    },
+    linksGraph: {
+      linkedOnly: "Linked only",
+      linkedOnlyTitle: "Show only channels involved in a Channel Writer → Channel Reader link",
+      showAll: "Show all channels",
+      clearFocus: "Clear focus",
+      clearFocusTitle: "Show all channels without focusing on one chain (Esc)",
+      showInRows: "Show in Rows",
+      showInRowsTitle: "Return to Rows view centered on {name}",
+      focusChain: "Highlight linked chain",
+      tagsCount: { one: "{count} tag", other: "{count} tags" },
+      tagsHint: "{tags} — click to show details",
+      diagramLabel: "Channel links map",
+      emptyNoLinks: "No links between visible channels",
+      emptyNoLinksHelp: "No Channel Writer links match the current filter, or the deployed channels are not linked.",
+      emptyUnreadable: "Channel links hidden",
+      emptyUnreadableHelp: "Your role may not read channel configurations (permission viewChannels), so Channel Writer → Channel Reader links cannot be inspected.",
+      hiddenTarget: "Channel not deployed or hidden",
+      destination: "Destination D{id}",
+      help: {
+        reading: "Reading the links map",
+        intro: "Groups frame deployed channels. Each card shows a channel’s name, source counters right below the title, state, and quick actions; arrows trace Channel Writer → Channel Reader links.",
+        forwardEdge: "Calls another channel (amber when queued, red on errors, dashed grey when the target is stopped or hidden).",
+        backEdge: "Loop / cycle calling back into an upstream channel.",
+        edgeLabel: "Calling destination (shows D1 with Details). Click to open its Messages.",
+        cardActions: "Rows returns to this channel in Rows view; Focus isolates its upstream and downstream chain (Esc or background click resets).",
+        details: "With Details: shows each channel’s source connector type/address, full tags, and destination D1 IDs.",
+        moving: "Moving around",
+        wheel: "Wheel pans vertically; Shift + wheel pans horizontally; ⌘/Ctrl + wheel or pinch zooms.",
+        drag: "Drag the background or use arrow keys to move. Minimap or + − 0 1 zoom and fit.",
+        clicks: "Clicks",
+        clickBody: "The channel name or a counter opens Messages for the channel; an arrow label opens Messages on that calling destination. Click a card or Focus to highlight its chain."
+      }
     }
   },
 

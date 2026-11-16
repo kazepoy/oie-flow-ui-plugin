@@ -23,6 +23,32 @@
   background: var(--ofu-surface);
 }
 
+.ofu-toolbar--stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  padding: 8px 16px;
+}
+
+.ofu-toolbar__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  min-width: 0;
+}
+
+.ofu-toolbar__row--sub {
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--ofu-line) 55%, transparent);
+}
+
+.ofu-toolbar__sep {
+  width: 1px;
+  height: 18px;
+  background: var(--ofu-line);
+}
+
 .ofu-toolbar__title {
   font-size: 14px;
   font-weight: 600;
@@ -43,6 +69,7 @@
 
 /* Buttons */
 .ofu-button {
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;

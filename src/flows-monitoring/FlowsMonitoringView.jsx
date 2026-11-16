@@ -8,28 +8,28 @@ import { confirm, toast } from "../host/platform.js";
 import { COMMAND_PERMISSION, CONFIRMED, EXPECTED_STATE } from "./controls.js";
 import { asList } from "../shared/model/xstream.js";
 import { channelEditorPath, channelFlowPath, messagesPath, navigate } from "../host/routes.js";
-import { readSession, writeSession } from "../host/session.js";
-import { formatTime, t } from "../i18n/index.js";
+import { readSession, subscribeSessionReset, writeSession } from "../host/session.js";
+import { t } from "../i18n/index.js";
 import { addStats, emptyStats } from "../shared/model/stats.js";
 import { Button } from "../shared/ui/Button.jsx";
 import { EmptyState } from "../shared/ui/EmptyState.jsx";
 import { useLocale } from "../shared/ui/useLocale.js";
 import { useSettings } from "../shared/ui/useSettings.js";
-import { SettingsButton } from "../settings/SettingsButton.jsx";
-import { FlowsHelp } from "./FlowsHelp.jsx";
+import { FlowsLinksGraph } from "./FlowsLinksGraph.jsx";
+import { FlowsToolbar } from "./FlowsToolbar.jsx";
 import { GroupSection } from "./GroupSection.jsx";
-import { Totals } from "./Counters.jsx";
 import { groupLanes, openGroups } from "./model.js";
 import { useStatuses } from "./useStatuses.js";
 
 const SESSION_KEY = "flows";
 const SCROLL_KEY = "flows.scroll";
+const DEFAULT_VIEW = { mode: "rows", linkedOnly: true, filter: "", lifetime: false, toggled: {}, links: true, details: false };
 
 export function FlowsMonitoringView() {
   const locale = useLocale();
-  const [settings] = useSettings({ sync: true });
+  const [settings, updateSettings] = useSettings({ sync: true });
   const { statuses, groups, groupsReadable, waits, links, details, tags, error, updated, refresh, reloadCounters } = useStatuses(settings.refreshSeconds);
-  const [view, setView] = useState(() => readSession(SESSION_KEY, { filter: "", lifetime: false, toggled: {}, links: true, details: false }));
+  const [view, setView] = useState(() => readSession(SESSION_KEY, DEFAULT_VIEW));
   const body = useRef(null);
   const restored = useRef(false);
   const scrollTimer = useRef(0);
@@ -38,6 +38,12 @@ export function FlowsMonitoringView() {
 
   const update = patch => setView(previous => ({ ...previous, ...patch }));
   useEffect(() => writeSession(SESSION_KEY, view), [view]);
+  useEffect(() => subscribeSessionReset(() => {
+    restored.current = true;
+    setHighlighted(null);
+    setView(DEFAULT_VIEW);
+    if (body.current) body.current.scrollTop = 0;
+  }), []);
 
   const grouped = useMemo(() => statuses
     ? groupLanes(statuses, groups, {
@@ -122,49 +128,54 @@ export function FlowsMonitoringView() {
     highlighted,
     channelName: channelId => names.get(String(channelId)) ?? null,
     focusLane: channelId => {
-      const group = grouped.find(candidate => candidate.lanes.some(lane => lane.id === String(channelId)));
-      if (group && !open.has(group.id)) update({ toggled: { ...view.toggled, [group.id]: true } });
-      setHighlighted(String(channelId));
+      const id = String(channelId);
+      const group = grouped.find(candidate => candidate.lanes.some(lane => lane.id === id));
+      restored.current = true;
+      const patch = { mode: "rows" };
+      if (group) {
+        if (!open.has(group.id)) patch.toggled = { ...view.toggled, [group.id]: true };
+      } else if (view.filter) {
+        patch.filter = "";
+      }
+      update(patch);
+      setHighlighted(id);
     }
   };
   const toggle = id => update({ toggled: { ...view.toggled, [id]: !open.has(id) } });
   // Before the groups are loaded there is nothing to open or close: keep the state.
   const setAll = value => grouped.length && update({ toggled: Object.fromEntries(grouped.map(group => [group.id, value])) });
 
+  if (view.mode === "links") {
+    return (
+      <FlowsLinksGraph locale={locale} settings={settings} updateSettings={updateSettings}
+        statuses={statuses} groups={groups} groupsReadable={groupsReadable}
+        waits={waits} links={links} details={details} tags={tags}
+        error={error} updated={updated} refresh={refresh}
+        view={view} update={update} actions={actions} />
+    );
+  }
+
+  const rowControls = (
+    <>
+      <label className="ofu-check" title={t("flows.detailsTitle")}>
+        <input type="checkbox" checked={view.details} onChange={event => update({ details: event.target.checked })} />
+        {t("flows.details")}
+      </label>
+      <label className="ofu-check" title={t("flows.linksTitle")}>
+        <input type="checkbox" checked={view.links} onChange={event => update({ links: event.target.checked })} />
+        {t("flows.links")}
+      </label>
+      <Button icon="expand" label={t("flows.expandAll")} onClick={() => setAll(true)} />
+      <Button icon="collapse" label={t("flows.collapseAll")} onClick={() => setAll(false)} />
+    </>
+  );
+
   return (
     <div className="ofu ofu-screen ofu-flows">
-      <div className="ofu-toolbar">
-        <h1 className="ofu-toolbar__title">{t("flows.title")}</h1>
-        <Totals stats={totals} label={t("flows.totalsLabel")} />
-        <input type="search" className="ofu-search" placeholder={t(tags.size ? "flows.filterWithTags" : "flows.filter")} aria-label={t(tags.size ? "flows.filterWithTags" : "flows.filter")}
-          value={view.filter} onChange={event => update({ filter: event.target.value })} />
-        <label className="ofu-check" title={t("flows.lifetimeTitle")}>
-          <input type="checkbox" checked={view.lifetime} onChange={event => update({ lifetime: event.target.checked })} />
-          {t("flows.lifetime")}
-        </label>
-        <label className="ofu-check" title={t("flows.detailsTitle")}>
-          <input type="checkbox" checked={view.details} onChange={event => update({ details: event.target.checked })} />
-          {t("flows.details")}
-        </label>
-        <label className="ofu-check" title={t("flows.linksTitle")}>
-          <input type="checkbox" checked={view.links} onChange={event => update({ links: event.target.checked })} />
-          {t("flows.links")}
-        </label>
-        <Button icon="expand" label={t("flows.expandAll")} onClick={() => setAll(true)} />
-        <Button icon="collapse" label={t("flows.collapseAll")} onClick={() => setAll(false)} />
-        <span className="ofu-toolbar__end">
-          <span className="ofu-muted" role="status">
-            {error ? t("flows.refreshFailed", { error }) : updated ? t("flows.updated", { time: formatTime(updated) }) : t("common.loading")}
-          </span>
-          {!groupsReadable && <span className="ofu-muted" title={t("flows.group.unreadableTitle")}>{t("flows.group.unreadable")}</span>}
-          {grouped.some(group => group.lanes.some(lane => !lane.chainsKnown)) && (
-            <span className="ofu-muted" title={t("flows.chain.unknownTitle")}>{t("flows.chain.unknown")}</span>
-          )}
-          <Button icon="refresh" label={t("flows.refreshTitle")} onClick={refresh}>{t("flows.refresh")}</Button>
-          <FlowsHelp />
-          <SettingsButton screen="flows" />
-        </span>
-      </div>
+      <FlowsToolbar view={view} update={update} totals={totals} tags={tags}
+        modeControls={rowControls} groupsReadable={groupsReadable}
+        chainsUnknown={grouped.some(group => group.lanes.some(lane => !lane.chainsKnown))}
+        error={error} updated={updated} onRefresh={refresh} />
       <div ref={body} className="ofu-flows__body" onScroll={saveScroll}>
         {statuses && !grouped.length && (
           <EmptyState title={view.filter ? t("flows.empty.filtered") : t("flows.empty.none")}>

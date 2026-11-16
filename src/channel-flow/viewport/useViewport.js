@@ -121,6 +121,7 @@ export function useViewport({ scene, sessionKey }) {
     let drag = null;
     let space = false;
     let pinchStart = 1;
+    let suppressClick = false;
 
     const pointerAt = event => {
       const rect = viewport.getBoundingClientRect();
@@ -136,20 +137,34 @@ export function useViewport({ scene, sessionKey }) {
       const middle = event.button === 1;
       if (!middle && event.button !== 0) return;
       if (!middle && !space && isControl(event.target)) return;
-      event.preventDefault();
+      suppressClick = false;
       viewport.focus({ preventScroll: true });  // keys work after a click on the diagram
-      drag = { x: event.clientX, y: event.clientY };
-      viewport.setPointerCapture(event.pointerId);
-      viewport.classList.add("ofu-flow__viewport--dragging");
+      drag = { x: event.clientX, y: event.clientY, pointerId: event.pointerId, captured: false };
     };
     const onPointerMove = event => {
       if (!drag) return;
-      show(panBy(view.current, drag.x - event.clientX, drag.y - event.clientY));
-      drag = { x: event.clientX, y: event.clientY };
+      const dx = drag.x - event.clientX;
+      const dy = drag.y - event.clientY;
+      if (!drag.captured) {
+        if (Math.hypot(dx, dy) <= 3) return;
+        drag.captured = true;
+        suppressClick = true;
+        viewport.setPointerCapture(drag.pointerId);
+        viewport.classList.add("ofu-flow__viewport--dragging");
+      }
+      show(panBy(view.current, dx, dy));
+      drag.x = event.clientX;
+      drag.y = event.clientY;
     };
     const onPointerUp = () => {
       drag = null;
       viewport.classList.remove("ofu-flow__viewport--dragging");
+      setTimeout(() => { suppressClick = false; }, 0);
+    };
+    const onClickCapture = event => {
+      if (!suppressClick) return;
+      suppressClick = false;
+      event.stopPropagation();
     };
     const onKeyDown = event => {
       if (event.key === " " && !isControl(event.target)) {
@@ -179,14 +194,15 @@ export function useViewport({ scene, sessionKey }) {
 
     const listeners = [
       ["wheel", onWheel, { passive: false }], ["pointerdown", onPointerDown], ["pointermove", onPointerMove],
-      ["pointerup", onPointerUp], ["pointercancel", onPointerUp], ["keydown", onKeyDown], ["keyup", onKeyUp],
+      ["pointerup", onPointerUp], ["pointercancel", onPointerUp], ["click", onClickCapture, true],
+      ["keydown", onKeyDown], ["keyup", onKeyUp],
       ["gesturestart", onGestureStart], ["gesturechange", onGestureChange]
     ];
     listeners.forEach(([type, listener, options]) => viewport.addEventListener(type, listener, options));
     const observer = typeof ResizeObserver === "function" ? new ResizeObserver(() => render()) : null;
     observer?.observe(viewport);
     return () => {
-      listeners.forEach(([type, listener]) => viewport.removeEventListener(type, listener));
+      listeners.forEach(([type, listener, options]) => viewport.removeEventListener(type, listener, options));
       observer?.disconnect();
       cancelAnimationFrame(frame.current);
       clearTimeout(saveTimer.current);

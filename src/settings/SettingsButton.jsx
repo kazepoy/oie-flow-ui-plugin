@@ -14,11 +14,13 @@ import {
   getPluginSettings,
   hasUserChoiceOverrides,
   reloadPluginSettings,
+  resetAllUserOverrides,
   resetUserChoiceOverrides,
   savePluginSettings,
   SETTING_CHOICES,
   sanitize
 } from "../host/preferences.js";
+import { clearSession } from "../host/session.js";
 import { EmptyState } from "../shared/ui/EmptyState.jsx";
 import { PopoverButton } from "../shared/ui/Popover.jsx";
 import { useLocale } from "../shared/ui/useLocale.js";
@@ -30,6 +32,7 @@ const SETTING_NAMES = Object.keys(SETTING_CHOICES);
 /** The settings of each screen. */
 const SCREENS = {
   flows: { title: "flows.title", names: ["expandedGroups", "refreshSeconds"] },
+  flowsLinks: { title: "flows.mode.links", names: ["minimap", "refreshSeconds"] },
   channelFlow: { title: "channelFlow.title", names: ["defaultLayout", "visibleSteps", "minimap"] }
 };
 
@@ -112,6 +115,22 @@ function ResetPersonalOverrides({ show }) {
   );
 }
 
+function ResetBrowserSettings({ resetLocale = true }) {
+  const handleReset = async () => {
+    await resetAllUserOverrides();
+    if (resetLocale) setLocalePreference("auto");
+    clearSession();
+    toast(t("settings.resetBrowserDone"));
+  };
+  return (
+    <p>
+      <button type="button" className="ofu-button ofu-button--link" onClick={handleReset}>
+        {t("settings.resetBrowser")}
+      </button>
+    </p>
+  );
+}
+
 /** Gear button of a screen's toolbar. @param {{ screen: keyof typeof SCREENS }} props */
 export function SettingsButton({ screen }) {
   const [settings, update] = useSettings();
@@ -122,9 +141,9 @@ export function SettingsButton({ screen }) {
         <div className="ofu-settings">
           <h3>{t("settings.titleOf", { screen: t(SCREENS[screen].title) })}</h3>
           <ScreenSettings screen={screen} settings={settings} onChange={handleChange} />
-          <LanguageChoice id={`ofu-popover-language-${screen}`} />
           <ShowHints settings={settings} update={update} />
           <ResetPersonalOverrides show={hasUserChoiceOverrides()} />
+          <ResetBrowserSettings />
           <p className="ofu-muted">{t("settings.alsoInSettings")}</p>
         </div>
       )}
@@ -230,12 +249,21 @@ export function SettingsPanel({ setTasks, setSave, markDirty, markClean } = {}) 
     setDraft(defaultSettings());
   }, []);
 
+  const resetBrowser = useCallback(async () => {
+    await resetAllUserOverrides();
+    setLocalePreference("auto");
+    clearSession();
+    toast(t("settings.resetBrowserDone"));
+  }, []);
+
   const loadRef = useRef(load);
   loadRef.current = load;
   const saveRef = useRef(save);
   saveRef.current = save;
   const restoreRef = useRef(restoreDefaults);
   restoreRef.current = restoreDefaults;
+  const resetBrowserRef = useRef(resetBrowser);
+  resetBrowserRef.current = resetBrowser;
 
   useEffect(() => {
     mountedRef.current = true;
@@ -267,6 +295,10 @@ export function SettingsPanel({ setTasks, setSave, markDirty, markClean } = {}) 
       taskButton(t("settings.task.restoreDefaults"), "undo", () => restoreRef.current(), {
         group: TASK_GROUP, task: "doSave", disabled: busy || phase !== "ready",
         title: t("settings.task.restoreDefaultsTitle")
+      }),
+      taskButton(t("settings.task.resetBrowser"), "undo", () => resetBrowserRef.current(), {
+        disabled: busy,
+        title: t("settings.resetBrowserTitle")
       })
     ].filter(Boolean));
   }, [setSave, setTasks, busy, phase, permissionsRevision, canRefresh, canSave, locale]);
@@ -281,8 +313,8 @@ export function SettingsPanel({ setTasks, setSave, markDirty, markClean } = {}) 
   if (phase === "error") {
     return (
       <div className="ofu ofu-settings ofu-settings-panel">
-        <EmptyState title={t("settings.loadTitle")}>{errorMessage}</EmptyState>
         <LanguageCard />
+        <EmptyState title={t("settings.loadTitle")}>{errorMessage}</EmptyState>
       </div>
     );
   }
@@ -291,6 +323,7 @@ export function SettingsPanel({ setTasks, setSave, markDirty, markClean } = {}) 
 
   return (
     <div className="ofu ofu-settings ofu-settings-panel">
+      <LanguageCard />
       <p className="ofu-muted">{t("settings.panelIntro")}</p>
       {["flows", "channelFlow"].map(screen => (
         <div key={screen} className="panel">
@@ -300,9 +333,6 @@ export function SettingsPanel({ setTasks, setSave, markDirty, markClean } = {}) 
           </div>
         </div>
       ))}
-      <LanguageCard />
-      <ShowHints settings={userSettings} update={updateUser} />
-      <ResetPersonalOverrides show={hasUserChoiceOverrides()} />
     </div>
   );
 }

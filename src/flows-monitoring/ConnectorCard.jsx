@@ -47,7 +47,7 @@ export function ConnectorCard({ lane, connector, isSource, actions }) {
 }
 
 /** The connector's type and address, on a grey line in the style of the links. */
-function ConnectorDetail({ connector }) {
+export function ConnectorDetail({ connector }) {
   const text = connector.endpoint ? `${connector.transport} · ${connector.endpoint}` : connector.transport;
   return (
     <span className="ofu-detail" title={text}>

@@ -12,7 +12,7 @@ export default {
     FILTERED: "Filtrés",
     QUEUED: "En file",
     SENT: "Envoyés",
-    ERROR: "En erreur"
+    ERROR: "Erreurs"
   },
 
   state: {
@@ -47,11 +47,15 @@ export default {
     refreshConfirm: "Recharger les réglages depuis le serveur et abandonner vos modifications non enregistrées ?",
     showHints: "Réafficher les indices",
     resetOverrides: "Réinitialiser les surcharges personnelles aux défauts serveur",
+    resetBrowser: "Réinitialiser les paramètres du navigateur",
+    resetBrowserTitle: "Effacer la langue, les surcharges personnelles, les indices masqués et les filtres enregistrés",
+    resetBrowserDone: "Paramètres du navigateur réinitialisés",
     task: {
       refresh: "Actualiser",
       save: "Enregistrer",
       restoreDefaults: "Valeurs par défaut",
-      restoreDefaultsTitle: "Rétablir les valeurs par défaut du plugin dans le formulaire (cliquer sur Enregistrer pour appliquer)"
+      restoreDefaultsTitle: "Rétablir les valeurs par défaut du plugin dans le formulaire (cliquer sur Enregistrer pour appliquer)",
+      resetBrowser: "Réinit. navigateur"
     },
     expandedGroups: {
       label: "Groupes ouverts",
@@ -100,6 +104,13 @@ export default {
 
   flows: {
     title: "Suivi des flux",
+    mode: {
+      label: "Vue",
+      rows: "Lignes",
+      rowsTitle: "Canaux et leurs connecteurs, une ligne par canal",
+      links: "Carte des liens",
+      linksTitle: "Graphe des liens Channel Writer → Channel Reader entre groupes"
+    },
     totalsLabel: "Totaux des canaux affichés",
     filter: "Filtrer les canaux",
     filterWithTags: "Filtrer canaux et tags",
@@ -194,6 +205,8 @@ export default {
       then: "La destination suivante attend la fin de la précédente (même chaîne).",
       parallel: "Les chaînes reçoivent le message en parallèle.",
       links: "Avec Liens : le canal vers lequel envoie un Channel Writer (→), ou ceux qui appellent ce canal (←). Un clic met ce canal en évidence.",
+      linksMap: "Carte des liens",
+      linksMapBody: "Dessine le graphe des liens Channel Writer → Channel Reader entre groupes. Cliquez sur une carte pour mettre en évidence ses appels amont et aval.",
       details: "Avec Détails : le type et l’adresse du connecteur.",
       counters: "Compteurs",
       status: {
@@ -209,6 +222,39 @@ export default {
       clicks: "Clics",
       clickCounter: "Une carte ou un compteur ouvre Messages filtré sur ce connecteur. Le nom du canal ouvre Messages pour tout le canal.",
       noStatusFilter: "Messages s’ouvre filtré sur le connecteur (voir « Current Search » : le champ Connector affiche encore Any). Le filtre par statut ne peut pas encore être pré-rempli : choisissez-le dans son menu Status."
+    },
+    linksGraph: {
+      linkedOnly: "Liés uniquement",
+      linkedOnlyTitle: "N’afficher que les canaux impliqués dans un lien Channel Writer → Channel Reader",
+      showAll: "Afficher tous les canaux",
+      clearFocus: "Réinitialiser le focus",
+      clearFocusTitle: "Réafficher tous les liens sans mise en évidence (Échap)",
+      showInRows: "Voir dans Lignes",
+      showInRowsTitle: "Revenir sur la vue Lignes centrée sur {name}",
+      focusChain: "Mettre en évidence la chaîne",
+      tagsCount: { one: "{count} tag", other: "{count} tags" },
+      tagsHint: "{tags} — cliquer pour afficher les détails",
+      diagramLabel: "Carte des liens entre canaux",
+      emptyNoLinks: "Aucun lien entre les canaux visibles",
+      emptyNoLinksHelp: "Aucun lien Channel Writer ne correspond au filtre actuel, ou les canaux déployés ne sont pas reliés entre eux.",
+      emptyUnreadable: "Liens entre canaux masqués",
+      emptyUnreadableHelp: "Votre rôle ne permet pas de lire les configurations des canaux (permission viewChannels) : les liens Channel Writer → Channel Reader ne peuvent pas être inspectés.",
+      hiddenTarget: "Canal non déployé ou masqué",
+      destination: "Destination D{id}",
+      help: {
+        reading: "Lire la carte des liens",
+        intro: "Les cadres regroupent les canaux déployés. Chaque carte affiche le nom du canal, ses compteurs source juste sous le titre, son état et ses actions ; les flèches tracent les liens Channel Writer → Channel Reader.",
+        forwardEdge: "Appelle un autre canal (orange si en file, rouge en erreur, gris pointillé si la cible est arrêtée ou masquée).",
+        backEdge: "Boucle / cycle appelant un canal situé en amont.",
+        edgeLabel: "Destination appelante (affiche D1 avec Détails). Cliquer pour ouvrir ses Messages.",
+        cardActions: "Lignes revient sur ce canal dans la vue Lignes ; Focus isole sa chaîne amont et aval (Échap ou clic dans le fond réinitialise).",
+        details: "Avec Détails : affiche le connecteur source, tous les tags et l’identifiant D1 des destinations.",
+        moving: "Se déplacer",
+        wheel: "La molette déplace ; Maj + molette décale latéralement ; ⌘/Ctrl + molette ou pincement zoome.",
+        drag: "Glisser le fond ou utiliser les flèches pour se déplacer. Mini-carte ou + − 0 1 pour zoomer et centrer.",
+        clicks: "Clics",
+        clickBody: "Le nom du canal ou un compteur ouvre Messages sur tout le canal ; une étiquette de lien ouvre Messages sur cette destination. Cliquer sur une carte ou Focus met sa chaîne en évidence."
+      }
     }
   },
 

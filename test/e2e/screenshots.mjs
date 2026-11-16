@@ -64,6 +64,11 @@ try {
   await shot("flows-help");
   await page.keyboard.press("Escape");
 
+  await page.getByRole("button", { name: "Links map", exact: true }).click();
+  await page.locator(".ofu-links-group").first().waitFor();
+  await settle();
+  await shot("flows-links-map");
+
   // Channel Flow: picker, the three views at 100% zoom, start view, help, and editor's tab
   await openNav(page, "flow-ui-channel-flow");
   await page.locator(".ofu-picker__group").first().waitFor();

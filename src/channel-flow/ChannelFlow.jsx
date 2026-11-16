@@ -9,8 +9,9 @@ import { openStepEditor } from "../host/routes.js";
 import { toast } from "../host/platform.js";
 import { readSession, writeSession } from "../host/session.js";
 import { t } from "../i18n/index.js";
-import { Button, SegmentedControl } from "../shared/ui/Button.jsx";
+import { SegmentedControl } from "../shared/ui/Button.jsx";
 import { Hint } from "../shared/ui/Hint.jsx";
+import { ZoomControls } from "../shared/ui/ZoomControls.jsx";
 import { useSettings } from "../shared/ui/useSettings.js";
 import { SettingsButton } from "../settings/SettingsButton.jsx";
 import { flowModel, pickLayout } from "./model/flow-model.js";
@@ -78,13 +79,7 @@ export function ChannelFlow({ channel, mode, onChange }) {
         <SegmentedControl label={t("channelFlow.layout")} value={selected} options={options} onChange={choose} />
         <Hint id="channel-flow.gestures">{t("channelFlow.hint")}</Hint>
         <span className="ofu-toolbar__end">
-          <span className="ofu-zoom" role="group" aria-label={t("channelFlow.zoom")}>
-            <Button label={t("channelFlow.zoomOut")} onClick={viewport.zoomOut}>−</Button>
-            <output ref={viewport.zoomRef} className="ofu-zoom__level" aria-live="polite">100%</output>
-            <Button label={t("channelFlow.zoomIn")} onClick={viewport.zoomIn}>+</Button>
-            <Button label={t("channelFlow.fitTitle")} onClick={viewport.fit}>{t("channelFlow.fit")}</Button>
-            <Button label={t("channelFlow.startTitle")} onClick={viewport.start}>100%</Button>
-          </span>
+          <ZoomControls viewport={viewport} />
           <ChannelFlowHelp />
           <SettingsButton screen="channelFlow" />
         </span>

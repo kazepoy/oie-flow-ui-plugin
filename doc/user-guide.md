@@ -44,6 +44,15 @@ précédente.
 
 ![Liens entre canaux et lignes ouvertes](images/flows-links.png)
 
+- **Carte des liens (*Links map*).** Un sélecteur dans la barre d'outils bascule
+  Flows Monitoring vers un graphe zoomable qui dessine ces liens entre canaux,
+  encadrés par groupe. L'option *Linked only* n'affiche par défaut que les canaux
+  reliés ; un clic sur une carte met en évidence sa chaîne amont et aval, un clic
+  sur l'étiquette d'une flèche ouvre *Messages* sur cette destination *Channel
+  Writer* (requiert `viewChannels`).
+
+![Carte des liens entre canaux](images/flows-links-map.png)
+
 Le bouton `?` rappelle comment lire une ligne et ce que fait un clic :
 
 ![Aide de Flows Monitoring](images/flows-help.png)

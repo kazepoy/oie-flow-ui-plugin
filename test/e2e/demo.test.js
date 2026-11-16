@@ -66,6 +66,59 @@ describe("as admin", () => {
     await page.locator(`#ofu-lane-${LAB_RESULTS}.ofu-lane--highlighted`).waitFor();
   });
 
+  test("Links map draws framed groups and arrows, toggles all channels, and highlights a chain", async () => {
+    const { page } = session;
+    await openNav(page, "flow-ui-flows");
+    await page.getByRole("button", { name: "Links map", exact: true }).click();
+    await page.locator(".ofu-links-group").first().waitFor();
+    const linkedGroups = await page.locator(".ofu-links-group__name").allInnerTexts();
+    assert.deepEqual(linkedGroups.map(name => name.toLowerCase()), ["laboratory", "patient care", "billing & partners"]);
+    assert.equal(await page.locator(".ofu-links-node").count(), 6);
+    assert.equal(await page.locator(".ofu-links-edge").count(), 6);
+    assert.equal(await page.locator(".ofu-links-edge--back").count(), 1);
+
+    await page.getByLabel("Linked only").uncheck();
+    const allGroups = await page.locator(".ofu-links-group__name").allInnerTexts();
+    assert.equal(allGroups.length, 4);
+    assert.equal(await page.locator(".ofu-links-node").count(), 12);
+
+    await page.getByLabel("Linked only").check();
+    assert.equal(await page.locator(".ofu-links-node").count(), 6);
+
+    // Clicking the card focuses its upstream + downstream causal chain without panning away.
+    const labCritical = page.locator(".ofu-links-node", { hasText: "LAB · Critical values" });
+    await labCritical.locator(".ofu-links-node__state").click();
+    assert.equal(await page.locator(".ofu-links-node--selected").count(), 1);
+    assert.equal(await page.locator(".ofu-links-node--focused").count(), 4);
+    assert.equal(await page.locator(".ofu-links-node--dimmed").count(), 2);
+
+    await page.getByLabel("Details").check();
+    assert.match(await labCritical.locator(".ofu-detail").innerText(), /Channel Reader/);
+    await page.getByLabel("Details").uncheck();
+
+    await page.getByRole("button", { name: "Links map settings" }).click();
+    await page.locator("#ofu-setting-minimap").waitFor();
+    await page.keyboard.press("Escape");
+
+    await page.getByRole("button", { name: "Show in Rows" }).click();
+    await page.locator(".ofu-lane--highlighted").waitFor();
+    await page.getByRole("button", { name: "Links map", exact: true }).click();
+    await page.locator(".ofu-links-group").first().waitFor();
+
+    await labCritical.locator(".ofu-links-node__focus").click();
+    await page.getByRole("button", { name: "Clear focus" }).click();
+    assert.equal(await page.locator(".ofu-links-node--dimmed").count(), 0);
+
+    await page.getByRole("button", { name: "Zoom in (+)" }).click();
+    await page.waitForFunction(() => document.querySelector(".ofu-zoom__level")?.textContent !== "100%");
+    await page.getByRole("button", { name: "100%", exact: true }).click();
+    await page.waitForFunction(() => document.querySelector(".ofu-zoom__level")?.textContent === "100%");
+
+    await shot(page, "e2e-flows-links-map");
+    await page.getByRole("button", { name: "Rows", exact: true }).click();
+    await page.locator(".ofu-group").first().waitFor();
+  });
+
   test("Channel Flow picks a readable view for each channel's shape", async () => {
     const { page } = session;
     await page.evaluate(() => sessionStorage.clear());
@@ -284,6 +337,8 @@ describe("with RBAC roles", () => {
       assert.equal(await page.getByText("Chains hidden").count(), 1, "chains are unknown without viewChannels");
       assert.ok(await page.locator("button.ofu-counter").count() > 0, "counters open messages");
       await shot(page, "e2e-lab-viewer");
+      await page.getByRole("button", { name: "Links map", exact: true }).click();
+      await page.getByText("Channel links hidden").waitFor();
     } finally {
       await session.close();
     }
@@ -370,7 +425,7 @@ describe("with RBAC roles", () => {
 });
 
 describe("internationalization", () => {
-  test("Settings and toolbar gear switch language live in this browser without dirtying server defaults", async () => {
+  test("Settings switches language live in this browser without dirtying server defaults or appearing in views", async () => {
     const session = await signIn({ instance: browser, viewport: { width: 1600, height: 1000 } });
     try {
       const { page } = session;
@@ -397,10 +452,8 @@ describe("internationalization", () => {
       await page.getByPlaceholder("Filtrer canaux et tags").waitFor();
 
       await page.getByRole("button", { name: "Réglages · Suivi des flux" }).click();
-      const popoverLang = page.locator("#ofu-popover-language-flows");
-      await popoverLang.waitFor();
-      assert.equal(await popoverLang.inputValue(), "fr");
-      await popoverLang.selectOption("auto");
+      assert.equal(await page.locator("#ofu-popover-language-flows").count(), 0);
+      await page.getByRole("button", { name: "Réinitialiser les paramètres du navigateur" }).click();
       await page.getByPlaceholder("Filter channels & tags").waitFor();
       assert.deepEqual(pluginErrors(session.errors), []);
     } finally {

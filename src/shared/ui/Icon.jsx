@@ -16,6 +16,7 @@ const PATHS = {
   chevron: "M9 6l6 6-6 6",
   close: "M6 6l12 12M18 6L6 18",
   flow: "M3 6h5v4H3zM16 3h5v4h-5zM16 14h5v4h-5zM8 8h4v8h4M12 5h4M12 16h4",
+  rows: "M4 6h5M12 6h8M4 12h5M12 12h8M4 18h5M12 18h8",
   expand: "M4 9l8-6 8 6M4 15l8 6 8-6",
   play: "M8 5l11 7-11 7z",
   pause: "M8 5v14M16 5v14",

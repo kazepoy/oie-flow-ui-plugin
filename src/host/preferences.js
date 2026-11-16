@@ -141,7 +141,10 @@ function readLocal() {
 }
 
 function writeLocal(value) {
-  try { localStorage.setItem(LOCAL_KEY, JSON.stringify(value)); } catch { /* nothing more to try */ }
+  try {
+    if (!value || Object.keys(value).length === 0) localStorage.removeItem(LOCAL_KEY);
+    else localStorage.setItem(LOCAL_KEY, JSON.stringify(value));
+  } catch { /* nothing more to try */ }
 }
 
 async function persistUserOverrides() {
@@ -232,6 +235,13 @@ export async function resetUserChoiceOverrides() {
   const next = {};
   if (userOverrides.hiddenHints?.length) next.hiddenHints = userOverrides.hiddenHints;
   userOverrides = next;
+  notify();
+  await persistUserOverrides();
+}
+
+/** Clears every per-user override stored locally and on the server, including hiddenHints. */
+export async function resetAllUserOverrides() {
+  userOverrides = {};
   notify();
   await persistUserOverrides();
 }
