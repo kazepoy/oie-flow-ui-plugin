@@ -167,15 +167,18 @@ export function FlowsLinksGraph({
   const toggleFocus = id => setFocusId(prev => prev === id ? null : id);
   const hasDiagram = canViewChannels && scene.nodes.length > 0;
 
+  const filterControls = (
+    <label className="ofu-check" title={t("flows.linksGraph.linkedOnlyTitle")}>
+      <input type="checkbox" checked={view.linkedOnly} onChange={event => update({ linkedOnly: event.target.checked })} />
+      {t("flows.linksGraph.linkedOnly")}
+    </label>
+  );
+
   const modeControls = (
     <>
       <label className="ofu-check" title={t("flows.detailsTitle")}>
         <input type="checkbox" checked={view.details} onChange={event => update({ details: event.target.checked })} />
         {t("flows.details")}
-      </label>
-      <label className="ofu-check" title={t("flows.linksGraph.linkedOnlyTitle")}>
-        <input type="checkbox" checked={view.linkedOnly} onChange={event => update({ linkedOnly: event.target.checked })} />
-        {t("flows.linksGraph.linkedOnly")}
       </label>
       {effectiveFocus && (
         <>
@@ -196,7 +199,7 @@ export function FlowsLinksGraph({
   return (
     <div className="ofu ofu-screen ofu-flows">
       <FlowsToolbar view={view} update={update} totals={graph.totals} tags={tags}
-        modeControls={modeControls} endControls={hasDiagram ? <ZoomControls viewport={viewport} /> : null}
+        filterControls={filterControls} modeControls={modeControls} endControls={hasDiagram ? <ZoomControls viewport={viewport} /> : null}
         groupsReadable={groupsReadable} error={error} updated={updated} onRefresh={refresh} />
       <div className="ofu-flow">
         <div ref={viewport.viewportRef} className="ofu-flow__viewport" tabIndex={0}

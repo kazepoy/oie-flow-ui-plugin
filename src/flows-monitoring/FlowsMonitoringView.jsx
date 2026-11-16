@@ -11,8 +11,9 @@ import { channelEditorPath, channelFlowPath, messagesPath, navigate } from "../h
 import { readSession, subscribeSessionReset, writeSession } from "../host/session.js";
 import { t } from "../i18n/index.js";
 import { addStats, emptyStats } from "../shared/model/stats.js";
-import { Button } from "../shared/ui/Button.jsx";
+import { Button, cx } from "../shared/ui/Button.jsx";
 import { EmptyState } from "../shared/ui/EmptyState.jsx";
+import { Icon } from "../shared/ui/Icon.jsx";
 import { useLocale } from "../shared/ui/useLocale.js";
 import { useSettings } from "../shared/ui/useSettings.js";
 import { FlowsLinksGraph } from "./FlowsLinksGraph.jsx";
@@ -23,12 +24,12 @@ import { useStatuses } from "./useStatuses.js";
 
 const SESSION_KEY = "flows";
 const SCROLL_KEY = "flows.scroll";
-const DEFAULT_VIEW = { mode: "rows", linkedOnly: true, filter: "", lifetime: false, toggled: {}, links: true, details: false };
+const DEFAULT_VIEW = { mode: "rows", linkedOnly: true, filter: "", lifetime: false, toggled: {}, links: true, details: false, stoppedOnly: false };
 
 export function FlowsMonitoringView() {
   const locale = useLocale();
   const [settings, updateSettings] = useSettings({ sync: true });
-  const { statuses, groups, groupsReadable, waits, links, details, tags, error, updated, refresh, reloadCounters } = useStatuses(settings.refreshSeconds);
+  const { statuses, groups, groupsReadable, waits, links, details, disabled, tags, error, updated, refresh, reloadCounters } = useStatuses(settings.refreshSeconds);
   const [view, setView] = useState(() => readSession(SESSION_KEY, DEFAULT_VIEW));
   const body = useRef(null);
   const restored = useRef(false);
@@ -47,12 +48,13 @@ export function FlowsMonitoringView() {
 
   const grouped = useMemo(() => statuses
     ? groupLanes(statuses, groups, {
-      filter: view.filter, lifetime: view.lifetime, waits, links, details, tags,
+      filter: view.filter, lifetime: view.lifetime, waits, links, details, disabled,
+      showDisabled: view.details, stoppedOnly: view.stoppedOnly, tags,
       defaultGroupName: t(groupsReadable ? "flows.group.default" : "flows.group.all")
     })
-    : [], [statuses, groups, groupsReadable, waits, links, details, tags, view.filter, view.lifetime, locale]);
+    : [], [statuses, groups, groupsReadable, waits, links, details, disabled, tags, view.filter, view.lifetime, view.details, view.stoppedOnly, locale]);
   const names = useMemo(() => new Map((statuses ?? []).map(status => [String(status.channelId), status.name])), [statuses]);
-  const open = openGroups(grouped, view.toggled, settings.expandedGroups, view.filter.trim() !== "");
+  const open = openGroups(grouped, view.toggled, settings.expandedGroups, view.filter.trim() !== "" || view.stoppedOnly);
   const totals = grouped.reduce((sum, group) => addStats(sum, group.stats), emptyStats());
 
   // Back on the page: scroll to where the user was, once the rows are there.
@@ -155,6 +157,17 @@ export function FlowsMonitoringView() {
     );
   }
 
+  const filterControls = (
+    <button type="button"
+      className={cx("ofu-filter-pill", view.stoppedOnly && "ofu-filter-pill--active")}
+      aria-pressed={view.stoppedOnly}
+      title={t("flows.stoppedOnlyTitle")}
+      onClick={() => update({ stoppedOnly: !view.stoppedOnly })}>
+      <Icon name="filter" />
+      <span>{t("flows.stoppedOnly")}</span>
+    </button>
+  );
+
   const rowControls = (
     <>
       <label className="ofu-check" title={t("flows.detailsTitle")}>
@@ -165,6 +178,7 @@ export function FlowsMonitoringView() {
         <input type="checkbox" checked={view.links} onChange={event => update({ links: event.target.checked })} />
         {t("flows.links")}
       </label>
+      <span className="ofu-toolbar__sep" aria-hidden="true" />
       <Button icon="expand" label={t("flows.expandAll")} onClick={() => setAll(true)} />
       <Button icon="collapse" label={t("flows.collapseAll")} onClick={() => setAll(false)} />
     </>
@@ -173,7 +187,7 @@ export function FlowsMonitoringView() {
   return (
     <div className="ofu ofu-screen ofu-flows">
       <FlowsToolbar view={view} update={update} totals={totals} tags={tags}
-        modeControls={rowControls} groupsReadable={groupsReadable}
+        filterControls={filterControls} modeControls={rowControls} groupsReadable={groupsReadable}
         chainsUnknown={grouped.some(group => group.lanes.some(lane => !lane.chainsKnown))}
         error={error} updated={updated} onRefresh={refresh} />
       <div ref={body} className="ofu-flows__body" onScroll={saveScroll}>

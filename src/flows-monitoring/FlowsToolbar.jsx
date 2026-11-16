@@ -13,7 +13,7 @@ const MODE_OPTIONS = () => [
 
 /**
  * @param {{ view: any, update: (patch: any) => void, totals: any, tags: Map<string, any[]>,
- *           modeControls?: any, endControls?: any, groupsReadable: boolean,
+ *           filterControls?: any, modeControls?: any, endControls?: any, groupsReadable: boolean,
  *           chainsUnknown?: boolean, error: string | null, updated: Date | null,
  *           onRefresh: () => void }} props
  */
@@ -22,6 +22,7 @@ export function FlowsToolbar({
   update,
   totals,
   tags,
+  filterControls,
   modeControls,
   endControls,
   groupsReadable,
@@ -59,6 +60,7 @@ export function FlowsToolbar({
           placeholder={t(tags.size ? "flows.filterWithTags" : "flows.filter")}
           aria-label={t(tags.size ? "flows.filterWithTags" : "flows.filter")}
           value={view.filter} onChange={event => update({ filter: event.target.value })} />
+        {filterControls}
         {modeControls && <span className="ofu-toolbar__sep" aria-hidden="true" />}
         {modeControls}
         {endControls && <span className="ofu-toolbar__end">{endControls}</span>}

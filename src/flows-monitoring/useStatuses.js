@@ -6,15 +6,15 @@ import { useCallback, useEffect, useState } from "../host/react.js";
 import { channelConfigurations, channelGroups, channelStatuses, channelTags } from "../host/api.js";
 import { tagsByChannel } from "../shared/model/tags.js";
 import { asList } from "../shared/model/xstream.js";
-import { channelLinks, connectorDetails, waitsOf } from "./model.js";
+import { channelLinks, connectorDetails, disabledDestinationsOf, waitsOf } from "./model.js";
 
 /**
  * @param {number} refreshSeconds 0 = only on demand
  * @returns {{ statuses: any[] | null, groups: any[], groupsReadable: boolean, waits: Map<string, Map<number, boolean>>, links: any, details: Map<string, any>,
- *             tags: Map<string, any[]>, error: string, updated: Date | null, refresh: () => void, reloadCounters: () => Promise<void> }}
+ *             disabled: Map<string, any[]>, tags: Map<string, any[]>, error: string, updated: Date | null, refresh: () => void, reloadCounters: () => Promise<void> }}
  */
 export function useStatuses(refreshSeconds) {
-  const [data, setData] = useState({ statuses: null, groups: [], groupsReadable: true, waits: new Map(), links: channelLinks([]), details: new Map(), tags: new Map() });
+  const [data, setData] = useState({ statuses: null, groups: [], groupsReadable: true, waits: new Map(), links: channelLinks([]), details: new Map(), disabled: new Map(), tags: new Map() });
   const [error, setError] = useState("");
   const [updated, setUpdated] = useState(null);
 
@@ -29,12 +29,14 @@ export function useStatuses(refreshSeconds) {
       let waits = null;
       let links = null;
       let details = null;
+      let disabled = null;
       if (withStructure && list.length) {
         // Without the right to read channels, chains and links stay unknown.
         const channels = await channelConfigurations(list.map(status => status.channelId)).catch(() => []);
         waits = new Map(channels.map(channel => [String(channel.id), waitsOf(channel)]));
         links = channelLinks(channels);
         details = new Map(channels.map(channel => [String(channel.id), connectorDetails(channel)]));
+        disabled = new Map(channels.map(channel => [String(channel.id), disabledDestinationsOf(channel)]));
       }
       setData(previous => ({
         statuses: list,
@@ -43,6 +45,7 @@ export function useStatuses(refreshSeconds) {
         waits: waits ?? previous.waits,
         links: links ?? previous.links,
         details: details ?? previous.details,
+        disabled: disabled ?? previous.disabled,
         tags: withStructure ? tagsByChannel(rawTags) : previous.tags
       }));
       setError("");

@@ -249,6 +249,17 @@ if [ -f "$DATA_DIR/states.txt" ]; then
     echo "Set state $name -> $state"
   done < "$DATA_DIR/states.txt"
 fi
+if [ -f "$DATA_DIR/connector-states.txt" ]; then
+  while IFS='|' read -r id meta state name; do
+    [ -n "$id" ] || continue
+    case "$state" in
+      STOPPED) api POST "/channels/$id/connector/$meta/_stop" ;;
+      STARTED) api POST "/channels/$id/connector/$meta/_start" ;;
+      *) fail "Unknown connector state $state" ;;
+    esac
+    echo "Set connector state $name -> $state"
+  done < "$DATA_DIR/connector-states.txt"
+fi
 log_step "Settled queued/chained messages"
 
 total_ms=$(( $(now_ms) - init_t0 ))

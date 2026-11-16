@@ -168,6 +168,40 @@
   cursor: pointer;
 }
 
+.ofu-filter-pill {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--ofu-control-height);
+  padding: 0 10px;
+  border: 1px solid var(--ofu-line);
+  border-radius: 14px;
+  background: var(--ofu-surface);
+  color: var(--ofu-dim);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ofu-filter-pill .ofu-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.ofu-filter-pill:hover {
+  border-color: var(--ofu-accent);
+  color: var(--ofu-ink);
+}
+
+.ofu-filter-pill--active {
+  border-color: var(--ofu-queued);
+  background: color-mix(in srgb, var(--ofu-queued) 16%, var(--ofu-surface));
+  color: var(--ofu-ink);
+  font-weight: 600;
+}
+
 /* Collapsible group sections, shared by Flows Monitoring and Channel Flow's picker */
 .ofu-group {
   flex: none;

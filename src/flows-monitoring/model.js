@@ -54,6 +54,23 @@ export function connectorDetails(channel) {
     { transport: connector.transportName || "", endpoint: endpointOf(connector) }]));
 }
 
+/**
+ * Disabled destinations of a channel (excluded from OIE dashboard statuses).
+ * @returns {{ metaDataId: number, name: string, transport: string, endpoint: string, waitForPrevious: boolean, disabled: true }[]}
+ */
+export function disabledDestinationsOf(channel) {
+  return destinationsOf(channel)
+    .filter(destination => !isTrue(destination.enabled))
+    .map(destination => ({
+      metaDataId: Number(destination.metaDataId),
+      name: destination.name || `Destination ${destination.metaDataId}`,
+      transport: destination.transportName || "",
+      endpoint: endpointOf(destination),
+      waitForPrevious: isTrue(destination.waitForPrevious),
+      disabled: true
+    }));
+}
+
 /** A connector card: what it is, its state and its counters. */
 function connectorOf(status, lifetime, fallbackName, details) {
   const own = details?.get(Number(status?.metaDataId ?? 0));
@@ -75,30 +92,44 @@ function connectorOf(status, lifetime, fallbackName, details) {
  * and `chainsKnown` is false.
  * @param {any} status dashboard status of the channel
  * @param {{ lifetime?: boolean, waits?: Map<number, boolean>, links?: { outgoing: Map<string, Map<number, string>>, incoming: Map<string, any[]> },
- *          details?: Map<number, { transport: string, endpoint: string }>, tags?: { id: string, name: string, color: string | null }[] }} [options]
+ *          details?: Map<number, { transport: string, endpoint: string }>, disabled?: any[], showDisabled?: boolean,
+ *          tags?: { id: string, name: string, color: string | null }[] }} [options]
  */
-export function channelLane(status, { lifetime = false, waits, links = { outgoing: new Map(), incoming: new Map() }, details, tags = [] } = {}) {
+export function channelLane(status, { lifetime = false, waits, links = { outgoing: new Map(), incoming: new Map() }, details, disabled = [], showDisabled = false, tags = [] } = {}) {
   const children = asList(status.childStatuses, "dashboardStatus");
   const sourceStatus = children.find(child => child.statusType === "SOURCE_CONNECTOR" || Number(child.metaDataId) === 0);
-  const destinations = children.filter(child => child !== sourceStatus)
+  const deployed = children.filter(child => child !== sourceStatus);
+  const destinations = (showDisabled && disabled.length ? [...deployed, ...disabled] : deployed)
     .sort((a, b) => Number(a.metaDataId) - Number(b.metaDataId));
   const chainsKnown = !!waits;
   const chains = splitChains(destinations, {
-    enabled: () => true,
-    waits: child => chainsKnown ? waits.get(Number(child.metaDataId)) ?? false : true
+    enabled: item => !item.disabled,
+    waits: child => child.disabled ? child.waitForPrevious : (chainsKnown ? waits.get(Number(child.metaDataId)) ?? false : true)
   });
   return {
     id: String(status.channelId),
     name: status.name || String(status.channelId),
     state: status.state,
     tags,
+    hasDisabled: disabled.length > 0,
     chainsKnown,
     stats: statsOf(status, lifetime),
     source: connectorOf(sourceStatus, lifetime, "Source", details),
-    chains: chains.map(chain => chain.map(child => ({
+    chains: chains.map(chain => chain.map(child => child.disabled ? {
+      metaDataId: child.metaDataId,
+      name: child.name,
+      transport: child.transport,
+      endpoint: child.endpoint,
+      state: null,
+      queueEnabled: false,
+      stats: emptyStats(),
+      linkTo: null,
+      disabled: true
+    } : {
       ...connectorOf(child, lifetime, `Destination ${child.metaDataId}`, details),
-      linkTo: links.outgoing.get(String(status.channelId))?.get(Number(child.metaDataId)) ?? null
-    }))),
+      linkTo: links.outgoing.get(String(status.channelId))?.get(Number(child.metaDataId)) ?? null,
+      disabled: false
+    })),
     calledBy: links.incoming.get(String(status.channelId)) ?? []
   };
 }
@@ -110,16 +141,19 @@ const byName = (a, b) => String(a.name).localeCompare(String(b.name));
  * under the default group. Empty groups are left out.
  * @param {any[]} statuses
  * @param {any[]} groups channel groups ({ id, name, channels })
- * @param {{ filter?: string, lifetime?: boolean, waits?: Map<string, Map<number, boolean>>, links?: any, details?: Map<string, any>, tags?: Map<string, any[]>, defaultGroupName: string }} options
+ * @param {{ filter?: string, lifetime?: boolean, waits?: Map<string, Map<number, boolean>>, links?: any, details?: Map<string, any>, disabled?: Map<string, any[]>, showDisabled?: boolean, stoppedOnly?: boolean, tags?: Map<string, any[]>, defaultGroupName: string }} options
  */
-export function groupLanes(statuses, groups, { filter = "", lifetime = false, waits = new Map(), links, details = new Map(), tags = new Map(), defaultGroupName }) {
+export function groupLanes(statuses, groups, { filter = "", lifetime = false, waits = new Map(), links, details = new Map(), disabled = new Map(), showDisabled = false, stoppedOnly = false, tags = new Map(), defaultGroupName }) {
   const needle = filter.trim().toLowerCase();
+  const isStopped = lane => (lane.state && lane.state !== "STARTED")
+    || (lane.source.state && lane.source.state !== "STARTED")
+    || lane.chains.some(chain => chain.some(connector => !connector.disabled && connector.state && connector.state !== "STARTED"));
   const lanes = statuses
     .map(status => {
       const id = String(status.channelId);
-      return channelLane(status, { lifetime, waits: waits.get(id), links, details: details.get(id), tags: tags.get(id) ?? [] });
+      return channelLane(status, { lifetime, waits: waits.get(id), links, details: details.get(id), disabled: disabled.get(id) ?? [], showDisabled, tags: tags.get(id) ?? [] });
     })
-    .filter(lane => !needle || lane.name.toLowerCase().includes(needle) || lane.tags.some(tag => tag.name.toLowerCase().includes(needle)))
+    .filter(lane => (!stoppedOnly || isStopped(lane)) && (!needle || lane.name.toLowerCase().includes(needle) || lane.tags.some(tag => tag.name.toLowerCase().includes(needle))))
     .sort(byName);
   const laneById = new Map(lanes.map(lane => [lane.id, lane]));
   const grouped = new Set();

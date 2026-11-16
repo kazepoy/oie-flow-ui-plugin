@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { channelLane, channelLinks, connectorDetails, groupLanes, openGroups, waitsOf } from "../../src/flows-monitoring/model.js";
+import { channelLane, channelLinks, connectorDetails, disabledDestinationsOf, groupLanes, openGroups, waitsOf } from "../../src/flows-monitoring/model.js";
 
 const connector = (metaDataId, name, received = 0) => ({
   metaDataId, name, state: "STARTED", statusType: metaDataId === 0 ? "SOURCE_CONNECTOR" : "DESTINATION_CONNECTOR",
@@ -87,4 +87,34 @@ test("each card knows its connector's type and address, from the configuration",
   assert.equal(lane.source.transport, "TCP Listener");
   assert.equal(lane.chains[0][0].endpoint, "http://ehr.example/api");
   assert.equal(channelLane(status("a", "A", 1)).source.transport, "", "unknown without the configuration");
+});
+
+test("disabled destinations appear in their chain when showDisabled is set", () => {
+  const disabled = new Map([
+    ["a", disabledDestinationsOf({
+      destinationConnectors: {
+        connector: [
+          { metaDataId: 1, name: "Live", enabled: true, transportName: "HTTP Sender", waitForPrevious: false },
+          { metaDataId: 2, name: "Fax backup", enabled: false, transportName: "File Writer", waitForPrevious: true, properties: { host: "/tmp/out" } }
+        ]
+      }
+    })],
+    ["b", []]
+  ]);
+  const statuses = [status("a", "ADT · Broadcast", 1), status("b", "LAB · Orders", 1)];
+  const compact = groupLanes(statuses, [], { disabled, showDisabled: false, defaultGroupName: "Default" });
+  assert.equal(compact[0].lanes[0].chains[0].length, 1);
+
+  const detailed = groupLanes(statuses, [], { disabled, showDisabled: true, defaultGroupName: "Default" });
+  assert.deepEqual(detailed[0].lanes[0].chains[0].map(c => [c.metaDataId, c.disabled]), [[1, false], [2, true]]);
+  assert.equal(detailed[0].lanes[0].chains[0][1].transport, "File Writer");
+});
+
+test("stoppedOnly keeps paused/stopped channels or channels with a paused/stopped connector", () => {
+  const running = status("ok", "Running", 1);
+  const pausedChannel = { ...status("p", "Paused channel", 1), state: "PAUSED" };
+  const stoppedDest = status("d", "Stopped dest", 1);
+  stoppedDest.childStatuses.dashboardStatus[1].state = "STOPPED";
+  const result = groupLanes([running, pausedChannel, stoppedDest], [], { stoppedOnly: true, defaultGroupName: "Default" });
+  assert.deepEqual(result[0].lanes.map(l => l.id), ["p", "d"]);
 });

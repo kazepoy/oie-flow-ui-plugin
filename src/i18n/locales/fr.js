@@ -120,6 +120,8 @@ export default {
     detailsTitle: "Afficher le type et l’adresse de chaque connecteur ainsi que les tags des canaux",
     links: "Liens",
     linksTitle: "Afficher quels canaux appellent lesquels (Channel Writer → Channel Reader)",
+    stoppedOnly: "En pause / arrêtés",
+    stoppedOnlyTitle: "N’afficher que les canaux en pause/arrêtés ou ayant un connecteur en pause/arrêté",
     control: {
       group: "Démarrer, suspendre ou arrêter {name}",
       start: "Démarrer {name}",

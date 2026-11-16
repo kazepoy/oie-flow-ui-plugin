@@ -8,18 +8,46 @@ import { ControlButtons } from "./ControlButtons.jsx";
 import { connectorCommands } from "./controls.js";
 import { Icon } from "../shared/ui/Icon.jsx";
 
+const STATE_TONE = { STARTED: "ok", PAUSED: "warn", STOPPED: "error" };
+
+/** Small coloured status dot placed at the top-left of channel and connector cards. */
+export function StatusPip({ state }) {
+  const tone = STATE_TONE[state];
+  return (
+    <span className={cx("ofu-pip", tone && `ofu-pip--${tone}`)}
+      title={t(`state.${state}`)} aria-label={t(`state.${state}`)} />
+  );
+}
+
 /**
  * @param {{ lane: any, connector: any, isSource: boolean, actions: any }} props
  */
 export function ConnectorCard({ lane, connector, isSource, actions }) {
+  const kind = isSource ? t("flows.card.source") : t("flows.card.destination", { id: connector.metaDataId });
+  if (connector.disabled) {
+    return (
+      <div className="ofu-card ofu-card--destination ofu-card--disabled">
+        <div className="ofu-card__head">
+          <div className="ofu-card__title">
+            <span className="ofu-card__kind">{kind}</span>
+            <span className="ofu-card__name" title={connector.name}>{connector.name}</span>
+            <span className="ofu-card__state">{t("channelFlow.block.disabled")}</span>
+          </div>
+        </div>
+        {connector.transport && <ConnectorDetail connector={connector} />}
+      </div>
+    );
+  }
   const stopped = connector.state && connector.state !== "STARTED";
   const where = `${lane.name} · ${connector.name}`;
   const open = actions.canOpenMessages ? () => actions.openMessages(lane.id, connector.metaDataId) : undefined;
-  const kind = isSource ? t("flows.card.source") : t("flows.card.destination", { id: connector.metaDataId });
+  const hasIndependentState = isSource || connector.queueEnabled || stopped;
+  const showName = !(isSource && (!connector.name || connector.name.trim().toLowerCase() === "source"));
   const title = (
     <>
+      {hasIndependentState && <StatusPip state={connector.state} />}
       <span className="ofu-card__kind">{kind}</span>
-      <span className="ofu-card__name" title={connector.name}>{connector.name}</span>
+      {showName && <span className="ofu-card__name" title={connector.name}>{connector.name}</span>}
       {stopped && <span className="ofu-card__state">{t(`state.${connector.state}`)}</span>}
     </>
   );

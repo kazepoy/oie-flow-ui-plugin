@@ -123,6 +123,8 @@ export default {
     detailsTitle: "Show each connector's type and address, and channel tags",
     links: "Links",
     linksTitle: "Show which channels send to which (Channel Writer → Channel Reader)",
+    stoppedOnly: "Paused / stopped",
+    stoppedOnlyTitle: "Show only channels that are paused/stopped or have a paused/stopped connector",
     control: {
       group: "Start, pause or stop {name}",
       start: "Start {name}",

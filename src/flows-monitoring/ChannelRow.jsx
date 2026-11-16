@@ -3,39 +3,42 @@
 // destination chains. Chains run in parallel; inside a chain, "then" marks a
 // destination that waits for the previous one.
 import { t } from "../i18n/index.js";
+import { SOURCE_COUNTERS } from "../shared/model/stats.js";
 import { cx } from "../shared/ui/Button.jsx";
+import { Icon } from "../shared/ui/Icon.jsx";
 import { TagList } from "../shared/ui/Tag.jsx";
-import { ChannelLink, ConnectorCard } from "./ConnectorCard.jsx";
+import { ChannelLink, ConnectorCard, StatusPip } from "./ConnectorCard.jsx";
 import { ControlButtons } from "./ControlButtons.jsx";
+import { ConnectorCounters } from "./Counters.jsx";
 import { channelCommands } from "./controls.js";
 
-const STATE_TONE = { STARTED: "ok", PAUSED: "warn", STOPPED: "error" };
-
 function ChannelCard({ lane, actions }) {
-  const name = (
+  const title = (
     <>
-      <span className={cx("ofu-pip", STATE_TONE[lane.state] && `ofu-pip--${STATE_TONE[lane.state]}`)} aria-hidden="true" />
+      <StatusPip state={lane.state} />
       <span className="ofu-channel__label">{lane.name}</span>
     </>
   );
   return (
-    <div className="ofu-channel">
-      {actions.canOpenMessages
-        ? <button type="button" className="ofu-channel__name" title={t("flows.channel.openMessages", { name: lane.name })}
-            onClick={() => actions.openMessages(lane.id)}>{name}</button>
-        : <span className="ofu-channel__name" title={lane.name}>{name}</span>}
-      <div className="ofu-channel__row">
-        <span className="ofu-muted">{t(`state.${lane.state}`)}</span>
-        {actions.canViewFlow && (
-          <button type="button" className="ofu-button ofu-button--link" title={t("flows.channel.flowTitle")}
-            onClick={() => actions.openFlow(lane.id)}>{t("flows.channel.flow")}</button>
-        )}
-        {actions.canEdit && (
-          <button type="button" className="ofu-button ofu-button--link" title={t("flows.channel.editTitle")}
-            onClick={() => actions.openEditor(lane.id)}>{t("flows.channel.edit")}</button>
-        )}
-        <ControlButtons commands={channelCommands(lane.state)} target={{ channelId: lane.id, name: lane.name }} actions={actions} />
+    <div className={cx("ofu-channel", lane.state && lane.state !== "STARTED" && "ofu-channel--stopped")}>
+      <div className="ofu-channel__head">
+        {actions.canOpenMessages
+          ? <button type="button" className="ofu-channel__name" title={t("flows.channel.openMessages", { name: lane.name })}
+              onClick={() => actions.openMessages(lane.id)}>{title}</button>
+          : <span className="ofu-channel__name" title={lane.name}>{title}</span>}
+        <div className="ofu-channel__actions">
+          {actions.canViewFlow && (
+            <button type="button" className="ofu-control ofu-control--flow"
+              title={t("flows.channel.flowTitle")} aria-label={t("flows.channel.flowTitle")}
+              onClick={() => actions.openFlow(lane.id)}>
+              <Icon name="flow" />
+            </button>
+          )}
+          <ControlButtons commands={channelCommands(lane.state)} target={{ channelId: lane.id, name: lane.name }} actions={actions} />
+        </div>
       </div>
+      <ConnectorCounters stats={lane.stats} keys={SOURCE_COUNTERS} where={lane.name}
+        onOpen={actions.canOpenMessages ? () => actions.openMessages(lane.id) : undefined} />
       {actions.showDetails && <TagList tags={lane.tags} />}
       {actions.showLinks && lane.calledBy.length > 0 && (
         <div className="ofu-channel__links">
@@ -66,8 +69,9 @@ export function ChannelRow({ lane, actions }) {
                   <span key={connector.metaDataId} className="ofu-chain__step">
                     {index > 0 && (lane.chainsKnown
                       ? (
-                        <span className="ofu-then" title={t("flows.chain.waitsFor", { id: chain[index - 1].metaDataId })}>
-                          <span>{t("flows.chain.then")}</span>
+                        <span className={cx("ofu-then", connector.disabled && "ofu-then--disabled")}
+                          title={connector.disabled ? t("channelFlow.edge.disabled") : t("flows.chain.waitsFor", { id: chain[index - 1].metaDataId })}>
+                          <span>{t(connector.disabled ? "channelFlow.edge.disabled" : "flows.chain.then")}</span>
                         </span>
                       )
                       : <span className="ofu-then ofu-then--unknown" title={t("flows.chain.unknownTitle")} />)}
