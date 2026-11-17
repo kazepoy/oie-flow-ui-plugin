@@ -42,7 +42,7 @@ entry remains, with the version that fixes it.
 |---|---|---|---|---|
 | [WA-01](#wa-01) | Web Admin | Messages: no status filter in URL, and URL connector hidden in *Advanced* | Inconvenient | Open / Worked around |
 | [WA-02](#wa-02) | Web Admin | Channel editor: no URL for a tab, a destination, a script | Inconvenient | Worked around |
-| [WA-03](#wa-03) | Web Admin | Plugin tabs placed after built-in ones, never default | Inconvenient | Worked around |
+| [WA-03](#wa-03) | Web Admin | Plugin tabs placed after built-in ones, never default | Inconvenient | Worked around  |
 | [WA-04](#wa-04) | Web Admin | Channel tabs not filtered by RBAC task | Minor | Worked around |
 | [WA-05](#wa-05) | Web Admin | No public subscription to route changes | Minor | Worked around |
 | [WA-06](#wa-06) | Web Admin | User preferences not exposed to plugins | Minor | Worked around |
@@ -302,9 +302,11 @@ entry remains, with the version that fixes it.
   `Message ID` and running a second search by `Message ID` (with `Statuses: (any)` and
   `Connectors: (any)`) to inspect the source payload, transformations, and prior destinations.
 - **Workaround.** None without a second search by `Message ID`.
-- **Upstream request.** Provide an option in the Messages view (e.g. "Show all connectors of
-  matching messages" or expanding a message by `Message ID`) to fetch and display all
-  connector rows for messages that have at least one connector in the filtered status.
+- **Upstream request.** Provide an in-place way in the Messages view (Detail Pane connector
+  switcher bar + *Show All Connectors* row hydration using the full message already fetched by
+  `GET /api/channels/{id}/messages/{messageId}`) to inspect `Source` and sibling destinations
+  without losing the current filtered search — see the full proposal in
+  [pr-webadmin-messages-siblings.md](pr-webadmin-messages-siblings.md).
 
 ## Web Support 1.3.0 (server)
 
