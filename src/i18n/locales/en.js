@@ -193,9 +193,7 @@ export default {
     channel: {
       openMessages: "Open the messages of {name}",
       flow: "Flow",
-      flowTitle: "Show the flow of this channel",
-      edit: "Edit",
-      editTitle: "Edit this channel"
+      flowTitle: "Show the flow of this channel"
     },
     chain: {
       then: "then",
@@ -237,15 +235,12 @@ export default {
       showInRows: "Show in Rows",
       showInRowsTitle: "Return to Rows view centered on {name}",
       focusChain: "Highlight linked chain",
-      tagsCount: { one: "{count} tag", other: "{count} tags" },
-      tagsHint: "{tags} — click to show details",
       diagramLabel: "Channel links map",
       emptyNoLinks: "No links between visible channels",
       emptyNoLinksHelp: "No Channel Writer links match the current filter, or the deployed channels are not linked.",
       emptyUnreadable: "Channel links hidden",
       emptyUnreadableHelp: "Your role may not read channel configurations (permission viewChannels), so Channel Writer → Channel Reader links cannot be inspected.",
       hiddenTarget: "Channel not deployed or hidden",
-      destination: "Destination D{id}",
       help: {
         reading: "Reading the links map",
         intro: "Groups frame deployed channels. Each card shows a channel’s name, source counters right below the title, state, and quick actions; arrows trace Channel Writer → Channel Reader links.",

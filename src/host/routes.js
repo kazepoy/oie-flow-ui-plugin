@@ -19,7 +19,7 @@ export const messagesPath = (channelId, metaDataId) =>
 export const channelEditorPath = channelId => `/channels/${enc(channelId)}/edit`;
 
 /** Filter, transformer or response editor of a connector. */
-export const stepEditorPath = (channelId, section, metaDataId) =>
+const stepEditorPath = (channelId, section, metaDataId) =>
   `/channels/${enc(channelId)}/${section}/${enc(metaDataId)}`;
 
 export function navigate(path) {

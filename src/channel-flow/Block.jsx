@@ -7,7 +7,7 @@ import { SIZE } from "./layout/geometry.js";
 import { Tile } from "./Tile.jsx";
 
 /** Kind label and name of a block, in words. */
-export function blockTitle(block) {
+function blockTitle(block) {
   if (block.role === "source") return { kind: t("channelFlow.block.source"), name: block.name };
   if (block.role === "destination") return { kind: t("channelFlow.block.destination", { id: block.metaDataId }), name: block.name };
   return { kind: t("channelFlow.block.channel"), name: t(`channelFlow.block.${block.role}`) };

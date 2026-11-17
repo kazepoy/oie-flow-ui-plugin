@@ -53,11 +53,6 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
 - [x] Retirer Flow et Flows du FHIR Profile Mapper (phase 8 du plan).
 - [x] Signaler RB-07 (préférences d'autres utilisateurs modifiables) aux
   projets RBAC et OIE.
-- [ ] Proposer à Web Admin les demandes du §10 du plan (`?status=`, paramètres
-  d'URL de l'éditeur, onglet par défaut, i18n).
-
-
-
-## vrac
-
-ajouter page de stats (nb msg entrant sortant filtré) par flux/dest , par periode, graphique barre avec granularité differente
+- [ ] Proposer à Web Admin les demandes du §10 du plan (`?status=` → PR `#167`, paramètres
+  d'URL de l'éditeur → PR `#164`, connecteurs frères dans Messages → PR `#168`, onglet par défaut, i18n).
+- [ ] Vue Statistiques dédiée (nombre de messages entrants/sortants/filtrés par flux/destination et par période, graphique en barres multi-granularités) — pistes techniques dans [stat-plan.md](stat-plan.md).

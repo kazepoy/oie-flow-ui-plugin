@@ -6,7 +6,7 @@
 /** @typedef {{ width: number, height: number, scale: number }} MinimapSize */
 /** @typedef {{ x: number, y: number, width: number, height: number }} Rect */
 
-export const MINIMAP_MAX = { width: 200, height: 136 };
+const MINIMAP_MAX = { width: 200, height: 136 };
 const MIN_LENS_VISIBLE = 10;
 
 /**
@@ -83,7 +83,7 @@ export function clampLens(lens, map) {
  * @param {number} my
  * @param {Rect} lens
  */
-export function lensHit(mx, my, lens) {
+function lensHit(mx, my, lens) {
   return mx >= lens.x && mx <= lens.x + lens.width && my >= lens.y && my <= lens.y + lens.height;
 }
 

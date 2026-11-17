@@ -190,9 +190,7 @@ export default {
     channel: {
       openMessages: "Ouvrir les messages de {name}",
       flow: "Flux",
-      flowTitle: "Afficher le diagramme de ce canal",
-      edit: "Modifier",
-      editTitle: "Modifier ce canal"
+      flowTitle: "Afficher le diagramme de ce canal"
     },
     chain: {
       then: "puis",
@@ -234,15 +232,12 @@ export default {
       showInRows: "Voir dans Lignes",
       showInRowsTitle: "Revenir sur la vue Lignes centrée sur {name}",
       focusChain: "Mettre en évidence la chaîne",
-      tagsCount: { one: "{count} tag", other: "{count} tags" },
-      tagsHint: "{tags} — cliquer pour afficher les détails",
       diagramLabel: "Carte des liens entre canaux",
       emptyNoLinks: "Aucun lien entre les canaux visibles",
       emptyNoLinksHelp: "Aucun lien Channel Writer ne correspond au filtre actuel, ou les canaux déployés ne sont pas reliés entre eux.",
       emptyUnreadable: "Liens entre canaux masqués",
       emptyUnreadableHelp: "Votre rôle ne permet pas de lire les configurations des canaux (permission viewChannels) : les liens Channel Writer → Channel Reader ne peuvent pas être inspectés.",
       hiddenTarget: "Canal non déployé ou masqué",
-      destination: "Destination D{id}",
       help: {
         reading: "Lire la carte des liens",
         intro: "Les cadres regroupent les canaux déployés. Chaque carte affiche le nom du canal, ses compteurs source juste sous le titre, son état et ses actions ; les flèches tracent les liens Channel Writer → Channel Reader.",

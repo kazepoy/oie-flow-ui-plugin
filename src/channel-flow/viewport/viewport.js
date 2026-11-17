@@ -10,7 +10,7 @@ const MARGIN = 24;
 /** @typedef {{ s: number, x: number, y: number }} View */
 /** @typedef {{ width: number, height: number }} Size */
 
-export const clampScale = scale => Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
+const clampScale = scale => Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
 
 /** Zooms by `factor` keeping the point (px, py) of the viewport still. @returns {View} */
 export function zoomAround(view, factor, px, py) {

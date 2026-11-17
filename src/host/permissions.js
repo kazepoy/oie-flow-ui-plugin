@@ -8,7 +8,7 @@
 import { platform } from "./platform.js";
 
 /** [task group, task name] pairs, as used by Web Admin's own navigation. */
-export const TASKS = {
+const TASKS = {
   viewDashboard: ["dashboard", "doShowDashboard"],
   viewMessages: ["view", "doShowMessages"],
   viewChannels: ["view", "doShowChannel"],

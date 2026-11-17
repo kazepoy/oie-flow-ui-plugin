@@ -21,4 +21,3 @@ export const useLayoutEffect = (effect, deps) => React.useLayoutEffect(effect, d
 export const useRef = initial => React.useRef(initial);
 export const useMemo = (factory, deps) => React.useMemo(factory, deps);
 export const useCallback = (callback, deps) => React.useCallback(callback, deps);
-export const useId = () => React.useId();

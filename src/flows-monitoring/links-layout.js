@@ -5,7 +5,7 @@
 import { box } from "../channel-flow/layout/geometry.js";
 import { DEFAULT_GROUP_ID } from "./model.js";
 
-export const LINKS_SIZE = {
+const LINKS_SIZE = {
   nodeWidth: 304,
   nodeHeight: 102,
   nodeHeightDetails: 172,

@@ -38,13 +38,14 @@ src/
     preferences.js      réglages de l'utilisateur (préférences OIE, seuls les changements)
     session.js          état des vues pour la session (sessionStorage)
     styles.js           injection des feuilles
-  i18n/               t(), pluriels, nombres ; locales/en.js
+  i18n/               t(), pluriels, nombres ; locales/en.js et fr.js
   shared/
     model/              lecture XStream, chaînes de destinations, statistiques
     ui/                 boutons, icônes, popover, indice, état vide, useSettings
     styles/             jetons (tokens.css) et contrôles communs
   settings/           engrenage de chaque écran, onglet Manage › Settings › Flow UI
   flows-monitoring/   écran Flows Monitoring : model.js (groupes, chaînes, liens),
+                      links-graph.js / links-layout.js (carte des liens),
                       controls.js (commandes selon l'état), useStatuses.js, composants
   channel-flow/
     model/              canal → blocs et tuiles, choix Auto, liste du sélecteur
@@ -84,7 +85,7 @@ et le déplacement par une transformation CSS, une fois par image, sans rendu Re
 
 | Quoi | Où | Durée |
 |---|---|---|
-| Réglages globaux du plugin (groupes ouverts, rafraîchissement, vue par défaut, étapes par tuile, mini-carte) | Propriétés d'extension OIE `Flow UI` (`configuration`, `extensions/Flow UI/properties`) | Permanents, inclus dans *Backup/Restore Config* |
+| Réglages globaux du plugin (groupes ouverts, rafraîchissement, vue par défaut, étapes par tuile, mini-carte, langue) | Propriétés d'extension OIE `Flow UI` (`configuration`, `extensions/Flow UI/properties`) | Permanents, inclus dans *Backup/Restore Config* |
 | Surcharges personnelles (bouton ⚙, mini-carte masquée, indices masqués) | Préférence OIE `flowui.settings` de l'utilisateur, seuls les écarts ; repli `localStorage` | Permanents pour l'utilisateur, sur tous ses navigateurs |
 | Vue, zoom et position par canal ; filtre, groupes, *Lifetime*, *Links* et défilement de Flows Monitoring | `sessionStorage`, clés `oie.flow-ui.*` | L'onglet du navigateur |
 

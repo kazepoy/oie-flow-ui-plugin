@@ -62,7 +62,7 @@ export async function userPreference(userId, name) {
 export const setUserPreference = (userId, name, value) => api().users.setPreference(userId, name, value);
 
 /** Server-wide plugin name (matches <name> in extension/plugin.xml). */
-export const PLUGIN_NAME = "Flow UI";
+const PLUGIN_NAME = "Flow UI";
 
 /** Server-wide plugin properties stored by OIE (included in native Backup/Restore Config). */
 export const pluginProperties = (name = PLUGIN_NAME) =>

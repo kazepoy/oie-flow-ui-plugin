@@ -68,7 +68,7 @@ step.
 - Server-wide defaults under Manage › Settings › Flow UI (included in
   Backup/Restore Config) with per-user overrides from each screen's gear button,
   saved across browsers.
-- English interface, ready for translation.
+- English and French interface, selectable under *Manage › Settings › Flow UI*.
 
 ## Origin
 
