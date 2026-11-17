@@ -53,7 +53,7 @@ describe("as admin", () => {
       .locator(".ofu-counter").first().click();
     await page.waitForURL(/\/messages\//);
     assert.match(page.url(), new RegExp(`/messages/${LAB_RESULTS}\\?metaDataId=1`));
-    // Messages applies the connector as an advanced filter (WA-15).
+    // Messages applies the connector as an advanced filter (WA-01).
     await page.getByText(/Connectors: Validate results/).waitFor();
   });
 

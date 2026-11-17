@@ -17,7 +17,7 @@ précédente.
 - **Clics.** Une carte ou un compteur ouvre Messages sur ce connecteur ; le nom du
   canal ouvre Messages pour tout le canal ; *Flow* ouvre Channel Flow ; *Edit*
   ouvre l'éditeur. Messages s'ouvre filtré sur le connecteur : la ligne *Current
-  Search* l'indique, même si le champ *Connector* affiche encore *Any* (WA-15). Il ne
+  Search* l'indique, même si le champ *Connector* affiche encore *Any* (WA-01). Il ne
   peut pas encore s'ouvrir sur un statut : le choisir dans son filtre *Status*.
 - **Groupes.** Tous ouverts par défaut (réglable) ; un groupe fermé
   garde ses totaux. Le filtre par nom ouvre les groupes qui contiennent un résultat.

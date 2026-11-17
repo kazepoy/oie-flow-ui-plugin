@@ -33,7 +33,7 @@ dans le [plan](plan.md) ; les limites de la plateforme dans
   natif), avec *Refresh* / *Save* / *Restore Defaults* dans le bandeau gauche et
   garde de navigation ; surcharges personnelles conservées sous le bouton ⚙.
 - [ ] Filtre de statut dans Messages depuis un compteur, dès que Web Admin accepte
-  `?status=` (WA-01), et champ *Connector* à jour (WA-15) ; ouverture d'un onglet, d'une destination ou d'une étape précis
+  `?status=` et champ *Connector* à jour (WA-01) ; ouverture d'un onglet, d'une destination ou d'une étape précis
   de l'éditeur (WA-02).
 
 ## Qualité

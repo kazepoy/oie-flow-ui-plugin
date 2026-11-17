@@ -40,7 +40,7 @@ entry remains, with the version that fixes it.
 
 | ID | Component | Finding | Severity | Status |
 |---|---|---|---|---|
-| [WA-01](#wa-01) | Web Admin | Messages: no status filter in URL | Inconvenient | Worked around |
+| [WA-01](#wa-01) | Web Admin | Messages: no status filter in URL, and URL connector hidden in *Advanced* | Inconvenient | Open / Worked around |
 | [WA-02](#wa-02) | Web Admin | Channel editor: no URL for a tab, a destination, a script | Inconvenient | Worked around |
 | [WA-03](#wa-03) | Web Admin | Plugin tabs placed after built-in ones, never default | Inconvenient | Worked around |
 | [WA-04](#wa-04) | Web Admin | Channel tabs not filtered by RBAC task | Minor | Worked around |
@@ -54,7 +54,7 @@ entry remains, with the version that fixes it.
 | [WA-12](#wa-12) | Web Admin | `apiMin`: API version distinct from engine version | Minor | Open |
 | [WA-13](#wa-13) | Web Admin | Types of `@oie/web-*` packages: publication uncertain | Minor | To verify |
 | [WA-14](#wa-14) | Web Admin | SVG markers not rendered in some cases | Minor | To verify |
-| [WA-15](#wa-15) | Web Admin | Messages: URL connector does not show in the *Connector* field | Inconvenient | Open |
+| [WA-15](#wa-15) | Web Admin | Messages: status filter hides sibling connectors of matching messages | Inconvenient | Open |
 | [WS-01](#ws-01) | Web Support | Extension without Java code: served or not | Blocking if not | Resolved |
 | [WS-02](#ws-02) | Web Support | Plugin UIs absent without Web Support | Minor | Open |
 | [RB-01](#rb-01) | RBAC | Unknown task allowed; no plugin-specific permission without Java | Inconvenient | Worked around |
@@ -83,17 +83,25 @@ entry remains, with the version that fixes it.
 
 ### WA-01
 
-**Messages: no status filter in URL.** · Inconvenient · Worked around
+**Messages: no status filter in URL, and URL connector hidden in *Advanced*.** · Inconvenient · Open / Worked around
 
-- **Finding.** The Messages view only reads `?messageId=` and `?metaDataId=`. No status,
-  no date range, no text filter.
-- **Evidence.** `assets/messages-*.js`: the component receives `query` and only reads
-  those two keys (`includedMetaDataIds = [Number(query.metaDataId)]`).
-- **Impact.** Clicking the *Errored* counter cannot open only errored messages. The
-  mapper ticked the *Status* menu by simulating clicks.
-- **Workaround.** Messages opens filtered by connector; the tooltip says so.
-- **Upstream request.** `?status=ERROR` (comma-separated list), then `?startDate=` /
-  `?endDate=`.
+- **Finding.** The Messages view only reads `?messageId=` and `?metaDataId=` — no status,
+  no date range, no text filter. Moreover, `/messages/<channel>?metaDataId=2` applies the
+  connector via the *advanced* filter (*Current Search* says "Connectors: …" and the
+  *Advanced* button shows a dot) while the toolbar's *Connector* dropdown still shows
+  *Any*.
+- **Evidence.** `assets/messages-*.js` (`includedMetaDataIds = [Number(query.metaDataId)]`);
+  demo, clicking a Flows Monitoring counter (verified 2026-11-11 and 2026-11-17).
+- **Impact.** Clicking the *Errored* counter cannot open only errored messages (Flow UI
+  counters all open the same connector/channel view), and users believe the connector
+  filter is missing because *Connector* still reads *Any*. (The mapper ticked the
+  *Status* menu by simulating clicks.)
+- **Workaround.** Messages opens filtered by connector (via *Advanced*); the tooltip and
+  user guide explain where to read the active filter.
+- **Upstream request.** Accept `?status=ERROR` (comma-separated list, then `?startDate=` /
+  `?endDate=`), and reflect `?metaDataId=` and `?status=` in the toolbar's *Connector*
+  and *Status* fields instead of hiding them in *Advanced* — see the full proposal in
+  [pr-webadmin-messages-url.md](pr-webadmin-messages-url.md).
 
 ### WA-02
 
@@ -281,19 +289,22 @@ entry remains, with the version that fixes it.
 
 ### WA-15
 
-**Messages: URL connector does not show in the *Connector* field.** · Inconvenient · Open
+**Messages: status filter hides sibling connectors of matching messages.** · Inconvenient · Open
 
-- **Finding.** `/messages/<channel>?metaDataId=2` does filter on the connector, but via
-  the *advanced* filter: the *Current Search* line says "Connectors: …" and the
-  *Advanced* button shows a dot, while the toolbar's *Connector* dropdown still shows
-  *Any*. Users believe the filter is missing.
-- **Evidence.** Demo, click on a Flows Monitoring counter (screenshot on 2026-11-11).
-- **Impact.** Clicking a counter appears not to filter; status, meanwhile, is genuinely
-  not filtered (WA-01).
-- **Workaround.** None without manipulating the Messages page. The user guide and Flows
-  Monitoring help explain where to read the active filter.
-- **Upstream request.** Reflect `metaDataId` in the *Connector* field; accept
-  `?status=` (WA-01).
+- **Finding.** Filtering Messages by status (e.g. `status=ERROR`) only returns and displays
+  the connector row(s) that match that status (`GET /api/channels/{id}/messages?status=ERROR`
+  only includes the matching entries in `connectorMessages`). The other connectors of the
+  same message (e.g. `Source` and upstream/downstream destinations) are omitted.
+- **Evidence.** Demo (`LAB · Critical values`, message `325` where destination `3` is
+  `ERROR`): querying `status=ERROR` returns only `metaDataId: 3` (`Order confirm panel`),
+  without `0` (`Source`), `1`, or `2`.
+- **Impact.** During troubleshooting, seeing why a destination failed requires copying the
+  `Message ID` and running a second search by `Message ID` (with `Statuses: (any)` and
+  `Connectors: (any)`) to inspect the source payload, transformations, and prior destinations.
+- **Workaround.** None without a second search by `Message ID`.
+- **Upstream request.** Provide an option in the Messages view (e.g. "Show all connectors of
+  matching messages" or expanding a message by `Message ID`) to fetch and display all
+  connector rows for messages that have at least one connector in the filtered status.
 
 ## Web Support 1.3.0 (server)
 
