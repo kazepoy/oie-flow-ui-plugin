@@ -46,14 +46,13 @@ describe("as admin", () => {
     await shot(page, "e2e-flows");
   });
 
-  test("a counter opens Messages on its connector", async () => {
+  test("a counter opens Messages on its connector and status", async () => {
     const { page } = session;
     await page.getByRole("button", { name: "Open all groups" }).click();
     await page.locator(`#ofu-lane-${LAB_RESULTS}`).locator(".ofu-card--destination").first()
       .locator(".ofu-counter").first().click();
     await page.waitForURL(/\/messages\//);
-    assert.match(page.url(), new RegExp(`/messages/${LAB_RESULTS}\\?metaDataId=1`));
-    // Messages applies the connector as an advanced filter (WA-01).
+    assert.match(page.url(), new RegExp(`/messages/${LAB_RESULTS}\\?metaDataId=1&status=SENT`));
     await page.getByText(/Connectors: Validate results/).waitFor();
   });
 

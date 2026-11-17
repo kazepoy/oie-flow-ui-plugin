@@ -2,6 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { channelLane, channelLinks, connectorDetails, disabledDestinationsOf, groupLanes, openGroups, waitsOf } from "../../src/flows-monitoring/model.js";
+import { messagesPath } from "../../src/host/routes.js";
 
 const connector = (metaDataId, name, received = 0) => ({
   metaDataId, name, state: "STARTED", statusType: metaDataId === 0 ? "SOURCE_CONNECTOR" : "DESTINATION_CONNECTOR",
@@ -117,4 +118,14 @@ test("stoppedOnly keeps paused/stopped channels or channels with a paused/stoppe
   stoppedDest.childStatuses.dashboardStatus[1].state = "STOPPED";
   const result = groupLanes([running, pausedChannel, stoppedDest], [], { stoppedOnly: true, defaultGroupName: "Default" });
   assert.deepEqual(result[0].lanes.map(l => l.id), ["p", "d"]);
+});
+
+test("messagesPath builds channel, connector, and status deep-links while omitting RECEIVED", () => {
+  assert.equal(messagesPath("ch-1"), "/messages/ch-1");
+  assert.equal(messagesPath("ch-1", undefined, "RECEIVED"), "/messages/ch-1");
+  assert.equal(messagesPath("ch-1", undefined, "ERROR"), "/messages/ch-1?status=ERROR");
+  assert.equal(messagesPath("ch-1", 0, "RECEIVED"), "/messages/ch-1?metaDataId=0");
+  assert.equal(messagesPath("ch-1", 0, "FILTERED"), "/messages/ch-1?metaDataId=0&status=FILTERED");
+  assert.equal(messagesPath("ch-1", 1, "SENT"), "/messages/ch-1?metaDataId=1&status=SENT");
+  assert.equal(messagesPath("ch-1", 2, "ERROR"), "/messages/ch-1?metaDataId=2&status=ERROR");
 });

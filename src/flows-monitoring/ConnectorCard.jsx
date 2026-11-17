@@ -40,7 +40,7 @@ export function ConnectorCard({ lane, connector, isSource, actions }) {
   }
   const stopped = connector.state && connector.state !== "STARTED";
   const where = `${lane.name} · ${connector.name}`;
-  const open = actions.canOpenMessages ? () => actions.openMessages(lane.id, connector.metaDataId) : undefined;
+  const open = actions.canOpenMessages ? status => actions.openMessages(lane.id, connector.metaDataId, status) : undefined;
   const hasIndependentState = isSource || connector.queueEnabled || stopped;
   const showName = !(isSource && (!connector.name || connector.name.trim().toLowerCase() === "source"));
   const title = (
@@ -60,7 +60,7 @@ export function ConnectorCard({ lane, connector, isSource, actions }) {
       stopped && "ofu-card--stopped", (linked || detailed) && "ofu-card--extended")}>
       <div className="ofu-card__head">
         {open
-          ? <button type="button" className="ofu-card__title" title={t("flows.card.openMessages", { where })} onClick={open}>{title}</button>
+          ? <button type="button" className="ofu-card__title" title={t("flows.card.openMessages", { where })} onClick={() => open()}>{title}</button>
           : <div className="ofu-card__title">{title}</div>}
         <ControlButtons commands={connectorCommands(lane.state, connector, isSource)}
           target={{ channelId: lane.id, metaDataId: connector.metaDataId, name: where }} actions={actions} />

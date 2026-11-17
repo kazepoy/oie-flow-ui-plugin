@@ -38,7 +38,7 @@ function ChannelCard({ lane, actions }) {
         </div>
       </div>
       <ConnectorCounters stats={lane.stats} keys={SOURCE_COUNTERS} where={lane.name}
-        onOpen={actions.canOpenMessages ? () => actions.openMessages(lane.id) : undefined} />
+        onOpen={actions.canOpenMessages ? status => actions.openMessages(lane.id, undefined, status) : undefined} />
       {actions.showDetails && <TagList tags={lane.tags} />}
       {actions.showLinks && lane.calledBy.length > 0 && (
         <div className="ofu-channel__links">

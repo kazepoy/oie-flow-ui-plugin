@@ -79,7 +79,7 @@ function LinkNode({ node, selected, focused, dimmed, showDetails, onToggleFocus,
         <>
           <div className="ofu-links-node__counters" onClick={event => event.stopPropagation()}>
             <ConnectorCounters stats={node.stats} keys={SOURCE_COUNTERS} where={node.name}
-              onOpen={actions.canOpenMessages ? () => actions.openMessages(node.id) : undefined} />
+              onOpen={actions.canOpenMessages ? status => actions.openMessages(node.id, undefined, status) : undefined} />
           </div>
           {hasDetails && (
             <div className="ofu-links-node__details">

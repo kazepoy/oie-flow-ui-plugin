@@ -119,7 +119,7 @@ export function FlowsMonitoringView() {
     canOpenMessages: can("viewMessages"),
     canViewFlow: can("viewChannels"),
     canEdit: can("editChannel"),
-    openMessages: (channelId, metaDataId) => navigate(messagesPath(channelId, metaDataId)),
+    openMessages: (channelId, metaDataId, status) => navigate(messagesPath(channelId, metaDataId, status)),
     openFlow: channelId => navigate(channelFlowPath(channelId)),
     openEditor: channelId => navigate(channelEditorPath(channelId)),
     showLinks: view.links,

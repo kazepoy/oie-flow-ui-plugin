@@ -26,7 +26,7 @@ export function ConnectorCounters({ stats, keys, where, onOpen }) {
         );
         const className = cx("ofu-counter", `ofu-status-${key}`, count === 0 && "ofu-counter--zero");
         return onOpen
-          ? <button key={key} type="button" className={className} title={title} onClick={onOpen}>{content}</button>
+          ? <button key={key} type="button" className={className} title={title} onClick={() => onOpen(key)}>{content}</button>
           : <span key={key} className={className} title={title}>{content}</span>;
       })}
     </div>

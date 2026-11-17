@@ -1,0 +1,120 @@
+# Test suite for /messages/:channelId URL query parameters
+# - Cmd+Click any http://127.0.0.1:3030/... link in the comments to test the Web Admin UI directly.
+# - Run the GET requests below with VS Code REST Client / JetBrains HTTP Client to inspect the underlying OIE REST API responses.
+
+@webadmin = http://127.0.0.1:3030
+@oie = https://localhost:8444/api
+@auth = Basic admin:admin
+
+# Demo channel IDs
+@labResults = 07516747-4e3e-4cee-80cf-6a9aaf05412e
+@labOrders = 5a4aa0ff-b675-4e44-930a-2e23cffd6eb1
+@billClaims = 8a212f36-06f2-483c-b48d-678a0fa682f4
+@serverId = 3f1c2b9e-6a4d-4e8b-9c1f-0d2e5a7b8c61
+
+# ============================================================================
+# 1. MAIN SEARCH BAR PARAMETERS
+# ============================================================================
+
+### 1.1 Single connector (metaDataId=1) -> selects Connector dropdown, Advanced dot stays OFF
+# UI: http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?metaDataId=1
+GET {{oie}}/channels/{{labResults}}/messages?includedMetaDataId=1&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### 1.2 Source connector + ERROR status (metaDataId=0&status=ERROR)
+# UI: http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?metaDataId=0&status=ERROR
+GET {{oie}}/channels/{{labResults}}/messages?includedMetaDataId=0&status=ERROR&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### 1.3 Destination connector + ERROR status (metaDataId=1&status=ERROR)
+# UI: http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?metaDataId=1&status=ERROR
+GET {{oie}}/channels/{{labResults}}/messages?includedMetaDataId=1&status=ERROR&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### 1.4 Destination QUEUED messages on BILL · Claims to insurer (metaDataId=1&status=QUEUED)
+# UI: http://127.0.0.1:3030/messages/8a212f36-06f2-483c-b48d-678a0fa682f4?metaDataId=1&status=QUEUED
+GET {{oie}}/channels/{{billClaims}}/messages?includedMetaDataId=1&status=QUEUED&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### 1.5 Multi-status filter (comma-separated: ?status=ERROR,SENT or repeated: ?status=ERROR&status=SENT)
+# UI (comma):    http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?status=ERROR,SENT
+# UI (repeated): http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?status=ERROR&status=SENT
+GET {{oie}}/channels/{{labResults}}/messages?status=ERROR&status=SENT&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### 1.6 Text search + Regex (textSearch=^MSH&textSearchRegex=true)
+# UI: http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?textSearch=%5EMSH&textSearchRegex=true
+GET {{oie}}/channels/{{labResults}}/messages?textSearch=%5EMSH&textSearchRegex=true&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### 1.7 Date range filter (startDate & endDate)
+# UI: http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?startDate=2026-01-01T00:00&endDate=2026-12-31T23:59
+GET {{oie}}/channels/{{labResults}}/messages?startDate=2026-01-01T00:00:00.000%2B0100&endDate=2026-12-31T23:59:00.000%2B0100&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### 1.8 Exact message positioning (messageId=1)
+# UI: http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?messageId=1
+GET {{oie}}/channels/{{labResults}}/messages/1
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+# ============================================================================
+# 2. SCALAR & BOOLEAN ADVANCED PARAMETERS (Advanced dot turns ON)
+# ============================================================================
+
+### 2.1 Multiple included connectors via metaDataId=1,2 -> stages Advanced includedMetaDataIds
+# UI: http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?metaDataId=1,2
+GET {{oie}}/channels/{{labResults}}/messages?includedMetaDataId=1&includedMetaDataId=2&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### 2.2 Excluded connector (excludedMetaDataId=0 -> all except Source)
+# UI: http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?excludedMetaDataId=0
+GET {{oie}}/channels/{{labResults}}/messages?excludedMetaDataId=0&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### 2.3 Message ID range (minMessageId=1&maxMessageId=10)
+# UI: http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?minMessageId=1&maxMessageId=10
+GET {{oie}}/channels/{{labResults}}/messages?minMessageId=1&maxMessageId=10&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### 2.4 Send attempts range (minSendAttempts=1&maxSendAttempts=10)
+# UI: http://127.0.0.1:3030/messages/8a212f36-06f2-483c-b48d-678a0fa682f4?minSendAttempts=1&maxSendAttempts=10
+GET {{oie}}/channels/{{billClaims}}/messages?minSendAttempts=1&maxSendAttempts=10&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### 2.5 Server ID + Has Error (serverId & error=true)
+# UI: http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?serverId=3f1c2b9e-6a4d-4e8b-9c1f-0d2e5a7b8c61&error=true
+GET {{oie}}/channels/{{labResults}}/messages?serverId={{serverId}}&error=true&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json
+
+### 2.6 Combined Advanced parameters (Original ID, Import ID, Attachment, Error)
+# UI: http://127.0.0.1:3030/messages/07516747-4e3e-4cee-80cf-6a9aaf05412e?minMessageId=1&maxMessageId=50&minOriginalId=1&maxOriginalId=50&minImportId=1&maxImportId=50&minSendAttempts=1&maxSendAttempts=5&attachment=true&error=true
+GET {{oie}}/channels/{{labResults}}/messages?minMessageId=1&maxMessageId=50&minOriginalId=1&maxOriginalId=50&minImportId=1&maxImportId=50&minSendAttempts=1&maxSendAttempts=5&attachment=true&error=true&offset=0&limit=20
+Authorization: {{auth}}
+X-Requested-With: OpenAPI
+Accept: application/json

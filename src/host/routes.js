@@ -12,9 +12,17 @@ export const CHANNEL_FLOW_PATH = "/channel-flow";
 
 export const channelFlowPath = channelId => channelId ? `${CHANNEL_FLOW_PATH}/${enc(channelId)}` : CHANNEL_FLOW_PATH;
 
-/** Messages of a channel, optionally of one connector (0 = source). */
-export const messagesPath = (channelId, metaDataId) =>
-  `/messages/${enc(channelId)}${metaDataId == null ? "" : `?metaDataId=${enc(metaDataId)}`}`;
+/**
+ * Messages of a channel, optionally filtered by connector (0 = source) and/or
+ * status (`SENT`, `FILTERED`, `QUEUED`, `ERROR`). `RECEIVED` is omitted because
+ * processed messages transition to `TRANSFORMED`, `FILTERED`, `SENT`, or `ERROR`.
+ */
+export function messagesPath(channelId, metaDataId, status) {
+  const params = [];
+  if (metaDataId != null) params.push(`metaDataId=${enc(metaDataId)}`);
+  if (status && status !== "RECEIVED") params.push(`status=${enc(status)}`);
+  return `/messages/${enc(channelId)}${params.length ? `?${params.join("&")}` : ""}`;
+}
 
 export const channelEditorPath = channelId => `/channels/${enc(channelId)}/edit`;
 
