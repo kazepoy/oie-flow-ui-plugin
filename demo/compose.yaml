@@ -12,16 +12,6 @@ volumes:
   logs:
 
 services:
-  # Build only: the official Dockerfile compiles OIE 4.7.0 (long, done once).
-  oie-engine:
-    build:
-      context: https://github.com/OpenIntegrationEngine/engine.git#v4.7.0
-      target: jre-run
-      args:
-        GRADLE_BUILD_ARGS: ${OIE_GRADLE_BUILD_ARGS:--PdisableSigning=true}
-    image: oie-flow-ui-demo-engine:4.7.0
-    profiles: [build]
-
   oie-db:
     image: postgres:18.3-alpine
     restart: unless-stopped
@@ -44,8 +34,6 @@ services:
     build:
       context: ..
       dockerfile: demo/Dockerfile
-      additional_contexts:
-        oie-engine: service:oie-engine
     image: oie-flow-ui-demo-oie:4.7.0
     restart: unless-stopped
     init: true

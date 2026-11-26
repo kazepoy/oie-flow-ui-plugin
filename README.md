@@ -11,9 +11,13 @@ web administrator that shows how messages move through channels.
 > projects are underway or planned so everything uses clean, supported APIs
 > before v1.0.
 
+## Install
+
+Prebuilt plugin archives (`flow-ui-<version>.zip`) are available on [GitHub Releases](https://github.com/kazepoy/oie-flow-ui-plugin/releases) and can be installed directly on an existing **OIE 4.7** server (with Web Support / Web Admin 1.3): download the zip, extract it into your OIE `extensions/` directory (or deploy it via OIE Administrator / `custom-extensions`), and restart OIE.
+
 ## Try the demo
 
-You need Docker with Compose.
+The demo includes preconfigured sample channels and seed messages, making it a good way to test the plugin before installing it on an existing OIE instance. You need Docker with Compose.
 
 ```sh
 git clone https://github.com/kazepoy/oie-flow-ui-plugin.git
@@ -21,8 +25,7 @@ cd oie-flow-ui-plugin/demo
 docker compose up -d --build
 ```
 
-The first start compiles OIE 4.7.0 from source and takes several minutes. Then
-open <https://localhost:8444/oie-webadmin/> (self-signed certificate) and sign in:
+Then open <https://localhost:8444/oie-webadmin/> (self-signed certificate) and sign in:
 
 | Account | Password | What it shows |
 |---|---|---|
